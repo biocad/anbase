@@ -49,12 +49,11 @@ def get_bound_complexes(sabdab_summary_df):
 
 
 def load_bound_complexes(complexes):
-    pdbl = PDBParser()
+    pdbl = PDBList()
 
     for comp in complexes:
-        comp.structure = pdbl.get_structure(comp.pdb_id,
-                                            'resources/all_structures/raw/'
-                                            + comp.pdb_id + '.pdb')[0]
+        comp.structure = pdbl.retrieve_pdb_file(comp.pdb_id, file_format='pdb',
+                                                pdir='resources/sabdab')[0]
 
 
 structures_summary = read_csv('resources/sabdab_summary_all.tsv',
