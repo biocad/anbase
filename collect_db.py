@@ -1,4 +1,6 @@
 import math
+import operator
+
 import requests
 
 from Bio.PDB import PDBList, PDBParser, PDBIO, Selection, Polypeptide
@@ -6,10 +8,7 @@ from pandas import read_csv
 import os
 import shutil
 from xml.etree import ElementTree
-from Bio.PDB.Polypeptide import PPBuilder
-import response
-import collections
-import Bio.PDB
+from functools import reduce
 
 complexes = []
 
@@ -25,46 +24,95 @@ NA = 'NA'
 
 DB_PATH = 'data'
 DOT_PDB = '.pdb'
+DOT_FASTA = '.fasta'
 
 
-class SAbDabEntry:
+class Complex:
     pdb_parser = PDBParser()
 
     def __init__(self, pdb_id, h_chain, l_chain, antigen_chain,
                  antigen_het_name):
         self.pdb_id = pdb_id
-        self.h_chain = h_chain
-        self.l_chain = l_chain
+        self.antibody_h_chain = h_chain
+        self.antibody_l_chain = l_chain
+
+        # if chain ids of antibody's chains are equal up to case,
+        # it means that antibody has only one chain
+        if self.antibody_h_chain and self.antibody_l_chain and \
+                self.antibody_h_chain.upper() == self.antibody_l_chain.upper():
+            self.antibody_h_chain = self.antibody_h_chain.upper()
+            self.antibody_l_chain = None
+
         self.antigen_chains = antigen_chain
         self.antigen_het_name = antigen_het_name
         self.structure = None
 
-        self.antigen_seqs = None
+        self.complex_dir_path = os.path.join(DB_PATH, self.pdb_id)
+
+        self.antigen_seqs = [self._fetch_sequence(x) for x in
+                             self.antigen_chains]
+
         self.antibody_h_seq = None
+
+        if self.antibody_h_chain:
+            self.antibody_h_seq = self._fetch_sequence(self.antibody_h_chain)
+
         self.antibody_l_seq = None
 
-    def load_structure(self, path):
+        if self.antibody_l_chain:
+            self.antibody_l_seq = self._fetch_sequence(self.antibody_l_chain)
+
+    def load_structure(self):
+        self.load_structure_from(os.path.join(self.complex_dir_path,
+                                              self.pdb_id + DOT_PDB))
+
+    def load_structure_from(self, path):
         self.structure = self.pdb_parser.get_structure(self.pdb_id, path)
 
-        chains_list = list(self.structure.get_chains())
-        ppb = PPBuilder()
+    def _fetch_sequence(self, chain_id):
+        fasta_path = os.path.join(self.complex_dir_path,
+                                  self.pdb_id + '_' + chain_id + DOT_FASTA)
 
-        if self.antigen_chains is not None:
-            self.antigen_seqs = []
+        print('fetching', fasta_path)
 
-            for antigen_chain in self.antigen_chains:
-                chain = \
-                    [x for x in chains_list if x.get_id() == antigen_chain][0]
-                self.antigen_seqs.append(
-                    ppb.build_peptides(chain)[0].get_sequence())
+        if os.path.exists(fasta_path):
+            with open(fasta_path, 'r') as f:
+                fasta = f.readlines()
 
-        if self.h_chain is not None:
-            chain = [x for x in chains_list if x.get_id() == self.h_chain][0]
-            self.antibody_h_seq = ppb.build_peptides(chain)[0].get_sequence()
+            if len(fasta) < 2:
+                os.remove(fasta_path)
+                return self._fetch_sequence(chain_id)
 
-        if self.h_chain is not None:
-            chain = [x for x in chains_list if x.get_id() == self.l_chain][0]
-            self.antibody_l_seq = ppb.build_peptides(chain)[0].get_sequence()
+            return fasta[1]
+
+        fasta = ['> ' + self.pdb_id + ':' + chain_id,
+                 fetch_sequence(self.pdb_id, chain_id)]
+
+        with open(fasta_path, 'w') as f:
+            f.write(fasta[0] + '\n' + fasta[1])
+
+        return fasta[1]
+
+
+def fetch_sequence(pdb_id, chain_id):
+    url = 'https://www.rcsb.org/pdb/download/downloadFastaFiles.do'
+    r = requests.post(url, {'structureIdList': pdb_id,
+                            'compressionType': 'uncompressed'})
+
+    writing = False
+    seq = ''
+
+    for x in r.content.decode('utf-8').split():
+        if ':' + chain_id + '|' in x:
+            writing = True
+            continue
+        elif writing and '|' in x:
+            writing = False
+
+        if writing:
+            seq += x
+
+    return seq
 
 
 def get_bound_complexes(sabdab_summary_df):
@@ -76,10 +124,12 @@ def get_bound_complexes(sabdab_summary_df):
     complexes = []
 
     for _, row in sabdab_summary_df.iterrows():
-        # TODO: remove 6nyq
-        if sub_nan(row[ANTIGEN_TYPE]) is not None and row[PDB_ID] == '6nyq':
+        # if antigen's type is in lower case, it means that antigen is no good
+        # for us, because it's a small molecule
+        if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE].islower() and row[
+            PDB_ID] == '1dqj':
             antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
-            complexes.append(SAbDabEntry(
+            complexes.append(Complex(
                 row[PDB_ID], sub_nan(row[H_CHAIN]), sub_nan(row[L_CHAIN]),
                 antigen_chains,
                 sub_nan(row[ANTIGEN_HET_NAME])))
@@ -92,6 +142,9 @@ class BLASTData:
         self.pdb_id = pdb_id
         self.chain_id = chain_id
 
+    def __str__(self):
+        return str((self.pdb_id, self.chain_id))
+
 
 def load_bound_complexes(complexes, load_structures=False):
     with open('could_not_fetch.log', 'w') as could_not_fetch_log:
@@ -100,19 +153,19 @@ def load_bound_complexes(complexes, load_structures=False):
         io = PDBIO()
 
         for comp in complexes:
-            pdb_dir_path = os.path.join(DB_PATH, comp.pdb_id)
-            pdb_path = os.path.join(pdb_dir_path, comp.pdb_id + DOT_PDB)
+            pdb_path = os.path.join(comp.complex_dir_path,
+                                    comp.pdb_id + DOT_PDB)
 
             if os.path.exists(pdb_path):
                 if load_structures:
-                    comp.load_structure(pdb_path)
+                    comp.load_structure_from(pdb_path)
                 print(comp.pdb_id, 'loaded')
                 continue
 
-            if os.path.exists(pdb_dir_path):
-                shutil.rmtree(pdb_dir_path)
+            if os.path.exists(comp.complex_dir_path):
+                shutil.rmtree(comp.complex_dir_path)
 
-            os.mkdir(pdb_dir_path)
+            os.mkdir(comp.complex_dir_path)
 
             ent_path = pdb_list.retrieve_pdb_file(comp.pdb_id,
                                                   file_format='pdb',
@@ -123,10 +176,10 @@ def load_bound_complexes(complexes, load_structures=False):
                 print(comp.pdb_id, flush=True, file=could_not_fetch_log)
                 continue
 
-            comp.load_structure(ent_path)
+            comp.load_structure_from(ent_path)
 
             needed_chain_ids = [x for x in [comp.h_chain, comp.l_chain] +
-                                comp.antigen_chain if x is not None]
+                                comp.antigen_chain if x]
 
             for model in comp.structure:
                 for chain in model:
@@ -162,24 +215,36 @@ def get_blast_data(pdb_id, chain_id, seq):
                     hit_def_parts = hit_def.text.split('|')[0].split(':')
 
                     pdb_id = hit_def_parts[0]
-                    structure_id = int(hit_def_parts[1])
+                    print(pdb_id)
                     chain_ids = [x for x in hit_def_parts[2].split(',')]
 
-                    # TODO: structure_id != 1 — good decision?
-                    if len(chain_ids) != 1 or structure_id != 1:
-                        continue
-
-                    for hsp in hit:
-                        # TODO: error here
+                    for hsp in hit.find('Hit_hsps'):
                         hsp_qseq = hsp.find('Hsp_qseq').text
+                        hsp_hseq = hsp.find('Hsp_hseq').text
 
-                        # TODO: add unbound check?
-                        if len(hsp_qseq) != len(seq):
+                        if pdb_id == '1DQQ':
+                            print('seq', seq)
+                            print(hsp_qseq)
+                            print(hsp_hseq)
+
+                        if hsp_hseq != seq:
                             continue
 
-                        res.append(BLASTData(pdb_id, chain_ids[1]))
+                        res.append(BLASTData(pdb_id, chain_ids[0]))
 
     return res
+
+
+def find_unbound_structure(pdb_id, chain_ids, seqs):
+    candidates = [get_blast_data(pdb_id, chain_id, seq) for chain_id, seq in
+                  zip(chain_ids, seqs)]
+
+    pdb_ids_in_intersection_prep = reduce(operator.and_,
+                                          [set([x.pdb_id for x in candidate])
+                                           for
+                                           candidate in candidates])
+
+    print(pdb_ids_in_intersection_prep)
 
 
 def find_unbound_conformations(complex):
@@ -193,5 +258,9 @@ structures_summary = read_csv('data/sabdab_summary_all.tsv',
 # load_bound_complexes(all_complexes)
 
 comp = get_bound_complexes(structures_summary)[0]
-comp.load_structure(os.path.join(DB_PATH, '6nyq', '6nyq.pdb'))
-print(get_blast_data('6nyq', 'H', comp.antibody_h_seq))
+comp.load_structure()
+find_unbound_structure(comp.pdb_id,
+                           [comp.antibody_h_chain, comp.antibody_l_chain],
+                           [comp.antibody_h_seq, comp.antibody_l_seq])
+
+# print(a)
