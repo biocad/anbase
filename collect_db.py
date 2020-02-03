@@ -94,25 +94,26 @@ class Complex:
         return fasta[1]
 
 
-def fetch_sequence(pdb_id, chain_id):
+def fetch_all_sequences(pdb_id):
     url = 'https://www.rcsb.org/pdb/download/downloadFastaFiles.do'
     r = requests.post(url, {'structureIdList': pdb_id,
                             'compressionType': 'uncompressed'})
 
-    writing = False
-    seq = ''
+    seqs = []
 
-    for x in r.content.decode('utf-8').split():
-        if ':' + chain_id + '|' in x:
-            writing = True
-            continue
-        elif writing and '|' in x:
-            writing = False
+    for line in r.content.decode('utf-8').split():
+        if line.startswith('>'):
+            seqs.append([line[5], ''])
+        else:
+            seqs[-1][1] += line
 
-        if writing:
-            seq += x
+    return list(map(lambda y: (y[0], y[1]), seqs))
 
-    return seq
+
+def fetch_sequence(pdb_id, chain_id):
+    seqs = fetch_all_sequences(pdb_id)
+
+    return next(filter(lambda x: x[0] == chain_id, seqs))
 
 
 def get_bound_complexes(sabdab_summary_df):
@@ -127,7 +128,7 @@ def get_bound_complexes(sabdab_summary_df):
         # if antigen's type is in lower case, it means that antigen is no good
         # for us, because it's a small molecule
         if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE].islower() and row[
-            PDB_ID] == '1dqj':
+            PDB_ID] == '2vis':
             antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
             complexes.append(Complex(
                 row[PDB_ID], sub_nan(row[H_CHAIN]), sub_nan(row[L_CHAIN]),
@@ -194,6 +195,23 @@ def load_bound_complexes(complexes, load_structures=False):
             print(comp.pdb_id, 'loaded')
 
 
+def is_match(query_seq, query_alignment, hit_alignment):
+    if query_seq == hit_alignment:
+        return True
+
+    query_with_stripped_gaps = query_alignment.strip('-')
+
+    if '-' in query_with_stripped_gaps:
+        return False
+
+    hit_with_stripped_gaps = hit_alignment.strip('-')
+
+    if '-' in hit_with_stripped_gaps:
+        return False
+
+    return query_with_stripped_gaps == hit_with_stripped_gaps
+
+
 def get_blast_data(pdb_id, chain_id, seq):
     curl = 'https://www.rcsb.org/pdb/rest/getBlastPDB2?structureId' \
            '={}&chainId={}&eCutOff=10.0&matrix=BLOSUM62&outputFormat=XML'. \
@@ -215,19 +233,13 @@ def get_blast_data(pdb_id, chain_id, seq):
                     hit_def_parts = hit_def.text.split('|')[0].split(':')
 
                     pdb_id = hit_def_parts[0]
-                    print(pdb_id)
                     chain_ids = [x for x in hit_def_parts[2].split(',')]
 
                     for hsp in hit.find('Hit_hsps'):
                         hsp_qseq = hsp.find('Hsp_qseq').text
                         hsp_hseq = hsp.find('Hsp_hseq').text
 
-                        if pdb_id == '1DQQ':
-                            print('seq', seq)
-                            print(hsp_qseq)
-                            print(hsp_hseq)
-
-                        if hsp_hseq != seq:
+                        if not is_match(seq, hsp_qseq, hsp_hseq):
                             continue
 
                         res.append(BLASTData(pdb_id, chain_ids[0]))
@@ -235,7 +247,29 @@ def get_blast_data(pdb_id, chain_id, seq):
     return res
 
 
+def check_unbound(pdb_id, chain_seqs):
+    # don't work with duplicating chains
+    assert (len(chain_seqs) == len(frozenset(chain_seqs)))
+
+    all_seqs_in_pdb = list(map(lambda x: x[1], fetch_all_sequences(pdb_id)))
+
+    seqs_counts = []
+
+    for chain_seq in chain_seqs:
+        seqs_counts.append(0)
+        for seq in all_seqs_in_pdb:
+            if chain_seq == seq:
+                seqs_counts[-1] += 1
+
+    return all(map(lambda x: x > 0, seqs_counts)) \
+        and all(map(lambda x: x == seqs_counts[0], seqs_counts)) \
+        and len(all_seqs_in_pdb) == sum(seqs_counts)
+
+
 def find_unbound_structure(pdb_id, chain_ids, seqs):
+    # TODO: SOMEHOW 2VIU is sorted out :C
+    
+    # TODO: add memoization to find complexes more effectively
     candidates = [get_blast_data(pdb_id, chain_id, seq) for chain_id, seq in
                   zip(chain_ids, seqs)]
 
@@ -244,10 +278,27 @@ def find_unbound_structure(pdb_id, chain_ids, seqs):
                                            for
                                            candidate in candidates])
 
+    print(len(pdb_ids_in_intersection_prep))
     print(pdb_ids_in_intersection_prep)
+
+    return list(
+        filter(lambda x: check_unbound(x, seqs), pdb_ids_in_intersection_prep))
 
 
 def find_unbound_conformations(complex):
+    unbound_antigen_valid_candidates = \
+        find_unbound_structure(complex.pdb_id, complex.antigen_chains,
+                               complex.antigen_seqs)
+    unbound_antibody_valid_candidates = \
+        find_unbound_structure(complex.pdb_id,
+                               [complex.antibody_h_chain,
+                                complex.antibody_l_chain],
+                               [complex.antibody_h_seq,
+                                complex.antibody_l_seq])
+
+    print(unbound_antigen_valid_candidates)
+    print(unbound_antibody_valid_candidates)
+
     return None
 
 
@@ -259,8 +310,6 @@ structures_summary = read_csv('data/sabdab_summary_all.tsv',
 
 comp = get_bound_complexes(structures_summary)[0]
 comp.load_structure()
-find_unbound_structure(comp.pdb_id,
-                           [comp.antibody_h_chain, comp.antibody_l_chain],
-                           [comp.antibody_h_seq, comp.antibody_l_seq])
+find_unbound_conformations(comp)
 
 # print(a)
