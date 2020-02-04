@@ -118,6 +118,9 @@ class Complex:
         fasta = ['> ' + self.pdb_id + ':' + chain_id,
                  fetch_sequence(self.pdb_id, chain_id)]
 
+        if not os.path.exists(self.complex_dir_path):
+            os.mkdir(self.complex_dir_path)
+
         with open(fasta_path, 'w') as f:
             f.write(fasta[0] + '\n' + fasta[1])
 
@@ -133,7 +136,7 @@ def fetch_all_sequences(pdb_id):
 
     for line in r.split():
         if line.startswith('>'):
-            seqs.append([line[5], ''])
+            seqs.append([line[6], ''])
         else:
             seqs[-1][1] += line
 
@@ -143,7 +146,7 @@ def fetch_all_sequences(pdb_id):
 def fetch_sequence(pdb_id, chain_id):
     seqs = fetch_all_sequences(pdb_id)
 
-    return next(filter(lambda x: x[0] == chain_id, seqs))
+    return next(filter(lambda x: x[0] == chain_id, seqs))[1]
 
 
 def get_bound_complexes(sabdab_summary_df, to_accept=None):
@@ -211,8 +214,8 @@ def load_bound_complexes(complexes, load_structures=False):
 
             comp.load_structure_from(ent_path)
 
-            needed_chain_ids = [x for x in [comp.h_chain, comp.l_chain] +
-                                comp.antigen_chain if x]
+            needed_chain_ids = [x for x in [comp.antibody_h_chain, comp.antibody_l_chain] +
+                                comp.antigen_chains if x]
 
             for model in comp.structure:
                 for chain in model:
@@ -448,6 +451,7 @@ test_structures = [('1AHW', '1FGN', '1TFH'),
 
 comps = get_bound_complexes(structures_summary,
                             list(map(lambda x: x[0], test_structures)))
+load_bound_complexes(comps)
 
 for pdb_id, unbound_antibody_id, unbound_antigen_id in test_structures:
     print('processing', pdb_id)
