@@ -120,6 +120,10 @@ class Complex:
         if self.antibody_l_chain:
             self.antibody_l_seq = self._fetch_sequence(self.antibody_l_chain)
 
+    def has_unfetched_sequences(self):
+        return list(filter(lambda x: x is None, self.antigen_chains +
+                           [self.antibody_h_chain, self.antibody_l_chain]))
+
     def load_structure(self):
         self.load_structure_from(os.path.join(self.complex_dir_path,
                                               self.db_name + DOT_PDB))
@@ -145,6 +149,9 @@ class Complex:
 
         fasta = ['> ' + self.pdb_id + ':' + chain_id,
                  fetch_sequence(self.pdb_id, chain_id)]
+
+        if fasta[1] is None:
+            return None
 
         if not os.path.exists(self.complex_dir_path):
             os.mkdir(self.complex_dir_path)
@@ -178,7 +185,12 @@ def fetch_all_sequences(pdb_id):
 def fetch_sequence(pdb_id, chain_id):
     seqs = fetch_all_sequences(pdb_id)
 
-    return next(filter(lambda x: x[0] == chain_id, seqs))[1]
+    potential_res = list(filter(lambda x: x[0] == chain_id, seqs))
+
+    if potential_res:
+        return potential_res[0][1]
+
+    return None
 
 
 def get_bound_complexes(sabdab_summary_df, to_accept=None):
@@ -200,10 +212,14 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
                 continue
 
             antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
-            complexes.append(Complex(
+            new_complex = Complex(
                 row[PDB_ID], sub_nan(row[H_CHAIN]), sub_nan(row[L_CHAIN]),
-                antigen_chains,
-                sub_nan(row[ANTIGEN_HET_NAME])))
+                antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+
+            if new_complex.has_unfetched_sequences():
+                continue
+
+            complexes.append(new_complex)
 
     return complexes
 
