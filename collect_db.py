@@ -9,6 +9,9 @@ import os
 import shutil
 from xml.etree import ElementTree
 from functools import reduce
+from Bio import pairwise2
+from collections import defaultdict
+import sys
 
 complexes = []
 
@@ -26,6 +29,8 @@ DB_PATH = 'data'
 DOT_PDB = '.pdb'
 DOT_FASTA = '.fasta'
 
+MISMATCHED_LOG = 'mismatched.log'
+
 
 def get_while_true(curl):
     not_finished = True
@@ -35,7 +40,9 @@ def get_while_true(curl):
     while not_finished:
         try:
             res = requests.get(curl)
-            not_finished = False
+
+            if res.content.decode('utf-8'):
+                not_finished = False
         except Exception:
             pass
 
@@ -50,11 +57,27 @@ def post_while_true(url, json):
     while not_finished:
         try:
             res = requests.post(url, json)
-            not_finished &= False
+
+            if res.content.decode('utf-8'):
+                not_finished = False
         except Exception:
             pass
 
     return res.content.decode('utf-8')
+
+
+def is_obsolete(pdb_id):
+    curl = 'https://www.rcsb.org/pdb/rest/getEntityInfo?structureId={}' \
+        .format(pdb_id)
+
+    r = get_while_true(curl)
+    xml = ElementTree.fromstring(r)
+
+    for child in xml:
+        if child.tag == 'obsolete':
+            return True
+
+    return False
 
 
 class Complex:
@@ -77,6 +100,11 @@ class Complex:
         self.antigen_het_name = antigen_het_name
         self.structure = None
 
+        h_name = self.antibody_h_chain if self.antibody_h_chain else ''
+        l_name = self.antibody_l_chain if self.antibody_l_chain else ''
+        self.db_name = self.pdb_id + '_' + ''.join(
+            [h_name, l_name] + self.antigen_chains)
+
         self.complex_dir_path = os.path.join(DB_PATH, self.pdb_id)
 
         self.antigen_seqs = [self._fetch_sequence(x) for x in
@@ -94,7 +122,7 @@ class Complex:
 
     def load_structure(self):
         self.load_structure_from(os.path.join(self.complex_dir_path,
-                                              self.pdb_id + DOT_PDB))
+                                              self.db_name + DOT_PDB))
 
     def load_structure_from(self, path):
         self.structure = self.pdb_parser.get_structure(self.pdb_id, path)
@@ -138,6 +166,10 @@ def fetch_all_sequences(pdb_id):
         if line.startswith('>'):
             seqs.append([line[6], ''])
         else:
+            if not seqs:
+                print('bad line:', line, 'in', r)
+                return fetch_all_sequences(pdb_id)
+
             seqs[-1][1] += line
 
     return list(map(lambda y: (y[0], y[1]), seqs))
@@ -164,6 +196,9 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
             if to_accept and row[PDB_ID].upper() not in to_accept:
                 continue
 
+            if is_obsolete(row[PDB_ID]):
+                continue
+
             antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
             complexes.append(Complex(
                 row[PDB_ID], sub_nan(row[H_CHAIN]), sub_nan(row[L_CHAIN]),
@@ -173,16 +208,21 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
     return complexes
 
 
-class BLASTData:
-    def __init__(self, pdb_id, chain_id):
+class Candidate:
+    def __init__(self, pdb_id, chain_ids):
         self.pdb_id = pdb_id
-        self.chain_id = chain_id
+        self.chain_ids = chain_ids
 
     def __str__(self):
-        return str((self.pdb_id, self.chain_id))
+        return str((self.pdb_id, self.chain_ids))
+
+    def __repr__(self):
+        return str((self.pdb_id, self.chain_ids))
 
 
 def load_bound_complexes(complexes, load_structures=False):
+    ent_paths = set([])
+
     with open('could_not_fetch.log', 'w') as could_not_fetch_log:
         pdb_list = PDBList()
 
@@ -190,7 +230,7 @@ def load_bound_complexes(complexes, load_structures=False):
 
         for comp in complexes:
             pdb_path = os.path.join(comp.complex_dir_path,
-                                    comp.pdb_id + DOT_PDB)
+                                    comp.db_name + DOT_PDB)
 
             if os.path.exists(pdb_path):
                 if load_structures:
@@ -198,10 +238,11 @@ def load_bound_complexes(complexes, load_structures=False):
                 print(comp.pdb_id, 'loaded')
                 continue
 
-            if os.path.exists(comp.complex_dir_path):
-                shutil.rmtree(comp.complex_dir_path)
+            # if os.path.exists(comp.complex_dir_path):
+            #     shutil.rmtree(comp.complex_dir_path)
 
-            os.mkdir(comp.complex_dir_path)
+            if not os.path.exists(comp.complex_dir_path):
+                os.mkdir(comp.complex_dir_path)
 
             ent_path = pdb_list.retrieve_pdb_file(comp.pdb_id,
                                                   file_format='pdb',
@@ -214,7 +255,8 @@ def load_bound_complexes(complexes, load_structures=False):
 
             comp.load_structure_from(ent_path)
 
-            needed_chain_ids = [x for x in [comp.antibody_h_chain, comp.antibody_l_chain] +
+            needed_chain_ids = [x for x in [comp.antibody_h_chain,
+                                            comp.antibody_l_chain] +
                                 comp.antigen_chains if x]
 
             for model in comp.structure:
@@ -225,28 +267,93 @@ def load_bound_complexes(complexes, load_structures=False):
             io.set_structure(comp.structure)
             io.save(pdb_path)
 
-            os.remove(ent_path)
+            ent_paths.add(ent_path)
 
             print(comp.pdb_id, 'loaded')
 
-
-def compare_query_and_hit_seqs(query_seq, hit_seq):
-    cut_off_half = int(0.05 * len(query_seq) / 2)
-
-    c1 = query_seq in hit_seq
-    c2 = hit_seq in query_seq and abs(len(hit_seq) - len(query_seq)) \
-        <= cut_off_half * 2
-    c3 = query_seq[cut_off_half:-cut_off_half] in hit_seq
-    c4 = hit_seq[cut_off_half:-cut_off_half] in query_seq
-    c5 = query_seq[:-2 * cut_off_half] in hit_seq
-    c6 = hit_seq[:-2 * cut_off_half] in query_seq
-    c7 = query_seq[2 * cut_off_half:] in hit_seq
-    c8 = hit_seq[2 * cut_off_half:] in query_seq
-
-    return c1 or c2 or c3 or c4 or c5 or c6 or c7 or c8
+    for ent_path in ent_paths:
+        os.remove(ent_path)
 
 
-def is_match(query_seq, query_alignment, hit_alignment):
+def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
+                    len_diff):
+    cut_off = int(0.05 * len(target_seq))
+
+    alignment = pairwise2.align.localxs(query_seq, target_seq, -10, -10,
+                                        penalize_end_gaps=False,
+                                        one_alignment_only=True)[0]
+
+    mismatches_count = 0
+
+    query_alignment = alignment[0]
+    target_alignment = alignment[1]
+
+    for i in range(len(query_alignment)):
+        if query_alignment[i] != '-' and target_alignment[i] != '-' \
+                and query_alignment[i] != target_alignment[i]:
+            mismatches_count += 1
+
+    if write_log and 0 < mismatches_count <= cut_off:
+        with open(MISMATCHED_LOG, 'a') as f:
+            f.write(','.join(
+                [pdb_ids[0], pdb_ids[1], chain_ids[0].upper(),
+                 chain_ids[1].upper(),
+                 str(mismatches_count), str(len_diff)]) + '\n')
+
+    return mismatches_count <= cut_off
+
+
+def compare_query_and_hit_seqs(query_seq, hit_seq, pdb_ids, chain_ids,
+                               write_log=False):
+    cut_off_half = int(0.1 * len(query_seq) / 2)
+    len_diff = abs(len(query_seq) - len(hit_seq))
+
+    if len_diff > 2 * cut_off_half:
+        return False
+
+    c1 = align_and_check(query_seq, hit_seq, pdb_ids, chain_ids, write_log,
+                         len_diff)
+
+    if c1:
+        return True
+
+    c2 = align_and_check(query_seq[cut_off_half:-cut_off_half], hit_seq,
+                         pdb_ids, chain_ids, write_log, len_diff)
+
+    if c2:
+        return True
+
+    c3 = align_and_check(hit_seq[cut_off_half:-cut_off_half], query_seq,
+                         pdb_ids, chain_ids, write_log, len_diff)
+
+    if c3:
+        return True
+
+    c4 = align_and_check(query_seq[:-2 * cut_off_half], hit_seq, pdb_ids,
+                         chain_ids, write_log, len_diff)
+
+    if c4:
+        return True
+
+    c5 = align_and_check(hit_seq[:-2 * cut_off_half], query_seq, pdb_ids,
+                         chain_ids, write_log, len_diff)
+
+    if c5:
+        return True
+
+    c6 = align_and_check(query_seq[2 * cut_off_half:], hit_seq, pdb_ids,
+                         chain_ids, write_log, len_diff)
+
+    if c6:
+        return True
+
+    c7 = align_and_check(hit_seq[2 * cut_off_half:], query_seq, pdb_ids,
+                         chain_ids, write_log, len_diff)
+
+    return c7
+
+
+def is_match(query_seq, query_alignment, hit_alignment, pdb_ids, chain_ids):
     if query_seq == hit_alignment:
         return True
 
@@ -260,7 +367,8 @@ def is_match(query_seq, query_alignment, hit_alignment):
     if '-' in hit_with_stripped_gaps:
         return False
 
-    return compare_query_and_hit_seqs(query_seq, hit_with_stripped_gaps)
+    return compare_query_and_hit_seqs(query_seq, hit_with_stripped_gaps,
+                                      pdb_ids, chain_ids)
 
 
 def get_blast_data(pdb_id, chain_id, seq):
@@ -283,21 +391,20 @@ def get_blast_data(pdb_id, chain_id, seq):
                     hit_def = hit.find('Hit_def')
                     hit_def_parts = hit_def.text.split('|')[0].split(':')
 
-                    pdb_id = hit_def_parts[0]
+                    hit_pdb_id = hit_def_parts[0]
 
-                    if pdb_id == '2W9D':
-                        print(pdb_id)
-
-                    chain_ids = [x for x in hit_def_parts[2].split(',')]
+                    hit_chain_ids = [x for x in hit_def_parts[2].split(',')]
 
                     for hsp in hit.find('Hit_hsps'):
                         hsp_qseq = hsp.find('Hsp_qseq').text
                         hsp_hseq = hsp.find('Hsp_hseq').text
 
-                        if not is_match(seq, hsp_qseq, hsp_hseq):
+                        if not is_match(seq, hsp_qseq, hsp_hseq,
+                                        (pdb_id, hit_pdb_id),
+                                        (chain_id, hit_chain_ids[0])):
                             continue
 
-                        res.append(BLASTData(pdb_id, chain_ids[0]))
+                        res.append(Candidate(hit_pdb_id, hit_chain_ids))
 
     return res
 
@@ -305,10 +412,10 @@ def get_blast_data(pdb_id, chain_id, seq):
 def retrieve_uniprot_ids(pdb_id):
     url = 'https://www.uniprot.org/uploadlists/'
     r = post_while_true(url, {'from': 'PDB_ID',
-                            'to': 'ACC',
-                            'format': 'tab',
-                            'query': pdb_id
-                            })
+                              'to': 'ACC',
+                              'format': 'tab',
+                              'query': pdb_id
+                              })
 
     res = []
 
@@ -336,6 +443,21 @@ def retrieve_names(pdb_id):
     return res
 
 
+def retrieve_resolution(pdb_id):
+    curl = 'https://www.rcsb.org/pdb/rest/getEntityInfo?structureId={}' \
+        .format(pdb_id)
+
+    r = get_while_true(curl)
+    xml = ElementTree.fromstring(r)
+
+    res = []
+
+    for pdb in xml:
+        res.append(pdb.attrib['resolution'])
+
+    return float(res[0])
+
+
 def check_names(names):
     if len(list(frozenset(names))) == 1:
         return True
@@ -354,22 +476,18 @@ def check_names(names):
     return abs(len(list(common_set)) - len(split_names[0])) <= 1
 
 
-def check_unbound(pdb_id, chain_seqs):
-    all_seqs_in_pdb = list(map(lambda x: x[1], fetch_all_sequences(pdb_id)))
+def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id):
+    all_seqs_in_pdb = fetch_all_sequences(pdb_id)
 
-    seqs_counts = []
+    chain_matches = defaultdict(list)
 
-    for chain_seq in chain_seqs:
-        seqs_counts.append(0)
-        for seq in all_seqs_in_pdb:
-            if compare_query_and_hit_seqs(chain_seq, seq):
-                seqs_counts[-1] += 1
-
-    # print(pdb_id)
-    # print(chain_seqs)
-    # print(all_seqs_in_pdb)
-    # print(list(map(lambda x: x > 0, seqs_counts)))
-    # print(len(retrieve_uniprot_ids(pdb_id)) == 1)
+    for chain_id, chain_seq in chain_ids_and_seqs:
+        for target_chain_id, seq in all_seqs_in_pdb:
+            if compare_query_and_hit_seqs(chain_seq, seq,
+                                          (query_pdb_id, pdb_id),
+                                          (chain_id, target_chain_id),
+                                          write_log=True):
+                chain_matches[chain_id].append(target_chain_id)
 
     # we check that for every queried chain there is a matching chain in the
     # given pdb and also we check that given pdb contains only one UniProt
@@ -379,15 +497,26 @@ def check_unbound(pdb_id, chain_seqs):
     # one word (for example, 'my ab heavy chain' and 'my ab light chain)
     # it usually means that structures form one macromolecule,
     # hence their complex is unbound
-    return all(map(lambda x: x > 0, seqs_counts)) \
-           and (len(retrieve_uniprot_ids(pdb_id)) == 1
-                or check_names(retrieve_names(pdb_id)))
+    c1 = all(map(lambda x: len(chain_matches[x]) > 0, chain_matches.keys()))
+    c2 = len(retrieve_uniprot_ids(pdb_id)) == 1
+    c3 = check_names(retrieve_names(pdb_id))
+
+    if c1 and (c2 or c3):
+        res = []
+        for i in range(len(chain_matches[chain_ids_and_seqs[0][0]])):
+            res.append(Candidate(pdb_id, list(
+                map(lambda x: chain_matches[x][i], chain_matches.keys()))))
+        return res
+
+    return []
+
+
+def sort_and_take_unbound(unbound_candidates):
+    unbound_candidates.sort(key=lambda x: -int(x[0]))
+    return unbound_candidates[:25]
 
 
 def find_unbound_structure(pdb_id, chain_ids, seqs):
-    # TODO: идея — искать похожести по количеству совпадающих слов в названии макромолекулы
-
-    # TODO: add memoization to find complexes more effectively
     candidates = [get_blast_data(pdb_id, chain_id, seq) for chain_id, seq in
                   zip(chain_ids, seqs)]
 
@@ -396,12 +525,23 @@ def find_unbound_structure(pdb_id, chain_ids, seqs):
                                            for
                                            candidate in candidates])
 
-    print(pdb_ids_in_intersection_prep)
+    unbound_candidates = \
+        sort_and_take_unbound(list(pdb_ids_in_intersection_prep))
 
-    return list(
-        filter(lambda x: x.upper() != pdb_id.upper()
-                         and check_unbound(x, seqs),
-               list(pdb_ids_in_intersection_prep)[:20]))
+    res = []
+
+    for candidate_id in unbound_candidates:
+        if candidate_id.upper() == pdb_id.upper():
+            continue
+
+        res += check_unbound(candidate_id, list(zip(chain_ids, seqs)), pdb_id)
+
+    return res
+
+
+def sort_and_take_ress(unbound_ress):
+    unbound_ress.sort(key=lambda x: retrieve_resolution(x.pdb_id))
+    return unbound_ress[:5]
 
 
 def find_unbound_conformations(complex):
@@ -409,7 +549,7 @@ def find_unbound_conformations(complex):
         find_unbound_structure(complex.pdb_id, complex.antigen_chains,
                                complex.antigen_seqs)
 
-    print(unbound_antigen_valid_candidates)
+    print('unbound antigen:', unbound_antigen_valid_candidates)
 
     unbound_antibody_valid_candidates = \
         find_unbound_structure(complex.pdb_id,
@@ -418,173 +558,136 @@ def find_unbound_conformations(complex):
                                [complex.antibody_h_seq,
                                 complex.antibody_l_seq])
 
-    return unbound_antigen_valid_candidates, unbound_antibody_valid_candidates
+    print('unbound antibody:', unbound_antibody_valid_candidates)
+
+    return sort_and_take_ress(unbound_antigen_valid_candidates), \
+           sort_and_take_ress(unbound_antibody_valid_candidates)
 
 
 structures_summary = read_csv('data/sabdab_summary_all.tsv',
                               sep='\t')
 
-# all_complexes = get_bound_complexes(structures_summary)
-# load_bound_complexes(all_complexes)
 
-test_structures = [('1AHW', '1FGN', '1TFH'),
-                   ('1BVK', '1BVL', '3LZT'),
-                   ('1DQJ', '1DQQ', '3LZT'),
-                   ('1E6J', '1E6O', '1A43'),
-                   ('1JPS', '1JPT', '1TFH'),
-                   ('1MLC', '1MLB', '3LZT'),
-                   ('1VFB', '1VFA', '8LYZ'),
-                   ('1WEJ', '1QBL', '1HRC'),
-                   ('2FD6', '2FAT', '1YWH'),
-                   ('2VIS', '1GIG', '2VIU'),
-                   ('2VXT', '2VXU', '1J0S'),
-                   ('2W9E', '2W9D', '1QM1'),
-                   ('3EOA', '3EO9', '3F74'),
-                   ('3HMX', '3HMW', '1F45'),
-                   ('3MXW', '3MXV', '3M1N'),
-                   ('3RVW', '3RVT', '3F5V'),
-                   ('4DN4', '4DN3', '1DOL'),
-                   ('4FQI', '4FQH', '2FK0'),
-                   ('4G6J', '4G5Z', 'H5N1'),
-                   ('4G6M', '4G6K', '4I1B'),
-                   ('4GXU', '4GXV', '4I1B')]
+def run_zlab_test():
+    test_structures = [('1AHW', '1FGN', '1TFH'),
+                       ('1BVK', '1BVL', '3LZT'),
+                       ('1DQJ', '1DQQ', '3LZT'),
+                       ('1E6J', '1E6O', '1A43'),
+                       ('1JPS', '1JPT', '1TFH'),
+                       ('1MLC', '1MLB', '3LZT'),
+                       ('1VFB', '1VFA', '8LYZ'),
+                       ('1WEJ', '1QBL', '1HRC'),
+                       ('2FD6', '2FAT', '1YWH'),
+                       ('2VIS', '1GIG', '2VIU'),
+                       ('2VXT', '2VXU', '1J0S'),
+                       ('2W9E', '2W9D', '1QM1'),
+                       ('3EOA', '3EO9', '3F74'),
+                       ('3HMX', '3HMW', '1F45'),
+                       ('3MXW', '3MXV', '3M1N'),
+                       ('3RVW', '3RVT', '3F5V'),
+                       ('4DN4', '4DN3', '1DOL'),
+                       ('4FQI', '4FQH', '2FK0'),
+                       ('4G6J', '4G5Z', 'H5N1'),
+                       ('4G6M', '4G6K', '4I1B'),
+                       ('4GXU', '4GXV', '4I1B')]
 
-comps = get_bound_complexes(structures_summary,
-                            list(map(lambda x: x[0], test_structures)))
-load_bound_complexes(comps)
+    with open(MISMATCHED_LOG, 'w') as f:
+        f.write(
+            'bound_id,unbound_id,bound_chain,unbound_chain,mismatches_count,' +
+            'len_diff\n')
 
-for pdb_id, unbound_antibody_id, unbound_antigen_id in test_structures:
-    print('processing', pdb_id)
+    comps = get_bound_complexes(structures_summary,
+                                list(map(lambda x: x[0], test_structures)))
+    load_bound_complexes(comps)
 
-    comp = list(filter(lambda x: x.pdb_id.upper() == pdb_id, comps))[0]
-    comp.load_structure()
+    for pdb_id, unbound_antibody_id, unbound_antigen_id in test_structures:
+        print('processing', pdb_id)
 
-    unbound_antigen_candidates, unbound_antibody_candidates = \
-        find_unbound_conformations(comp)
+        comps_found = list(filter(lambda x: x.pdb_id.upper() == pdb_id, comps))
 
-    print('antigen', 'expected:', unbound_antigen_id, 'got:',
-          unbound_antigen_candidates)
-    print('antibody', 'expected:', unbound_antibody_id, 'got:',
-          unbound_antibody_candidates)
+        for comp in comps_found:
+            comp.load_structure()
 
-    if unbound_antigen_id not in unbound_antigen_candidates:
-        print('MISMATCH! in antigen')
+            unbound_antigen_candidates, unbound_antibody_candidates = \
+                find_unbound_conformations(comp)
 
-    if unbound_antibody_id not in unbound_antibody_candidates:
-        print('MISMATCH! in antibody')
+            print(comp.db_name)
 
-# Проблемы
+            print('antigen', 'expected:', unbound_antigen_id, 'got:',
+                  unbound_antigen_candidates)
+            print('antibody', 'expected:', unbound_antibody_id, 'got:',
+                  unbound_antibody_candidates)
 
-# 2W9E
-# antigen expected: 1QM1 got: ['1HJM', '1QM0', '2LSB', '4N9O', '6DU9', '5YJ5', '1QLX', '1I4M', '1QM3', '1HJN', '1QM2', '2IV5', '1QLZ', '1QM1', '4DGI']
-# antibody expected: 2W9D got: []
-# MISMATCH! in antibody
-#
-# 4DN4
-# antigen expected: 1DOL got: []
-# antibody expected: 4DN3 got: []
-# MISMATCH! in antigen
-# MISMATCH! in antibody
-#
-# 4G6M
-# antigen expected: 4I1B got: ['9ILB', '7I1B', '2KH2', '1TWM', '5BVP', '2NVH', '5I1B', '6I1B', '1TOO', '1IOB', '4I1B', '2I1B', '1I1B', '5MVZ', '4G6J']
-# antibody expected: 4G6K got: []
-# MISMATCH! in antibody
-#
-# 4GXU
-# antigen expected: 4I1B got: []
-# antibody expected: 4GXV got: []
-# MISMATCH! in antigen
-# MISMATCH! in antibody
+            if unbound_antigen_id not in list(
+                    map(lambda x: x.pdb_id, unbound_antigen_candidates)):
+                print('MISMATCH! in antigen')
 
-# Запуск 1
+            if unbound_antibody_id not in list(
+                    map(lambda x: x.pdb_id, unbound_antibody_candidates)):
+                print('MISMATCH! in antibody')
 
-# processing 4DN4
-# {'4DN4'}
-# []
-# 2W9D
-# 2W9D
-# {'4DN3', '2XTJ', '4DN4'}
-# antigen expected: 1DOL got: []
-# antibody expected: 4DN3 got: ['4DN3']
-# MISMATCH! in antigen
-# processing 4FQI
-# {'4FQI', '6PCX', '6PD6', '3GBM', '6PD5', '4MHH', '3ZP0', '6CFG', '6PD3', '6E3H', '6CF5', '2FK0', '6B3M', '3ZP1'}
-# ['6PCX', '6PD6', '3GBM', '6PD5', '3ZP0', '6CFG', '6PD3', '6CF5', '2FK0', '3ZP1']
-# 2W9D
-# 2W9D
-# {'6CNV', '5CJS', '4FQI', '4FQV', '4FQH', '4LLD', '4FQY', '5CJQ'}
-# antigen expected: 2FK0 got: ['6PCX', '6PD6', '3GBM', '6PD5', '3ZP0', '6CFG', '6PD3', '6CF5', '2FK0', '3ZP1']
-# antibody expected: 4FQH got: ['4FQV', '4FQH', '4FQY']
-# processing 4G6J
-# {'1I1B', '2KH2', '1ITB', '2I1B', '5MVZ', '4I1B', '7I1B', '3O4O', '9ILB', '4G6J', '4G6M', '1IOB', '5BVP', '5I1B', '2NVH', '4DEP', '6I1B'}
-# ['1I1B', '2KH2', '2I1B', '4I1B', '7I1B', '9ILB', '4G6M', '1IOB', '5BVP', '5I1B', '2NVH', '6I1B']
-# 2W9D
-# 2W9D
-# {'4G5Z', '2XTJ', '4G6J'}
-# antigen expected: H5N1 got: ['1I1B', '2KH2', '2I1B', '4I1B', '7I1B', '9ILB', '4G6M', '1IOB', '5BVP', '5I1B', '2NVH', '6I1B']
-# antibody expected: 4G5Z got: ['4G5Z']
-# MISMATCH! in antigen
-# processing 4G6M
-# {'1I1B', '2KH2', '1ITB', '2I1B', '1TOO', '5MVZ', '4I1B', '7I1B', '4G6J', '9ILB', '3O4O', '4G6M', '1TWM', '1IOB', '5BVP', '5I1B', '2NVH', '4DEP', '6I1B'}
-# ['1I1B', '2KH2', '2I1B', '1TOO', '5MVZ', '4I1B', '7I1B', '4G6J', '9ILB', '1TWM', '1IOB', '5BVP', '5I1B', '2NVH', '6I1B']
-# 2W9D
-# 2W9D
-# {'4G6K', '4G6M', '2XTJ'}
-# antigen expected: 4I1B got: ['1I1B', '2KH2', '2I1B', '1TOO', '5MVZ', '4I1B', '7I1B', '4G6J', '9ILB', '1TWM', '1IOB', '5BVP', '5I1B', '2NVH', '6I1B']
-# antibody expected: 4G6K got: ['4G6K']
-# processing 4GXU
-# {'3LZF', '1RUZ', '4PY8', '4EEF', '4GXU', '3R2X', '5C0R', '3GBN', '2WRG', '5C0S'}
-# ['3LZF', '1RUZ', '4PY8', '4EEF', '3R2X', '3GBN', '2WRG']
-# 2W9D
-# 2W9D
-# {'4LLD', '4GXU', '4GXV'}
-# antigen expected: 4I1B got: ['3LZF', '1RUZ', '4PY8', '4EEF', '3R2X', '3GBN', '2WRG']
-# antibody expected: 4GXV got: ['4GXV']
-# MISMATCH! in antigen
 
-# Запуск 2
+def collect_unbound_structures():
+    comps = get_bound_complexes(structures_summary)
+    load_bound_complexes(comps)
 
-# processing 4DN4
-# {'4DN4'}
-# []
-# 2W9D
-# 2W9D
-# {'2XTJ', '4DN4', '4DN3'}
-# antigen expected: 1DOL got: []
-# antibody expected: 4DN3 got: ['4DN3']
-# MISMATCH! in antigen
-# processing 4FQI
-# {'6PCX', '6PD5', '2FK0', '6PD6', '3ZP1', '6CF5', '6PD3', '4MHH', '6B3M', '6E3H', '4FQI', '6CFG', '3GBM', '3ZP0'}
-# ['6PCX', '6PD5', '2FK0', '6PD6', '3ZP1', '6CF5', '6PD3', '6CFG', '3GBM', '3ZP0']
-# 2W9D
-# 2W9D
-# {'4FQY', '4FQH', '6CNV', '5CJS', '4FQV', '4FQI', '4LLD', '5CJQ'}
-# antigen expected: 2FK0 got: ['6PCX', '6PD5', '2FK0', '6PD6', '3ZP1', '6CF5', '6PD3', '6CFG', '3GBM', '3ZP0']
-# antibody expected: 4FQH got: ['4FQY', '4FQH', '4FQV']
-# processing 4G6J
-# {'5I1B', '5BVP', '2KH2', '2I1B', '1IOB', '7I1B', '6I1B', '5MVZ', '4G6M', '4G6J', '1ITB', '4I1B', '4DEP', '2NVH', '1I1B', '3O4O', '9ILB'}
-# ['5I1B', '5BVP', '2KH2', '2I1B', '1IOB', '7I1B', '6I1B', '4G6M', '4I1B', '2NVH', '1I1B', '9ILB']
-# 2W9D
-# 2W9D
-# {'2XTJ', '4G6J', '4G5Z'}
-# antigen expected: H5N1 got: ['5I1B', '5BVP', '2KH2', '2I1B', '1IOB', '7I1B', '6I1B', '4G6M', '4I1B', '2NVH', '1I1B', '9ILB']
-# antibody expected: 4G5Z got: ['4G5Z']
-# MISMATCH! in antigen
-# processing 4G6M
-# {'1TWM', '5I1B', '5BVP', '1TOO', '2KH2', '2I1B', '1IOB', '7I1B', '6I1B', '5MVZ', '4G6M', '4G6J', '1ITB', '4I1B', '4DEP', '2NVH', '1I1B', '3O4O', '9ILB'}
-# ['1TWM', '5I1B', '5BVP', '1TOO', '2KH2', '2I1B', '1IOB', '7I1B', '6I1B', '5MVZ', '4G6J', '4I1B', '2NVH', '1I1B', '9ILB']
-# 2W9D
-# 2W9D
-# {'2XTJ', '4G6K', '4G6M'}
-# antigen expected: 4I1B got: ['1TWM', '5I1B', '5BVP', '1TOO', '2KH2', '2I1B', '1IOB', '7I1B', '6I1B', '5MVZ', '4G6J', '4I1B', '2NVH', '1I1B', '9ILB']
-# antibody expected: 4G6K got: ['4G6K']
-# processing 4GXU
-# {'3GBN', '3LZF', '1RUZ', '5C0R', '2WRG', '5C0S', '4GXU', '3R2X', '4EEF', '4PY8'}
-# ['3GBN', '3LZF', '1RUZ', '2WRG', '3R2X', '4EEF', '4PY8']
-# 2W9D
-# 2W9D
-# {'4GXU', '4LLD', '4GXV'}
-# antigen expected: 4I1B got: ['3GBN', '3LZF', '1RUZ', '2WRG', '3R2X', '4EEF', '4PY8']
-# antibody expected: 4GXV got: ['4GXV']
-# MISMATCH! in antigen
+    ent_paths = set()
+
+    pdb_list = PDBList()
+    pdb_parser = PDBParser()
+    io = PDBIO()
+
+    with open('could_not_fetch_final.log', 'w') as could_not_fetch_log:
+        for comp in comps:
+            comp.load_structure()
+
+            print(comp.db_name)
+
+            unbound_antigen_candidates, unbound_antibody_candidates = \
+                find_unbound_conformations(comp)
+
+            def helper_writer(candidates, suf):
+                counter = 0
+                for candidate in candidates:
+                    print('candidate:', candidate)
+
+                    path_to_candidate_pdb = os.path.join(comp.complex_dir_path,
+                                                         comp.pdb_id + '_' +
+                                                         suf + '_u_' +
+                                                         str(counter) + DOT_PDB)
+
+                    ent_path = pdb_list.retrieve_pdb_file(candidate.pdb_id,
+                                                          file_format='pdb',
+                                                          pdir=
+                                                          DB_PATH)
+
+                    if not os.path.exists(ent_path):
+                        print('Not written:', comp.pdb_id)
+                        print(comp.pdb_id, flush=True,
+                              file=could_not_fetch_log)
+                        continue
+
+                    structure = pdb_parser.get_structure(candidate.pdb_id,
+                                                         ent_path)
+
+                    for model in comp.structure:
+                        for chain in model:
+                            if chain.get_id() not in candidate.chain_ids:
+                                model.detach_child(chain.get_id())
+
+                    io.set_structure(structure)
+                    io.save(path_to_candidate_pdb)
+
+                    ent_paths.add(ent_path)
+
+                    counter += 1
+
+            helper_writer(unbound_antigen_candidates, 'AG')
+            helper_writer(unbound_antibody_candidates, 'AB')
+
+
+if __name__ == '__main__':
+    if sys.argv and sys.argv[0] == 'test':
+        run_zlab_test()
+    else:
+        collect_unbound_structures()
