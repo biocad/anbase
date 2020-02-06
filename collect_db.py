@@ -35,35 +35,39 @@ MISMATCHED_LOG = 'mismatched.log'
 def get_while_true(curl):
     not_finished = True
 
-    res = None
+    content = None
 
     while not_finished:
         try:
+            print('getting', curl, flush=True)
             res = requests.get(curl)
+            content = res.content.decode('utf-8')
 
-            if res.content.decode('utf-8'):
+            if content and not content.startswith('<!DOCTYPE'):
                 not_finished = False
         except Exception:
             pass
 
-    return res.content.decode('utf-8')
+    return content
 
 
 def post_while_true(url, json):
     not_finished = True
 
-    res = None
+    content = None
 
     while not_finished:
         try:
+            print('postingf', url, flush=True)
             res = requests.post(url, json)
+            content = res.content.decode('utf-8')
 
-            if res.content.decode('utf-8'):
+            if content and not content.startswith('<!DOCTYPE'):
                 not_finished = False
         except Exception:
             pass
 
-    return res.content.decode('utf-8')
+    return content
 
 
 def is_obsolete(pdb_id):
@@ -201,25 +205,51 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
 
     complexes = []
 
-    for _, row in sabdab_summary_df.iterrows():
-        # if antigen's type is in lower case, it means that antigen is no good
-        # for us, because it's a small molecule
-        if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE].islower():
-            if to_accept and row[PDB_ID].upper() not in to_accept:
-                continue
+    obsolete = {}
 
-            if is_obsolete(row[PDB_ID]):
-                continue
+    with open('obsolete.log', 'a+') as obsolete_log:
+        obsolete_log.seek(0)
 
-            antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
-            new_complex = Complex(
-                row[PDB_ID], sub_nan(row[H_CHAIN]), sub_nan(row[L_CHAIN]),
-                antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+        for line in obsolete_log.readlines():
+            key, value = line.strip().split(',')
+            obsolete[key] = bool(int(value))
 
-            if new_complex.has_unfetched_sequences():
-                continue
+        counter = 0
 
-            complexes.append(new_complex)
+        for _, row in sabdab_summary_df.iterrows():
+            if counter > 300:
+                break
+
+            # if antigen's type is in lower case, it means that antigen is no good
+            # for us, because it's a small molecule
+            if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE].islower():
+                if to_accept and row[PDB_ID].upper() not in to_accept:
+                    continue
+
+                if row[PDB_ID] in obsolete.keys():
+                    if obsolete[row[PDB_ID]]:
+                        continue
+                else:
+                    is_obs = is_obsolete(row[PDB_ID])
+
+                    obsolete_log.write(
+                        '{},{}\n'.format(row[PDB_ID], int(is_obs)))
+                    obsolete_log.flush()
+
+                    if is_obs:
+                        continue
+
+                antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
+                new_complex = Complex(
+                    row[PDB_ID], sub_nan(row[H_CHAIN]), sub_nan(row[L_CHAIN]),
+                    antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+
+                if new_complex.has_unfetched_sequences():
+                    continue
+
+                complexes.append(new_complex)
+
+            counter += 1
 
     return complexes
 
@@ -295,9 +325,14 @@ def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
                     len_diff):
     cut_off = int(0.05 * len(target_seq))
 
-    alignment = pairwise2.align.localxs(query_seq, target_seq, -10, -10,
-                                        penalize_end_gaps=False,
-                                        one_alignment_only=True)[0]
+    alignment_list = pairwise2.align.localxs(query_seq, target_seq, -10, -10,
+                                             penalize_end_gaps=False,
+                                             one_alignment_only=True)
+
+    if not alignment_list:
+        return False
+
+    alignment = alignment_list[0]
 
     mismatches_count = 0
 
@@ -583,30 +618,30 @@ def find_unbound_conformations(complex):
 structures_summary = read_csv('data/sabdab_summary_all.tsv',
                               sep='\t')
 
+test_structures = [('1AHW', '1FGN', '1TFH'),
+                   ('1BVK', '1BVL', '3LZT'),
+                   ('1DQJ', '1DQQ', '3LZT'),
+                   ('1E6J', '1E6O', '1A43'),
+                   ('1JPS', '1JPT', '1TFH'),
+                   ('1MLC', '1MLB', '3LZT'),
+                   ('1VFB', '1VFA', '8LYZ'),
+                   ('1WEJ', '1QBL', '1HRC'),
+                   ('2FD6', '2FAT', '1YWH'),
+                   ('2VIS', '1GIG', '2VIU'),
+                   ('2VXT', '2VXU', '1J0S'),
+                   ('2W9E', '2W9D', '1QM1'),
+                   ('3EOA', '3EO9', '3F74'),
+                   ('3HMX', '3HMW', '1F45'),
+                   ('3MXW', '3MXV', '3M1N'),
+                   ('3RVW', '3RVT', '3F5V'),
+                   ('4DN4', '4DN3', '1DOL'),
+                   ('4FQI', '4FQH', '2FK0'),
+                   ('4G6J', '4G5Z', 'H5N1'),
+                   ('4G6M', '4G6K', '4I1B'),
+                   ('4GXU', '4GXV', '4I1B')]
+
 
 def run_zlab_test():
-    test_structures = [('1AHW', '1FGN', '1TFH'),
-                       ('1BVK', '1BVL', '3LZT'),
-                       ('1DQJ', '1DQQ', '3LZT'),
-                       ('1E6J', '1E6O', '1A43'),
-                       ('1JPS', '1JPT', '1TFH'),
-                       ('1MLC', '1MLB', '3LZT'),
-                       ('1VFB', '1VFA', '8LYZ'),
-                       ('1WEJ', '1QBL', '1HRC'),
-                       ('2FD6', '2FAT', '1YWH'),
-                       ('2VIS', '1GIG', '2VIU'),
-                       ('2VXT', '2VXU', '1J0S'),
-                       ('2W9E', '2W9D', '1QM1'),
-                       ('3EOA', '3EO9', '3F74'),
-                       ('3HMX', '3HMW', '1F45'),
-                       ('3MXW', '3MXV', '3M1N'),
-                       ('3RVW', '3RVT', '3F5V'),
-                       ('4DN4', '4DN3', '1DOL'),
-                       ('4FQI', '4FQH', '2FK0'),
-                       ('4G6J', '4G5Z', 'H5N1'),
-                       ('4G6M', '4G6K', '4I1B'),
-                       ('4GXU', '4GXV', '4I1B')]
-
     with open(MISMATCHED_LOG, 'w') as f:
         f.write(
             'bound_id,unbound_id,bound_chain,unbound_chain,mismatches_count,' +
@@ -653,53 +688,72 @@ def collect_unbound_structures():
     pdb_parser = PDBParser()
     io = PDBIO()
 
-    with open('could_not_fetch_final.log', 'w') as could_not_fetch_log:
+    processed = set()
+
+    with open('not_processed.log', 'w') as not_processed, open(
+            'processed.log', 'a+') as processed_log:
+
+        processed_log.seek(0)
+
+        for processed_complex in processed_log.readlines():
+            processed.add(processed_complex.strip())
+
         for comp in comps:
-            comp.load_structure()
+            if comp.db_name in processed:
+                continue
 
-            print('processing:', comp.db_name, flush=True)
+            try:
+                comp.load_structure()
 
-            unbound_antigen_candidates, unbound_antibody_candidates = \
-                find_unbound_conformations(comp)
+                print('processing:', comp.db_name, flush=True)
 
-            def helper_writer(candidates, suf):
-                counter = 0
-                for candidate in candidates:
-                    print('candidate:', candidate, flush=True)
+                unbound_antigen_candidates, unbound_antibody_candidates = \
+                    find_unbound_conformations(comp)
 
-                    path_to_candidate_pdb = os.path.join(comp.complex_dir_path,
-                                                         comp.pdb_id + '_' +
-                                                         suf + '_u_' +
-                                                         str(counter) + DOT_PDB)
+                def helper_writer(candidates, suf):
+                    counter = 0
+                    for candidate in candidates:
+                        print('candidate:', candidate, flush=True)
 
-                    ent_path = pdb_list.retrieve_pdb_file(candidate.pdb_id,
-                                                          file_format='pdb',
-                                                          pdir=
-                                                          DB_PATH)
+                        path_to_candidate_pdb = os.path.join(
+                            comp.complex_dir_path,
+                            comp.pdb_id + '_' +
+                            suf + '_u_' +
+                            str(
+                                counter) + DOT_PDB)
 
-                    if not os.path.exists(ent_path):
-                        print('Not written:', comp.pdb_id)
-                        print(comp.pdb_id, flush=True,
-                              file=could_not_fetch_log)
-                        continue
+                        ent_path = pdb_list.retrieve_pdb_file(candidate.pdb_id,
+                                                              file_format='pdb',
+                                                              pdir=
+                                                              DB_PATH)
 
-                    structure = pdb_parser.get_structure(candidate.pdb_id,
-                                                         ent_path)
+                        if not os.path.exists(ent_path):
+                            raise RuntimeError('Couldn\'t fetch pdb')
 
-                    for model in comp.structure:
-                        for chain in model:
-                            if chain.get_id() not in candidate.chain_ids:
-                                model.detach_child(chain.get_id())
+                        structure = pdb_parser.get_structure(candidate.pdb_id,
+                                                             ent_path)
 
-                    io.set_structure(structure)
-                    io.save(path_to_candidate_pdb)
+                        for model in comp.structure:
+                            for chain in model:
+                                if chain.get_id() not in candidate.chain_ids:
+                                    model.detach_child(chain.get_id())
 
-                    ent_paths.add(ent_path)
+                        io.set_structure(structure)
+                        io.save(path_to_candidate_pdb)
 
-                    counter += 1
+                        ent_paths.add(ent_path)
 
-            helper_writer(unbound_antigen_candidates, 'AG')
-            helper_writer(unbound_antibody_candidates, 'AB')
+                        counter += 1
+
+                helper_writer(unbound_antigen_candidates, 'AG')
+                helper_writer(unbound_antibody_candidates, 'AB')
+
+                processed.add(comp.db_name)
+                processed_log.write(comp.db_name + '\n')
+                processed_log.flush()
+            except Exception as e:
+                not_processed.write('{}: {}\n'.format(comp.db_name, e))
+                not_processed.flush()
 
 
 if __name__ == '__main__':
