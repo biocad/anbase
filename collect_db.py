@@ -33,6 +33,9 @@ DOT_FASTA = '.fasta'
 
 MISMATCHED_LOG = 'mismatched.log'
 
+AG = 'AG'
+AB = 'AB'
+
 
 def with_timeout(timeout=None):
     def inner(f):
@@ -562,18 +565,15 @@ def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id):
                 chain_matches[chain_id].append(target_chain_id)
 
     # we check that for every queried chain there is a matching chain in the
-    # given pdb and also we check that given pdb contains only one UniProt
-    # structure, what means that it contains only one structure, what means
-    # that structure is not in a complex, what means that it's unbound.
+    # given pdb
     # also if names of all structures in pdb are different in no more than
     # one word (for example, 'my ab heavy chain' and 'my ab light chain)
     # it usually means that structures form one macromolecule,
     # hence their complex is unbound
     c1 = all(map(lambda x: len(chain_matches[x]) > 0, chain_matches.keys()))
-    c2 = len(retrieve_uniprot_ids(pdb_id)) == 1
-    c3 = check_names(retrieve_names(pdb_id))
+    c2 = check_names(retrieve_names(pdb_id))
 
-    if c1 and (c2 or c3):
+    if c1 and c2:
         res = []
         for i in range(len(chain_matches[chain_ids_and_seqs[0][0]])):
             res.append(Candidate(pdb_id, list(
@@ -701,8 +701,12 @@ def run_zlab_test():
 
 def retrieve_pdb(pdb_id):
     url = 'https://files.rcsb.org/download/{}.pdb'.format(pdb_id)
-    res = post_while_true(url, {})
     path_to_tmp = os.path.join(DB_PATH, pdb_id + DOT_PDB)
+
+    if os.path.exists(path_to_tmp):
+        return path_to_tmp
+
+    res = post_while_true(url, {})
 
     with open(path_to_tmp, 'w') as f:
         f.write(res)
@@ -710,7 +714,13 @@ def retrieve_pdb(pdb_id):
     return path_to_tmp
 
 
-def collect_unbound_structures():
+def remove_if_contains(path, s):
+    for file in os.listdir(path):
+        if s in file:
+            os.remove(os.path.join(path, file))
+
+
+def collect_unbound_structures(overwrite=True):
     comps = get_bound_complexes(structures_summary)
     load_bound_complexes(comps)
 
@@ -721,13 +731,24 @@ def collect_unbound_structures():
 
     processed = set()
 
+    unbound_data_csv_open_mode = 'w' if overwrite else 'a'
+    processed_open_mode = 'w' if overwrite else 'a+'
+
     with open('not_processed.log', 'w') as not_processed, open(
-            'processed.log', 'a+') as processed_log:
+            'processed.log', processed_open_mode) as processed_log, \
+            open('unbound_data.csv',
+                 unbound_data_csv_open_mode) as unbound_data_csv:
 
-        processed_log.seek(0)
+        if overwrite:
+            unbound_data_csv.write('pdb_id,db_name,type,candidate,' +
+                                   'candidate_pdb_id,candidate_chain_names\n')
+            unbound_data_csv.flush()
 
-        for processed_complex in processed_log.readlines():
-            processed.add(processed_complex.strip())
+        if not overwrite:
+            processed_log.seek(0)
+
+            for processed_complex in processed_log.readlines():
+                processed.add(processed_complex.strip())
 
         for comp in comps:
             if comp.db_name in processed:
@@ -744,16 +765,21 @@ def collect_unbound_structures():
                 unbound_antigen_candidates, unbound_antibody_candidates = \
                     find_unbound_conformations(comp)
 
+                if overwrite:
+                    remove_if_contains(comp.complex_dir_path, AG)
+                    remove_if_contains(comp.complex_dir_path, AB)
+
                 def helper_writer(candidates, suf):
                     counter = 0
                     for candidate in candidates:
                         print('candidate:', candidate, flush=True)
 
+                        candidate_name = comp.pdb_id + '_' + \
+                                         suf + '_u_' + str(counter)
+
                         path_to_candidate_pdb = os.path.join(
                             comp.complex_dir_path,
-                            comp.pdb_id + '_' +
-                            suf + '_u_' +
-                            str(counter) + DOT_PDB)
+                            candidate_name + DOT_PDB)
 
                         tmp_path = retrieve_pdb(candidate.pdb_id)
 
@@ -770,10 +796,21 @@ def collect_unbound_structures():
 
                         tmp_paths.add(tmp_path)
 
+                        if overwrite:
+                            unbound_data_csv.write(
+                                '{},{},{},{},{},{}\n'.format(comp.pdb_id,
+                                                           comp.db_name, suf,
+                                                           candidate_name,
+                                                           candidate.pdb_id,
+                                                           ':'.join(
+                                                               candidate.
+                                                                   chain_ids)))
+                            unbound_data_csv.flush()
+
                         counter += 1
 
-                helper_writer(unbound_antigen_candidates, 'AG')
-                helper_writer(unbound_antibody_candidates, 'AB')
+                helper_writer(unbound_antigen_candidates, AG)
+                helper_writer(unbound_antibody_candidates, AB)
 
                 processed.add(comp.db_name)
                 processed_log.write(comp.db_name + '\n')
@@ -790,4 +827,5 @@ if __name__ == '__main__':
     if sys.argv and sys.argv[0] == 'test':
         run_zlab_test()
     else:
-        collect_unbound_structures()
+        collect_unbound_structures(overwrite=len(
+            list(filter(lambda x: x == 'continue', sys.argv))) == 0)
