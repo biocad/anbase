@@ -248,15 +248,8 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
             key, value = line.strip().split(',')
             obsolete[key] = bool(int(value))
 
-        counter = 0
-
         for _, row in sabdab_summary_df.iterrows():
-            if counter > 300:
-                break
-
-            # if antigen's type is in lower case, it means that antigen is no good
-            # for us, because it's a small molecule
-            if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE].islower():
+            if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] == 'protein':
                 if to_accept and row[PDB_ID].upper() not in to_accept:
                     continue
 
@@ -282,8 +275,6 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
                     continue
 
                 complexes.append(new_complex)
-
-            counter += 1
 
     return complexes
 
@@ -528,7 +519,12 @@ def retrieve_resolution(pdb_id):
     res = []
 
     for pdb in xml:
-        res.append(pdb.attrib['resolution'])
+        try:
+            res.append(pdb.attrib['resolution'])
+        except Exception:
+            # if there's no info about resolution,
+            # then we consider it to be bad
+            res.append(100)
 
     return float(res[0])
 
