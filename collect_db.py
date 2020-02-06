@@ -158,7 +158,13 @@ class Complex:
                                               self.db_name + DOT_PDB))
 
     def load_structure_from(self, path):
-        self.structure = self.pdb_parser.get_structure(self.pdb_id, path)
+        try:
+            self.structure = self.pdb_parser.get_structure(self.pdb_id, path)
+        except Exception:
+            self.structure = None
+
+    def is_bad_structure(self):
+        return self.structure is None
 
     def _fetch_sequence(self, chain_id):
         fasta_path = os.path.join(self.complex_dir_path,
@@ -292,50 +298,47 @@ class Candidate:
 
 
 def load_bound_complexes(complexes, load_structures=False):
-    ent_paths = set([])
+    tmp_paths = set([])
 
-    with open('could_not_fetch.log', 'w') as could_not_fetch_log:
-        pdb_list = PDBList()
+    io = PDBIO()
 
-        io = PDBIO()
+    for comp in complexes:
+        pdb_path = os.path.join(comp.complex_dir_path,
+                                comp.db_name + DOT_PDB)
 
-        for comp in complexes:
-            pdb_path = os.path.join(comp.complex_dir_path,
-                                    comp.db_name + DOT_PDB)
-
-            if os.path.exists(pdb_path):
-                if load_structures:
-                    comp.load_structure_from(pdb_path)
-                print(comp.pdb_id, 'loaded', flush=True)
-                continue
-
-            # if os.path.exists(comp.complex_dir_path):
-            #     shutil.rmtree(comp.complex_dir_path)
-
-            if not os.path.exists(comp.complex_dir_path):
-                os.mkdir(comp.complex_dir_path)
-
-            tmp_path = retrieve_pdb(comp.pdb_id)
-
-            comp.load_structure_from(tmp_path)
-
-            needed_chain_ids = [x for x in [comp.antibody_h_chain,
-                                            comp.antibody_l_chain] +
-                                comp.antigen_chains if x]
-
-            for model in comp.structure:
-                for chain in model:
-                    if chain.get_id() not in needed_chain_ids:
-                        model.detach_child(chain.get_id())
-
-            io.set_structure(comp.structure)
-            io.save(pdb_path)
-
-            ent_paths.add(tmp_path)
-
+        if os.path.exists(pdb_path):
+            if load_structures:
+                comp.load_structure_from(pdb_path)
             print(comp.pdb_id, 'loaded', flush=True)
+            continue
 
-    for tmp_path in ent_paths:
+        # if os.path.exists(comp.complex_dir_path):
+        #     shutil.rmtree(comp.complex_dir_path)
+
+        if not os.path.exists(comp.complex_dir_path):
+            os.mkdir(comp.complex_dir_path)
+
+        tmp_path = retrieve_pdb(comp.pdb_id)
+
+        comp.load_structure_from(tmp_path)
+
+        needed_chain_ids = [x for x in [comp.antibody_h_chain,
+                                        comp.antibody_l_chain] +
+                            comp.antigen_chains if x]
+
+        for model in comp.structure:
+            for chain in model:
+                if chain.get_id() not in needed_chain_ids:
+                    model.detach_child(chain.get_id())
+
+        io.set_structure(comp.structure)
+        io.save(pdb_path)
+
+        tmp_paths.add(tmp_path)
+
+        print(comp.pdb_id, 'loaded', flush=True)
+
+    for tmp_path in tmp_paths:
         os.remove(tmp_path)
 
 
@@ -711,7 +714,7 @@ def collect_unbound_structures():
     comps = get_bound_complexes(structures_summary)
     load_bound_complexes(comps)
 
-    ent_paths = set()
+    tmp_paths = set()
 
     pdb_parser = PDBParser()
     io = PDBIO()
@@ -732,6 +735,9 @@ def collect_unbound_structures():
 
             try:
                 comp.load_structure()
+
+                if comp.is_bad_structure():
+                    raise RuntimeError('Couldn\'t parse: ' + comp.db_name)
 
                 print('processing:', comp.db_name, flush=True)
 
@@ -762,7 +768,7 @@ def collect_unbound_structures():
                         io.set_structure(structure)
                         io.save(path_to_candidate_pdb)
 
-                        ent_paths.add(tmp_path)
+                        tmp_paths.add(tmp_path)
 
                         counter += 1
 
@@ -775,6 +781,9 @@ def collect_unbound_structures():
             except Exception as e:
                 not_processed.write('{}: {}\n'.format(comp.db_name, e))
                 not_processed.flush()
+
+    for tmp_path in tmp_paths:
+        os.remove(tmp_path)
 
 
 if __name__ == '__main__':
