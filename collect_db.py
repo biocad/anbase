@@ -248,6 +248,8 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
             key, value = line.strip().split(',')
             obsolete[key] = bool(int(value))
 
+        counter = 0
+
         for _, row in sabdab_summary_df.iterrows():
             if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] == 'protein':
                 if to_accept and row[PDB_ID].upper() not in to_accept:
@@ -275,6 +277,11 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
                     continue
 
                 complexes.append(new_complex)
+
+            if counter > 300:
+                break
+
+            counter += 1
 
     return complexes
 
@@ -694,7 +701,7 @@ def run_zlab_test():
                     map(lambda x: x.pdb_id, unbound_antibody_candidates)):
                 print('MISMATCH! in antibody', flush=True)
 
-
+@with_timeout(timeout=10)
 def retrieve_pdb(pdb_id):
     url = 'https://files.rcsb.org/download/{}.pdb'.format(pdb_id)
     path_to_tmp = os.path.join(DB_PATH, pdb_id + DOT_PDB)
