@@ -135,7 +135,7 @@ class Complex:
         fasta_path = os.path.join(self.complex_dir_path,
                                   self.pdb_id + '_' + chain_id + DOT_FASTA)
 
-        print('fetching', fasta_path)
+        print('fetching', fasta_path, flush=True)
 
         if os.path.exists(fasta_path):
             with open(fasta_path, 'r') as f:
@@ -174,7 +174,7 @@ def fetch_all_sequences(pdb_id):
             seqs.append([line[6], ''])
         else:
             if not seqs:
-                print('bad line:', line, 'in', r)
+                print('bad line:', line, 'in', r, flush=True)
                 return fetch_all_sequences(pdb_id)
 
             seqs[-1][1] += line
@@ -251,7 +251,7 @@ def load_bound_complexes(complexes, load_structures=False):
             if os.path.exists(pdb_path):
                 if load_structures:
                     comp.load_structure_from(pdb_path)
-                print(comp.pdb_id, 'loaded')
+                print(comp.pdb_id, 'loaded', flush=True)
                 continue
 
             # if os.path.exists(comp.complex_dir_path):
@@ -265,7 +265,7 @@ def load_bound_complexes(complexes, load_structures=False):
                                                   pdir=DB_PATH)
 
             if not os.path.exists(ent_path):
-                print('Not written:', comp.pdb_id)
+                print('Not written:', comp.pdb_id, flush=True)
                 print(comp.pdb_id, flush=True, file=could_not_fetch_log)
                 continue
 
@@ -285,7 +285,7 @@ def load_bound_complexes(complexes, load_structures=False):
 
             ent_paths.add(ent_path)
 
-            print(comp.pdb_id, 'loaded')
+            print(comp.pdb_id, 'loaded', flush=True)
 
     for ent_path in ent_paths:
         os.remove(ent_path)
@@ -565,7 +565,7 @@ def find_unbound_conformations(complex):
         find_unbound_structure(complex.pdb_id, complex.antigen_chains,
                                complex.antigen_seqs)
 
-    print('unbound antigen:', unbound_antigen_valid_candidates)
+    print('unbound antigen:', unbound_antigen_valid_candidates, flush=True)
 
     unbound_antibody_valid_candidates = \
         find_unbound_structure(complex.pdb_id,
@@ -574,7 +574,7 @@ def find_unbound_conformations(complex):
                                [complex.antibody_h_seq,
                                 complex.antibody_l_seq])
 
-    print('unbound antibody:', unbound_antibody_valid_candidates)
+    print('unbound antibody:', unbound_antibody_valid_candidates, flush=True)
 
     return sort_and_take_ress(unbound_antigen_valid_candidates), \
            sort_and_take_ress(unbound_antibody_valid_candidates)
@@ -617,7 +617,7 @@ def run_zlab_test():
     load_bound_complexes(comps)
 
     for pdb_id, unbound_antibody_id, unbound_antigen_id in test_structures:
-        print('processing', pdb_id)
+        print('processing', pdb_id, flush=True)
 
         comps_found = list(filter(lambda x: x.pdb_id.upper() == pdb_id, comps))
 
@@ -630,17 +630,17 @@ def run_zlab_test():
             print(comp.db_name)
 
             print('antigen', 'expected:', unbound_antigen_id, 'got:',
-                  unbound_antigen_candidates)
+                  unbound_antigen_candidates, flush=True)
             print('antibody', 'expected:', unbound_antibody_id, 'got:',
                   unbound_antibody_candidates)
 
             if unbound_antigen_id not in list(
                     map(lambda x: x.pdb_id, unbound_antigen_candidates)):
-                print('MISMATCH! in antigen')
+                print('MISMATCH! in antigen', flush=True)
 
             if unbound_antibody_id not in list(
                     map(lambda x: x.pdb_id, unbound_antibody_candidates)):
-                print('MISMATCH! in antibody')
+                print('MISMATCH! in antibody', flush=True)
 
 
 def collect_unbound_structures():
@@ -657,7 +657,7 @@ def collect_unbound_structures():
         for comp in comps:
             comp.load_structure()
 
-            print(comp.db_name)
+            print('processing:', comp.db_name, flush=True)
 
             unbound_antigen_candidates, unbound_antibody_candidates = \
                 find_unbound_conformations(comp)
@@ -665,7 +665,7 @@ def collect_unbound_structures():
             def helper_writer(candidates, suf):
                 counter = 0
                 for candidate in candidates:
-                    print('candidate:', candidate)
+                    print('candidate:', candidate, flush=True)
 
                     path_to_candidate_pdb = os.path.join(comp.complex_dir_path,
                                                          comp.pdb_id + '_' +
