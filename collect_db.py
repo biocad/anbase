@@ -12,6 +12,8 @@ from functools import reduce
 from Bio import pairwise2
 from collections import defaultdict
 import sys
+import signal
+import functools
 
 complexes = []
 
@@ -30,6 +32,29 @@ DOT_PDB = '.pdb'
 DOT_FASTA = '.fasta'
 
 MISMATCHED_LOG = 'mismatched.log'
+
+
+def with_timeout(timeout=None):
+    def inner(f):
+        def handler(*args):
+            return None
+
+        @functools.wraps(f)
+        def inner_inner(*args, **kwargs):
+            if timeout:
+                signal.signal(signal.SIGALRM, handler)
+                signal.alarm(timeout)
+
+            res = f(*args, **kwargs)
+
+            if timeout:
+                signal.alarm(0)
+
+            return res
+
+        return inner_inner
+
+    return inner
 
 
 def get_while_true(curl):
@@ -58,7 +83,7 @@ def post_while_true(url, json):
 
     while not_finished:
         try:
-            print('postingf', url, flush=True)
+            print('posting', url, flush=True)
             res = requests.post(url, json)
             content = res.content.decode('utf-8')
 
@@ -290,16 +315,9 @@ def load_bound_complexes(complexes, load_structures=False):
             if not os.path.exists(comp.complex_dir_path):
                 os.mkdir(comp.complex_dir_path)
 
-            ent_path = pdb_list.retrieve_pdb_file(comp.pdb_id,
-                                                  file_format='pdb',
-                                                  pdir=DB_PATH)
+            tmp_path = retrieve_pdb(comp.pdb_id)
 
-            if not os.path.exists(ent_path):
-                print('Not written:', comp.pdb_id, flush=True)
-                print(comp.pdb_id, flush=True, file=could_not_fetch_log)
-                continue
-
-            comp.load_structure_from(ent_path)
+            comp.load_structure_from(tmp_path)
 
             needed_chain_ids = [x for x in [comp.antibody_h_chain,
                                             comp.antibody_l_chain] +
@@ -313,12 +331,12 @@ def load_bound_complexes(complexes, load_structures=False):
             io.set_structure(comp.structure)
             io.save(pdb_path)
 
-            ent_paths.add(ent_path)
+            ent_paths.add(tmp_path)
 
             print(comp.pdb_id, 'loaded', flush=True)
 
-    for ent_path in ent_paths:
-        os.remove(ent_path)
+    for tmp_path in ent_paths:
+        os.remove(tmp_path)
 
 
 def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
@@ -678,13 +696,23 @@ def run_zlab_test():
                 print('MISMATCH! in antibody', flush=True)
 
 
+def retrieve_pdb(pdb_id):
+    url = 'https://files.rcsb.org/download/{}.pdb'.format(pdb_id)
+    res = post_while_true(url, {})
+    path_to_tmp = os.path.join(DB_PATH, pdb_id + DOT_PDB)
+
+    with open(path_to_tmp, 'w') as f:
+        f.write(res)
+
+    return path_to_tmp
+
+
 def collect_unbound_structures():
     comps = get_bound_complexes(structures_summary)
     load_bound_complexes(comps)
 
     ent_paths = set()
 
-    pdb_list = PDBList()
     pdb_parser = PDBParser()
     io = PDBIO()
 
@@ -719,19 +747,12 @@ def collect_unbound_structures():
                             comp.complex_dir_path,
                             comp.pdb_id + '_' +
                             suf + '_u_' +
-                            str(
-                                counter) + DOT_PDB)
+                            str(counter) + DOT_PDB)
 
-                        ent_path = pdb_list.retrieve_pdb_file(candidate.pdb_id,
-                                                              file_format='pdb',
-                                                              pdir=
-                                                              DB_PATH)
-
-                        if not os.path.exists(ent_path):
-                            raise RuntimeError('Couldn\'t fetch pdb')
+                        tmp_path = retrieve_pdb(candidate.pdb_id)
 
                         structure = pdb_parser.get_structure(candidate.pdb_id,
-                                                             ent_path)
+                                                             tmp_path)
 
                         for model in comp.structure:
                             for chain in model:
@@ -741,7 +762,7 @@ def collect_unbound_structures():
                         io.set_structure(structure)
                         io.save(path_to_candidate_pdb)
 
-                        ent_paths.add(ent_path)
+                        ent_paths.add(tmp_path)
 
                         counter += 1
 
