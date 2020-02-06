@@ -37,10 +37,14 @@ AG = 'AG'
 AB = 'AB'
 
 
+class HandlerError(RuntimeError):
+    pass
+
+
 def with_timeout(timeout=None):
     def inner(f):
         def handler(*args):
-            return None
+            raise HandlerError()
 
         @functools.wraps(f)
         def inner_inner(*args, **kwargs):
@@ -48,7 +52,10 @@ def with_timeout(timeout=None):
                 signal.signal(signal.SIGALRM, handler)
                 signal.alarm(timeout)
 
-            res = f(*args, **kwargs)
+            try:
+                res = f(*args, **kwargs)
+            except Exception:
+                return None
 
             if timeout:
                 signal.alarm(0)
@@ -73,6 +80,8 @@ def get_while_true(curl):
 
             if content and not content.startswith('<!DOCTYPE'):
                 not_finished = False
+        except HandlerError:
+            return None
         except Exception:
             pass
 
@@ -92,6 +101,8 @@ def post_while_true(url, json):
 
             if content and not content.startswith('<!DOCTYPE'):
                 not_finished = False
+        except HandlerError:
+            return None
         except Exception:
             pass
 
@@ -320,6 +331,9 @@ def load_bound_complexes(complexes, load_structures=False):
             os.mkdir(comp.complex_dir_path)
 
         tmp_path = retrieve_pdb(comp.pdb_id)
+
+        if not tmp_path:
+            continue
 
         comp.load_structure_from(tmp_path)
 
@@ -701,6 +715,7 @@ def run_zlab_test():
                     map(lambda x: x.pdb_id, unbound_antibody_candidates)):
                 print('MISMATCH! in antibody', flush=True)
 
+
 @with_timeout(timeout=10)
 def retrieve_pdb(pdb_id):
     url = 'https://files.rcsb.org/download/{}.pdb'.format(pdb_id)
@@ -734,13 +749,13 @@ def collect_unbound_structures(overwrite=True):
 
     processed = set()
 
-    unbound_data_csv_open_mode = 'w' if overwrite else 'a'
+    w_or_a = 'w' if overwrite else 'a'
     processed_open_mode = 'w' if overwrite else 'a+'
 
-    with open('not_processed.log', 'w') as not_processed, open(
+    with open('not_processed.log', w_or_a) as not_processed, open(
             'processed.log', processed_open_mode) as processed_log, \
             open('unbound_data.csv',
-                 unbound_data_csv_open_mode) as unbound_data_csv:
+                 w_or_a) as unbound_data_csv:
 
         if overwrite:
             unbound_data_csv.write('pdb_id,db_name,type,candidate,' +
@@ -786,6 +801,9 @@ def collect_unbound_structures(overwrite=True):
 
                         tmp_path = retrieve_pdb(candidate.pdb_id)
 
+                        if not tmp_path:
+                            continue
+
                         structure = pdb_parser.get_structure(candidate.pdb_id,
                                                              tmp_path)
 
@@ -802,12 +820,12 @@ def collect_unbound_structures(overwrite=True):
                         if overwrite:
                             unbound_data_csv.write(
                                 '{},{},{},{},{},{}\n'.format(comp.pdb_id,
-                                                           comp.db_name, suf,
-                                                           candidate_name,
-                                                           candidate.pdb_id,
-                                                           ':'.join(
-                                                               candidate.
-                                                                   chain_ids)))
+                                                             comp.db_name, suf,
+                                                             candidate_name,
+                                                             candidate.pdb_id,
+                                                             ':'.join(
+                                                                 candidate.
+                                                                     chain_ids)))
                             unbound_data_csv.flush()
 
                         counter += 1
