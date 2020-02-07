@@ -242,7 +242,7 @@ def fetch_sequence(pdb_id, chain_id):
     return None
 
 
-def get_bound_complexes(sabdab_summary_df, to_accept=None):
+def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
     def sub_nan(val):
         if isinstance(val, float) and math.isnan(val):
             return None
@@ -259,7 +259,14 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None):
             key, value = line.strip().split(',')
             obsolete[key] = bool(int(value))
 
+        counter = -1
+
         for _, row in sabdab_summary_df.iterrows():
+            counter += 1
+
+            if p and not (p[0] <= counter < p[1]):
+                continue
+
             if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] == 'protein':
                 if to_accept and row[PDB_ID].upper() not in to_accept:
                     continue
