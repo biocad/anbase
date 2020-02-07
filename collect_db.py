@@ -337,6 +337,9 @@ def load_bound_complexes(complexes, load_structures=False):
 
         comp.load_structure_from(tmp_path)
 
+        if comp.is_bad_structure():
+            continue
+
         needed_chain_ids = [x for x in [comp.antibody_h_chain,
                                         comp.antibody_l_chain] +
                             comp.antigen_chains if x]
