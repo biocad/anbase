@@ -264,13 +264,21 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
 
         counter = -1
 
+        allowed_types_of_antigen = ['protein', 'peptide', 'protein | protein',
+                                    'protein | protein | protein',
+                                    'protein | peptide',
+                                    'peptide | protein',
+                                    'peptide | peptide | peptide',
+                                    'protein | protein | peptide']
+
         for _, row in sabdab_summary_df.iterrows():
             counter += 1
 
             if p and not (p[0] <= counter < p[1]):
                 continue
 
-            if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] == 'protein':
+            if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] in \
+                    allowed_types_of_antigen:
                 if to_accept and row[PDB_ID].upper() not in to_accept:
                     continue
 
