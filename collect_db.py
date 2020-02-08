@@ -67,6 +67,7 @@ def with_timeout(timeout=None):
     return inner
 
 
+@with_timeout(timeout=10)
 def get_while_true(curl):
     not_finished = True
 
@@ -88,6 +89,7 @@ def get_while_true(curl):
     return content
 
 
+@with_timeout(timeout=10)
 def post_while_true(url, json):
     not_finished = True
 
@@ -741,8 +743,8 @@ def remove_if_contains(path, s):
             os.remove(os.path.join(path, file))
 
 
-def collect_unbound_structures(overwrite=True):
-    comps = get_bound_complexes(structures_summary)
+def collect_unbound_structures(overwrite=True, p=None):
+    comps = get_bound_complexes(structures_summary, p)
     load_bound_complexes(comps)
 
     tmp_paths = set()
@@ -851,5 +853,15 @@ if __name__ == '__main__':
     if sys.argv and sys.argv[0] == 'test':
         run_zlab_test()
     else:
+        p = list(filter(lambda x: x.startswith('--range='), sys.argv))
+
+        if p:
+            rest = p[0][8:].strip('(').strip(')').split(',')
+            p = (int(rest[0]), int(rest[1]))
+        else:
+            p = None
+
+        print(p)
+
         collect_unbound_structures(overwrite=len(
             list(filter(lambda x: x == 'continue', sys.argv))) == 0)
