@@ -67,7 +67,7 @@ def with_timeout(timeout=None):
     return inner
 
 
-@with_timeout(timeout=10)
+@with_timeout(timeout=100)
 def get_while_true(curl):
     not_finished = True
 
@@ -89,7 +89,7 @@ def get_while_true(curl):
     return content
 
 
-@with_timeout(timeout=10)
+@with_timeout(timeout=100)
 def post_while_true(url, json):
     not_finished = True
 
@@ -97,7 +97,7 @@ def post_while_true(url, json):
 
     while not_finished:
         try:
-            print('posting', url, flush=True)
+            print('posting', url, json, flush=True)
             res = requests.post(url, json)
             content = res.content.decode('utf-8')
 
@@ -744,7 +744,7 @@ def remove_if_contains(path, s):
 
 
 def collect_unbound_structures(overwrite=True, p=None):
-    comps = get_bound_complexes(structures_summary, p)
+    comps = get_bound_complexes(structures_summary, p=p)
     load_bound_complexes(comps)
 
     tmp_paths = set()
@@ -864,4 +864,4 @@ if __name__ == '__main__':
         print(p)
 
         collect_unbound_structures(overwrite=len(
-            list(filter(lambda x: x == 'continue', sys.argv))) == 0)
+            list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p)
