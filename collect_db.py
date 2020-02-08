@@ -176,7 +176,8 @@ class Complex:
     def load_structure_from(self, path):
         try:
             self.structure = self.pdb_parser.get_structure(self.pdb_id, path)
-        except Exception:
+        except Exception as e:
+            print('Not loaded:', self.db_name, e)
             self.structure = None
 
     def is_bad_structure(self):
@@ -292,9 +293,12 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
                     antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
 
                 if new_complex.has_unfetched_sequences():
+                    print('Has unfetched sequences:', row[PDB_ID])
                     continue
 
                 complexes.append(new_complex)
+            else:
+                print('Not protein-protein complex:', row[PDB_ID])
 
     return complexes
 
@@ -772,6 +776,8 @@ def collect_unbound_structures(overwrite=True, p=None):
 
             for processed_complex in processed_log.readlines():
                 processed.add(processed_complex.strip())
+
+        print('Complexes to process:', len(comps))
 
         for comp in comps:
             if comp.db_name in processed:
