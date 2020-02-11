@@ -423,9 +423,6 @@ def compare_query_and_hit_seqs(query_seq, hit_seq, pdb_ids, chain_ids,
     cut_off_half = int(0.1 * len(query_seq) / 2)
     len_diff = abs(len(query_seq) - len(hit_seq))
 
-    if len_diff > 2 * cut_off_half:
-        return False
-
     c1 = align_and_check(query_seq, hit_seq, pdb_ids, chain_ids, write_log,
                          len_diff, is_ab=is_ab)
 
