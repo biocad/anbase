@@ -375,8 +375,8 @@ def load_bound_complexes(complexes, load_structures=False):
 
 
 def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
-                    len_diff):
-    cut_off = int(0.05 * len(target_seq))
+                    len_diff, is_ab=True):
+    cut_off = int(0.03 * len(target_seq))
 
     alignment_list = pairwise2.align.localxs(query_seq, target_seq, -10, -10,
                                              penalize_end_gaps=False,
@@ -392,10 +392,21 @@ def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
     query_alignment = alignment[0]
     target_alignment = alignment[1]
 
+    cur_miss_len = 0
+    max_miss_len = 0
+
     for i in range(len(query_alignment)):
-        if query_alignment[i] != '-' and target_alignment[i] != '-' \
-                and query_alignment[i] != target_alignment[i]:
+        if query_alignment[i] == '-' or target_alignment[i] == '-':
+            max_miss_len = max(max_miss_len, cur_miss_len)
+            cur_miss_len = 0
+            continue
+
+        if query_alignment[i] != target_alignment[i]:
+            cur_miss_len += 1
             mismatches_count += 1
+        else:
+            max_miss_len = max(max_miss_len, cur_miss_len)
+            cur_miss_len = 0
 
     if write_log and 0 < mismatches_count <= cut_off:
         with open(MISMATCHED_LOG, 'a') as f:
@@ -404,11 +415,11 @@ def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
                  chain_ids[1].upper(),
                  str(mismatches_count), str(len_diff)]) + '\n')
 
-    return mismatches_count <= cut_off
+    return (not is_ab or max_miss_len < 3) and mismatches_count <= cut_off
 
 
 def compare_query_and_hit_seqs(query_seq, hit_seq, pdb_ids, chain_ids,
-                               write_log=False):
+                               write_log=False, is_ab=True):
     cut_off_half = int(0.1 * len(query_seq) / 2)
     len_diff = abs(len(query_seq) - len(hit_seq))
 
@@ -416,48 +427,49 @@ def compare_query_and_hit_seqs(query_seq, hit_seq, pdb_ids, chain_ids,
         return False
 
     c1 = align_and_check(query_seq, hit_seq, pdb_ids, chain_ids, write_log,
-                         len_diff)
+                         len_diff, is_ab=is_ab)
 
     if c1:
         return True
 
     c2 = align_and_check(query_seq[cut_off_half:-cut_off_half], hit_seq,
-                         pdb_ids, chain_ids, write_log, len_diff)
+                         pdb_ids, chain_ids, write_log, len_diff, is_ab=is_ab)
 
     if c2:
         return True
 
     c3 = align_and_check(hit_seq[cut_off_half:-cut_off_half], query_seq,
-                         pdb_ids, chain_ids, write_log, len_diff)
+                         pdb_ids, chain_ids, write_log, len_diff, is_ab=is_ab)
 
     if c3:
         return True
 
     c4 = align_and_check(query_seq[:-2 * cut_off_half], hit_seq, pdb_ids,
-                         chain_ids, write_log, len_diff)
+                         chain_ids, write_log, len_diff, is_ab=is_ab)
 
     if c4:
         return True
 
     c5 = align_and_check(hit_seq[:-2 * cut_off_half], query_seq, pdb_ids,
-                         chain_ids, write_log, len_diff)
+                         chain_ids, write_log, len_diff, is_ab=is_ab)
 
     if c5:
         return True
 
     c6 = align_and_check(query_seq[2 * cut_off_half:], hit_seq, pdb_ids,
-                         chain_ids, write_log, len_diff)
+                         chain_ids, write_log, len_diff, is_ab=is_ab)
 
     if c6:
         return True
 
     c7 = align_and_check(hit_seq[2 * cut_off_half:], query_seq, pdb_ids,
-                         chain_ids, write_log, len_diff)
+                         chain_ids, write_log, len_diff, is_ab=is_ab)
 
     return c7
 
 
-def is_match(query_seq, query_alignment, hit_alignment, pdb_ids, chain_ids):
+def is_match(query_seq, query_alignment, hit_alignment, pdb_ids, chain_ids,
+             is_ab=True):
     if query_seq == hit_alignment:
         return True
 
@@ -472,10 +484,10 @@ def is_match(query_seq, query_alignment, hit_alignment, pdb_ids, chain_ids):
         return False
 
     return compare_query_and_hit_seqs(query_seq, hit_with_stripped_gaps,
-                                      pdb_ids, chain_ids)
+                                      pdb_ids, chain_ids, is_ab=is_ab)
 
 
-def get_blast_data(pdb_id, chain_id, seq):
+def get_blast_data(pdb_id, chain_id, seq, is_ab):
     curl = 'https://www.rcsb.org/pdb/rest/getBlastPDB2?structureId' \
            '={}&chainId={}&eCutOff=10.0&matrix=BLOSUM62&outputFormat=XML'. \
         format(pdb_id, chain_id)
@@ -505,7 +517,8 @@ def get_blast_data(pdb_id, chain_id, seq):
 
                         if not is_match(seq, hsp_qseq, hsp_hseq,
                                         (pdb_id, hit_pdb_id),
-                                        (chain_id, hit_chain_ids[0])):
+                                        (chain_id, hit_chain_ids[0]),
+                                        is_ab=is_ab):
                             continue
 
                         res.append(Candidate(hit_pdb_id, hit_chain_ids))
@@ -571,21 +584,34 @@ def check_names(names):
     if len(list(frozenset(names))) == 1:
         return True
 
-    split_names = list(map(lambda x: x.split(), names))
+    split_names = list(
+        map(lambda x: list(map(lambda t: t.upper(), x.split())), names))
 
     if len(list(frozenset(map(lambda x: len(x), split_names)))) != 1:
         return False
 
-    common_set = set([])
+    common_set = set(split_names[0])
+
+    for x in split_names[1:]:
+        common_set &= set(x)
+
+    uncommon_set = set([])
 
     for x in split_names:
         for y in x:
-            common_set.add(y.upper())
+            if y not in common_set:
+                uncommon_set.add(y.upper())
 
-    return abs(len(list(common_set)) - len(split_names[0])) <= 1
+    unknown_list = list(uncommon_set)
+
+    for x in uncommon_set:
+        if all(map(lambda t: t not in x, ['HEAVY', 'LIGHT'])):
+            return False
+
+    return len(unknown_list) == 2
 
 
-def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id):
+def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id, is_ab):
     all_seqs_in_pdb = fetch_all_sequences(pdb_id)
 
     chain_matches = defaultdict(list)
@@ -595,7 +621,7 @@ def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id):
             if compare_query_and_hit_seqs(chain_seq, seq,
                                           (query_pdb_id, pdb_id),
                                           (chain_id, target_chain_id),
-                                          write_log=True):
+                                          write_log=True, is_ab=is_ab):
                 chain_matches[chain_id].append(target_chain_id)
 
     # we check that for every queried chain there is a matching chain in the
@@ -619,11 +645,12 @@ def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id):
 
 def sort_and_take_unbound(unbound_candidates):
     unbound_candidates.sort(key=lambda x: -int(x[0]))
-    return unbound_candidates[:25]
+    return unbound_candidates[:50]
 
 
-def find_unbound_structure(pdb_id, chain_ids, seqs):
-    candidates = [get_blast_data(pdb_id, chain_id, seq) for chain_id, seq in
+def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
+    candidates = [get_blast_data(pdb_id, chain_id, seq, is_ab) for
+                  chain_id, seq in
                   zip(chain_ids, seqs)]
 
     pdb_ids_in_intersection_prep = reduce(operator.and_,
@@ -640,7 +667,8 @@ def find_unbound_structure(pdb_id, chain_ids, seqs):
         if candidate_id.upper() == pdb_id.upper():
             continue
 
-        res += check_unbound(candidate_id, list(zip(chain_ids, seqs)), pdb_id)
+        res += check_unbound(candidate_id, list(zip(chain_ids, seqs)), pdb_id,
+                             is_ab)
 
     return res
 
@@ -653,7 +681,7 @@ def sort_and_take_ress(unbound_ress):
 def find_unbound_conformations(complex):
     unbound_antigen_valid_candidates = \
         find_unbound_structure(complex.pdb_id, complex.antigen_chains,
-                               complex.antigen_seqs)
+                               complex.antigen_seqs, False)
 
     print('unbound antigen:', unbound_antigen_valid_candidates, flush=True)
 
@@ -662,7 +690,7 @@ def find_unbound_conformations(complex):
                                [complex.antibody_h_chain,
                                 complex.antibody_l_chain],
                                [complex.antibody_h_seq,
-                                complex.antibody_l_seq])
+                                complex.antibody_l_seq], True)
 
     print('unbound antibody:', unbound_antibody_valid_candidates, flush=True)
 
