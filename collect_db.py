@@ -1,3 +1,4 @@
+import json
 import math
 import operator
 
@@ -54,7 +55,7 @@ def with_timeout(timeout=None):
 
             try:
                 res = f(*args, **kwargs)
-            except Exception:
+            except Exception as e:
                 return None
 
             if timeout:
@@ -67,7 +68,31 @@ def with_timeout(timeout=None):
     return inner
 
 
+memo_db = {}
+
+
+def memoize(f):
+    @functools.wraps(f)
+    def inner(*args, **kwargs):
+        new_args = frozenset(map(
+            lambda x: x if not isinstance(x, dict) and not isinstance(x, list)
+            else (json.dumps(x, sort_keys=True) if not isinstance(x, list)
+                  else frozenset(x)), args))
+        key = (f.__name__, new_args)
+
+        if key in memo_db.keys():
+            return memo_db[key]
+
+        res = f(*args, **kwargs)
+        memo_db[key] = res
+
+        return res
+
+    return inner
+
+
 @with_timeout(timeout=100)
+@memoize
 def get_while_true(curl):
     not_finished = True
 
@@ -90,6 +115,7 @@ def get_while_true(curl):
 
 
 @with_timeout(timeout=100)
+@memoize
 def post_while_true(url, json):
     not_finished = True
 
