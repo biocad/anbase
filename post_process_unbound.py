@@ -1,37 +1,59 @@
+import Bio
 import os
 from collections import defaultdict
 import pandas as pd
 from Bio import pairwise2
-from Bio.PDB import PDBParser, Superimposer
+from Bio.PDB import PDBParser, Superimposer, Chain, PDBIO
 from Bio.PDB.Polypeptide import dindex_to_1, d3_to_index, PPBuilder
 import numpy as np
+from Bio.PDB.StructureBuilder import StructureBuilder
 
 from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
-    retrieve_pdb
+    retrieve_pdb, fetch_sequence
+
+
+def get_unpacked_list(self):
+    """
+    Returns all atoms from the residue,
+    in case of disordered, keep only first alt loc and remove the alt-loc tag
+    """
+    atom_list = self.get_list()
+    undisordered_atom_list = []
+    for atom in atom_list:
+        if atom.is_disordered():
+            atom.altloc = " "
+            undisordered_atom_list.append(atom)
+        else:
+            undisordered_atom_list.append(atom)
+    return undisordered_atom_list
+
+
+Bio.PDB.Residue.Residue.get_unpacked_list = get_unpacked_list
 
 
 class Conformation:
     pdb_parser = PDBParser()
     super_imposer = Superimposer()
     peptides_builder = PPBuilder()
+    pdb_io = PDBIO()
 
     def __init__(self, pdb_id_b, heavy_chain_id_b,
-                 light_chain_id_b, antigen_chain_ids_b,
-                 pdb_ab_id_u, heavy_chain_id_u, light_chain_id_u,
-                 pdb_ag_id_u, antigen_chain_ids_u, is_ab_u, is_ag_u):
+                 light_chain_id_b, ag_chain_ids_b,
+                 ab_pdb_id_u, heavy_chain_id_u, light_chain_id_u,
+                 ag_pdb_id_u, ag_chain_ids_u, is_ab_u, is_ag_u, candidate_id):
         self.pdb_id_b = pdb_id_b
         self.heavy_chain_id_b = heavy_chain_id_b
         self.light_chain_id_b = light_chain_id_b
-        self.antigen_chain_ids_b = antigen_chain_ids_b
-        self.pdb_ab_id_u = pdb_ab_id_u
+        self.ag_chain_ids_b = ag_chain_ids_b
+        self.ab_pdb_id_u = ab_pdb_id_u
         self.heavy_chain_id_u = heavy_chain_id_u
         self.light_chain_id_u = light_chain_id_u
-        self.pdb_ag_id_u = pdb_ag_id_u
-        self.antigen_chain_ids_u = antigen_chain_ids_u
+        self.ag_pdb_id_u = ag_pdb_id_u
+        self.ag_chain_ids_u = ag_chain_ids_u
 
         self.complex_structure_b = self._load_structure(pdb_id_b)
-        self.ab_structure_u = self._load_structure(pdb_ab_id_u)
-        self.ag_structure_u = self._load_structure(pdb_ag_id_u)
+        self.ab_structure_u = self._load_structure(ab_pdb_id_u)
+        self.ag_structure_u = self._load_structure(ag_pdb_id_u)
 
         self.is_ab_u = is_ab_u
         self.is_ag_u = is_ag_u
@@ -40,7 +62,7 @@ class Conformation:
                                                [self.heavy_chain_id_b,
                                                 self.light_chain_id_b])
         self.ag_chains_b = self.extract_chains(self.complex_structure_b,
-                                               self.antigen_chain_ids_b)
+                                               self.ag_chain_ids_b)
 
         self.ab_atoms_b = []
         self.ag_atoms_b = []
@@ -52,6 +74,8 @@ class Conformation:
             self.ag_atoms_b += self.extract_cas(chain)
 
         self.ab_interface_cas, self.ag_interface_cas = self.get_interface_cas()
+
+        self.candidate_id = candidate_id
 
     @staticmethod
     def extract_chains(structure, chain_ids):
@@ -95,16 +119,97 @@ class Conformation:
                                                   retrieve_pdb(pdb_id))[0]
 
     @staticmethod
-    def _matching_atoms_for_chains(chain1, chain2):
-        #TODO: тут
-        l1_seq = Conformation.peptides_builder.build_peptides(chain1)[0].get_sequence()
-        l2_seq = Conformation.peptides_builder.build_peptides(chain2)[0].get_sequence()
+    def _matching_atoms_for_chains(chain1, pdb_id1, chain_id1, chain2, pdb_id2,
+                                   chain_id2):
+        def extract_seq(chain):
+            seq = ''
 
-        alignment = pairwise2.align.localxs(l2_seq, l1_seq, -5, -1,
-                                            penalize_end_gaps=False,
-                                            one_alignment_only=True)[0]
+            for x in Conformation.peptides_builder.build_peptides(chain):
+                seq += str(x.get_sequence())
 
-        a = 42
+            return seq
+
+        def extract_peps(chain):
+            peps = []
+
+            for x in Conformation.peptides_builder.build_peptides(chain):
+                peps += x
+
+            return peps
+
+        def get_ids_from_chain(chain, seq, ids_in_seq):
+            struct_seq = extract_seq(chain)
+
+            alignment_loc = \
+                pairwise2.align.localxs(struct_seq, seq, -5, -1,
+                                        penalize_end_gaps=False,
+                                        one_alignment_only=True)[0]
+
+            counter = -1
+            counter_seq = -1
+
+            res = []
+
+            for i in range(len(alignment_loc[0])):
+                if alignment_loc[0][i] == '-' and alignment_loc[1][i] == '-':
+                    continue
+                elif alignment_loc[0][i] == '-':
+                    counter_seq += 1
+                    continue
+                elif alignment_loc[1][i] == '-':
+                    counter += 1
+                    continue
+                else:
+                    counter += 1
+                    counter_seq += 1
+
+                if counter_seq in ids_in_seq:
+                    res.append((counter_seq, counter))
+
+            return {key: value for key, value in res}
+
+        seq1 = fetch_sequence(pdb_id1, chain_id1)
+        seq2 = fetch_sequence(pdb_id2, chain_id2)
+
+        alignment = \
+            pairwise2.align.localxs(seq1, seq2, -5, -1,
+                                    penalize_end_gaps=False,
+                                    one_alignment_only=True)[0]
+
+        counter1 = -1
+        counter2 = -1
+
+        ids_in_seq1 = []
+        ids_in_seq2 = []
+
+        for i in range(len(alignment[0])):
+            if alignment[0][i] == '-' and alignment[1][i] == '-':
+                continue
+            elif alignment[0][i] == '-':
+                counter2 += 1
+                continue
+            elif alignment[1][i] == '-':
+                counter1 += 1
+                continue
+            else:
+                counter1 += 1
+                counter2 += 1
+
+            ids_in_seq1.append(counter1)
+            ids_in_seq2.append(counter2)
+
+        peps1 = extract_peps(chain1)
+        peps2 = extract_peps(chain2)
+
+        ids1 = get_ids_from_chain(chain1, seq1, ids_in_seq1)
+        ids2 = get_ids_from_chain(chain2, seq2, ids_in_seq2)
+
+        mutual_ids = frozenset(ids1.keys()) & frozenset(ids2.keys())
+
+        atoms1 = [peps1[ids1[i]]['CA'] for i in mutual_ids]
+        atoms2 = [peps2[ids2[i]]['CA'] for i in mutual_ids]
+
+        return atoms1, atoms2
 
     def align_ab(self):
         if not self.is_ab_u:
@@ -114,11 +219,24 @@ class Conformation:
             self.ab_structure_u, [self.heavy_chain_id_u,
                                   self.light_chain_id_u])
 
-        ref_atoms = self.ab_atoms_b
-        sample_atoms = self.extract_cas(heavy_chain_u) + \
-                       self.extract_cas(light_chain_u)
+        heavy_atoms1, heavy_atoms2 = self._matching_atoms_for_chains(
+            self.ab_chains_b[0],
+            self.pdb_id_b,
+            self.heavy_chain_id_b,
+            heavy_chain_u,
+            self.ab_pdb_id_u,
+            self.heavy_chain_id_u)
 
-        self._align_two_lists_of_atoms(ref_atoms, sample_atoms)
+        light_atoms1, light_atoms2 = self._matching_atoms_for_chains(
+            self.ab_chains_b[1],
+            self.pdb_id_b,
+            self.light_chain_id_b,
+            light_chain_u,
+            self.ab_pdb_id_u,
+            self.light_chain_id_u)
+
+        self.super_imposer.set_atoms(heavy_atoms1 + light_atoms1,
+                                     heavy_atoms2 + light_atoms2)
         self.super_imposer.apply(self.ab_structure_u.get_atoms())
 
         print(self.super_imposer.rms)
@@ -128,18 +246,60 @@ class Conformation:
             return
 
         ag_chains_u = self.extract_chains(self.ag_structure_u,
-                                          self.antigen_chain_ids_u)
+                                          self.ag_chain_ids_u)
 
-        ref_atoms = self.ag_atoms_b
-        sample_atoms = []
+        atoms1 = []
+        atoms2 = []
 
-        for chain in ag_chains_u:
-            sample_atoms += self.extract_cas(chain)
+        for i in range(len(ag_chains_u)):
+            tmp_atoms1, tmp_atoms2 = self._matching_atoms_for_chains(
+                self.ag_chains_b[i],
+                self.pdb_id_b,
+                self.ag_chain_ids_b[i],
+                ag_chains_u[i],
+                self.ag_pdb_id_u,
+                self.ag_chain_ids_u[i])
 
-        self._matching_atoms_for_chains(self.ag_chains_b[0], ag_chains_u[0])
-        self.super_imposer.apply(self.ab_structure_u.get_atoms())
+            atoms1 += tmp_atoms1
+            atoms2 += tmp_atoms2
+
+        self.super_imposer.set_atoms(atoms1, atoms2)
+        self.super_imposer.apply(self.ag_structure_u.get_atoms())
 
         print(self.super_imposer.rms)
+
+    def write_candidate(self):
+        path = os.path.join(self.pdb_id_b, str(self.candidate_id))
+        name_prefix = os.path.join(path, self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        sb = StructureBuilder()
+
+        sb.init_structure('complex')
+        sb.init_model(0)
+
+        for chain in self.ab_structure_u.copy():
+            sb.model.add(chain)
+
+        for chain in self.ag_structure_u.copy():
+            sb.model.add(chain)
+
+        self.pdb_io.set_structure(sb.structure)
+        self.pdb_io.save(
+            name_prefix + '_complex' + ('_u' if self.is_ab_u else '_b')
+            + DOT_PDB)
+
+        self.pdb_io.set_structure(self.ab_structure_u)
+        self.pdb_io.save(
+            name_prefix + '_r' + ('_u' if self.is_ab_u else '_b')
+            + DOT_PDB)
+
+        self.pdb_io.set_structure(self.ag_structure_u)
+        self.pdb_io.save(
+            name_prefix + '_l' + ('_u' if self.is_ag_u else '_b')
+            + DOT_PDB)
 
 
 def process_csv(csv):
@@ -195,21 +355,26 @@ def process_candidates(db_name, candidates):
 
     res = []
 
-    for pdb_ag_id_u, chainss_ag in ag_pdbs_with_chains:
+    counter = -1
+
+    for ag_pdb_id_u, chainss_ag in ag_pdbs_with_chains:
         for chains_ag in chainss_ag:
             chains_ag_split = chains_ag.split(':')
-            for pdb_ab_id_u, chainss_ab in ab_pdbs_with_chains:
+            for ab_pdb_id_u, chainss_ab in ab_pdbs_with_chains:
                 for chains_ab in chainss_ab:
+                    counter += 1
+
                     [heavy_chain_id_u, light_chain_id_u] = chains_ab.split(':')
                     conformation = Conformation(pdb_id_b, heavy_chain_id_b,
                                                 light_chain_id_b,
-                                                ag_chain_ids_b, pdb_ab_id_u,
+                                                ag_chain_ids_b, ab_pdb_id_u,
                                                 heavy_chain_id_u,
                                                 light_chain_id_u,
-                                                pdb_ag_id_u, chains_ag_split,
-                                                is_ab_u, is_ag_u)
+                                                ag_pdb_id_u, chains_ag_split,
+                                                is_ab_u, is_ag_u, counter)
                     conformation.align_ab()
                     conformation.align_ag()
+                    conformation.write_candidate()
                     res.append(conformation)
 
     return res
