@@ -1,3 +1,5 @@
+from xml.etree import ElementTree
+
 import Bio
 import os
 from collections import defaultdict
@@ -9,7 +11,8 @@ import numpy as np
 from Bio.PDB.StructureBuilder import StructureBuilder
 
 from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
-    retrieve_pdb, fetch_sequence
+    retrieve_pdb, fetch_sequence, with_timeout, memoize, get_while_true, \
+    compare_query_and_hit_seqs
 
 
 def get_unpacked_list(self):
@@ -37,7 +40,8 @@ class Conformation:
     peptides_builder = PPBuilder()
     pdb_io = PDBIO()
 
-    def __init__(self, pdb_id_b, heavy_chain_id_b,
+    def __init__(self, ab_biological_assembly_id, ag_biological_assembly_id,
+                 pdb_id_b, heavy_chain_id_b,
                  light_chain_id_b, ag_chain_ids_b,
                  ab_pdb_id_u, heavy_chain_id_u, light_chain_id_u,
                  ag_pdb_id_u, ag_chain_ids_u, is_ab_u, is_ag_u, candidate_id):
@@ -270,7 +274,8 @@ class Conformation:
 
     def write_candidate(self):
         path = os.path.join(self.pdb_id_b, str(self.candidate_id))
-        name_prefix = os.path.join(path, self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
+        name_prefix = os.path.join(path,
+                                   self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
 
         if not os.path.exists(path):
             os.makedirs(path)
@@ -312,6 +317,248 @@ def process_csv(csv):
                                                  'candidate_chain_names']))
 
     return data
+
+
+def fetch_number_of_assemblies(pdb_id):
+    curl = 'https://www.rcsb.org/pdb/rest/bioassembly/' \
+           'nrbioassemblies?structureId={}' \
+        .format(pdb_id)
+
+    r = get_while_true(curl)
+    xml = ElementTree.fromstring(r)
+
+    return int(xml.attrib['count'])
+
+
+def fetch_all_assemblies(pdb_id):
+    n = fetch_number_of_assemblies(pdb_id)
+
+    res = []
+
+    for i in range(n):
+        curl = 'https://files.rcsb.org/download/{}.pdb{}'. \
+            format(pdb_id, str(i + 1))
+
+        path_to_tmp = os.path.join(DB_PATH, pdb_id + '_BA_' + str(i) + DOT_PDB)
+
+        if os.path.exists(path_to_tmp):
+            res.append(path_to_tmp)
+            continue
+
+        r = get_while_true(curl)
+
+        with open(path_to_tmp, 'w') as f:
+            f.write(r)
+
+        res.append(path_to_tmp)
+
+    return res
+
+
+def union_models(struct):
+    models = list(struct.get_models())
+
+    if len(models) < 2:
+        return struct
+
+    sb = StructureBuilder()
+
+    sb.init_structure('ba')
+    sb.init_model(0)
+
+    chain_names = {}
+
+    for model in models:
+        for chain in model:
+            chain_id = chain.get_id()
+            name = chain_id
+
+            if chain_id not in chain_names:
+                chain_names[chain_id] = 0
+            else:
+                chain_names[chain_id] += 1
+                name = chain_id + '_' + str(chain_names[chain_id])
+
+            chain_copied = chain.copy()
+            chain_copied.id = name
+
+            sb.model.add(chain_copied)
+
+    return sb.structure
+
+
+class AssemblyMatchInfo:
+    def __init__(self, assembly_id, matching, reason_bad=None):
+        self.is_good = reason_bad is None
+        self.id = assembly_id
+        self.matching = matching
+        self.reason_bad = reason_bad
+
+    def __repr__(self):
+        return str((self.is_good, self.id, self.matching,
+                    self.reason_bad))
+
+
+def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
+    is_ab = type == AB
+
+    source_seqs = list(filter(lambda x: x[0] in source_chain_ids,
+                              fetch_all_sequences(source_pdb_id)))
+
+    target_seqs = {k: v for k, v in fetch_all_sequences(target_pdb_id)}
+
+    res = []
+
+    n = -1
+    for assembly_path in fetch_all_assemblies(target_pdb_id):
+        n += 1
+
+        pdb_parser = PDBParser()
+        assembly_structure = pdb_parser.get_structure('ba', assembly_path)
+
+        assembly = union_models(assembly_structure)
+
+        chains_in_assembly = [x.get_id().split('_')[0]
+                              for x in assembly.get_chains()]
+
+        assembly_ids_seqs = list(map(lambda x: (x, target_seqs[x]), chains_in_assembly))
+
+        chain_matching = defaultdict(list)
+
+        for chain_id, chain_seq in source_seqs:
+            for target_chain_id, target_seq in assembly_ids_seqs:
+                if compare_query_and_hit_seqs(chain_seq, target_seq,
+                                              None,
+                                              None,
+                                              write_log=False,
+                                              is_ab=is_ab):
+                    chain_matching[chain_id].append(target_chain_id)
+
+        lens_of_matches = list(map(lambda x: len(chain_matching[x]),
+                                   chain_matching.keys()))
+
+        if not lens_of_matches:
+            continue
+
+        n_plus_one = n + 1
+
+        if all(map(lambda x: x == 1, lens_of_matches)) and len(
+                assembly_ids_seqs) == len(source_seqs):
+            # assembly contains only matching with needed seqs
+
+            res.append(AssemblyMatchInfo(n_plus_one, chain_matching))
+        elif all(map(lambda x: x == 1, lens_of_matches)) and len(
+                assembly_ids_seqs) != len(source_seqs):
+            # assembly contains matching and some other chains
+
+            res.append(AssemblyMatchInfo(n_plus_one, chain_matching,
+                                         reason_bad='additional_chains'))
+        elif lens_of_matches[0] > 0 and all(
+                map(lambda x: x == lens_of_matches[0],
+                    lens_of_matches)) and len(assembly_ids_seqs) == \
+                lens_of_matches[0] * len(source_seqs):
+            # assembly contains potential homomer that contains many matchings
+
+            res.append(AssemblyMatchInfo(n_plus_one, chain_matching,
+                                         reason_bad='potenial_homomer'))
+        elif lens_of_matches[0] > 0 and all(
+                map(lambda x: x == lens_of_matches[0],
+                    lens_of_matches)) and len(assembly_ids_seqs) != \
+                lens_of_matches[0] * len(source_seqs):
+            # assembly contains potential complex homomer that
+            # contains many matchings
+
+            res.append(AssemblyMatchInfo(n_plus_one, chain_matching,
+                                         reason_bad='potential_'
+                                                    'complex_homomer'))
+
+    return res
+
+
+def get_pdb_ids(l, ty):
+    return list(
+        frozenset(map(lambda x: x[1], filter(lambda x: x[0] == ty, l))))
+
+
+def matching_to_str(chains, matchings):
+    n_matchings = len(matchings[list(matchings.keys())[0]])
+
+    by_matching = []
+
+    for i in range(n_matchings):
+        by_matching.append([])
+        for chain in chains:
+            by_matching[-1].append(matchings[chain][i])
+
+    return '|'.join(map(lambda x: ':'.join(x), by_matching))
+
+
+def filter_candidates_pack(pdb_id, candidate_pdb_ids, chain_ids, ty, filtered_csv, rejected_csv):
+    for candidate_pdb_id in candidate_pdb_ids:
+        chains_str = ':'.join(chain_ids)
+
+        assemblies = check_structure(pdb_id,
+                                     chain_ids,
+                                     candidate_pdb_id, ty)
+        for assembly in assemblies:
+            matching_str = matching_to_str(chain_ids, assembly.matching)
+
+            if assembly.is_good:
+                filtered_csv.write(','.join(
+                    [pdb_id, ty, chains_str, candidate_pdb_id,
+                     matching_str, str(assembly.id)]) + '\n')
+            else:
+                rejected_csv.write(','.join(
+                    [pdb_id, ty, chains_str, candidate_pdb_id,
+                     matching_str, str(assembly.id),
+                     assembly.reason_bad]) + '\n')
+
+        filtered_csv.flush()
+        rejected_csv.flush()
+
+
+def filter_for_unboundness(processed_csv):
+    post_processed = set([])
+
+    if os.path.exists('post_processed.csv'):
+        with open('post_processed.csv', 'r') as f:
+            for line in f.readlines():
+                post_processed.add(line.strip())
+
+    with open('filtered_for_unboundness.csv', 'w') as filtered_csv, open(
+            'rejected_for_unboundness.csv', 'w') as rejected_csv, open(
+        'post_processed.csv', 'a') as post_processed_csv:
+        filtered_csv.write(
+            'pdb_id,type,chain_ids,candidate_pdb_id,'
+            'candidate_chain_ids,assembly_id\n')
+        rejected_csv.write(
+            'pdb_id,type,chain_ids,candidate_pdb_id,'
+            'candidate_chain_ids,assembly_id,reason\n')
+
+        for comp_name, candidates in processed_csv.items():
+            if comp_name in post_processed:
+                continue
+
+            pdb_id, chain_ids = comp_name.split('_')
+
+            chain_ids = [x for x in chain_ids]
+            heavy_chain_id = chain_ids[0]
+            light_chain_id = chain_ids[1]
+            ag_chains = chain_ids[2:]
+
+            ab_candidates_pdb_ids = get_pdb_ids(candidates, AB)
+            ag_candidates_pdb_ids = get_pdb_ids(candidates, AG)
+
+            filter_candidates_pack(pdb_id, ab_candidates_pdb_ids,
+                                   [heavy_chain_id, light_chain_id], AB,
+                                   filtered_csv, rejected_csv)
+
+            filter_candidates_pack(pdb_id, ag_candidates_pdb_ids,
+                                   ag_chains, AG,
+                                   filtered_csv, rejected_csv)
+
+            post_processed_csv.write(str(comp_name) + '\n')
+            post_processed_csv.flush()
 
 
 def get_pbds_with_chains(candidates, ty):
@@ -379,10 +626,6 @@ def process_candidates(db_name, candidates):
 
     return res
 
-    # 1. Если гомомер, то дотаскиваем цепи
-    # 2. Если есть молекула вблизи интефрейса взаимодействия, то помечаем
-    # 3. Удаляем HETATOMы
-
 
 def process_unbound(path_to_unbound_csv):
     prepared = process_csv(pd.read_csv(path_to_unbound_csv))
@@ -391,4 +634,17 @@ def process_unbound(path_to_unbound_csv):
         process_candidates(key, value)
 
 
-process_unbound('unbound_data.csv')
+# process_unbound('unbound_data.csv')
+
+# pdb_parser = PDBParser()
+# assembly_structure = pdb_parser.get_structure('ba',
+#                                               fetch_all_assemblies('1out')[0])
+#
+# assembly = union_models(assembly_structure)
+#
+# print(list(assembly.get_chains()))
+
+
+# print(check_structure('6mfp', ['G'], '4dvv', AG))
+
+filter_for_unboundness(process_csv(pd.read_csv('unbound_data.csv')))
