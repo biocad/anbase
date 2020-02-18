@@ -637,6 +637,10 @@ def check_names(names):
 def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id, is_ab):
     all_seqs_in_pdb = fetch_all_sequences(pdb_id)
 
+    for _, seq in all_seqs_in_pdb:
+        if 'X' in seq:
+            return []
+
     chain_matches = defaultdict(list)
 
     for chain_id, chain_seq in chain_ids_and_seqs:
