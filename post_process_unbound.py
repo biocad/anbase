@@ -1,3 +1,4 @@
+import string
 from xml.etree import ElementTree
 
 import Bio
@@ -5,7 +6,7 @@ import os
 from collections import defaultdict
 import pandas as pd
 from Bio import pairwise2
-from Bio.PDB import PDBParser, Superimposer, Chain, PDBIO
+from Bio.PDB import PDBParser, Superimposer, Chain, PDBIO, Select
 from Bio.PDB.Polypeptide import dindex_to_1, d3_to_index, PPBuilder
 import numpy as np
 from Bio.PDB.StructureBuilder import StructureBuilder
@@ -14,24 +15,48 @@ from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
     retrieve_pdb, fetch_sequence, with_timeout, memoize, get_while_true, \
     compare_query_and_hit_seqs
 
+# copy=Bio.PDB.Atom.copy
+# def myCopy(self):
+#     shallow = copy.copy(self)
+#     for child in self.child_dict.values():
+#         shallow.disordered_add(child.copy())
+#     return shallow
+# Bio.PDB.Atom.DisorderedAtom.copy=myCopy
 
-def get_unpacked_list(self):
-    """
-    Returns all atoms from the residue,
-    in case of disordered, keep only first alt loc and remove the alt-loc tag
-    """
-    atom_list = self.get_list()
-    undisordered_atom_list = []
-    for atom in atom_list:
-        if atom.is_disordered():
-            atom.altloc = " "
-            undisordered_atom_list.append(atom)
-        else:
-            undisordered_atom_list.append(atom)
-    return undisordered_atom_list
+# def get_unpacked_list(self):
+#     """
+#     Returns all atoms from the residue,
+#     in case of disordered, keep only first alt loc and remove the alt-loc tag
+#     """
+#     atom_list = self.get_list()
+#     undisordered_atom_list = []
+#     for atom in atom_list:
+#         if atom.is_disordered():
+#             atom.altloc = " "
+#             undisordered_atom_list.append(atom)
+#         else:
+#             undisordered_atom_list.append(atom)
+#     return undisordered_atom_list
+#
+#
+# Bio.PDB.Residue.Residue.get_unpacked_list = get_unpacked_list
+
+FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
+REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
+
+FILTERED_COMPLEXES_CSV = 'filtered_complexes.csv'
+REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
 
 
-Bio.PDB.Residue.Residue.get_unpacked_list = get_unpacked_list
+class NotDisordered(Select):
+    # this crutch is needed due to the fact that biopython is bad at handling
+    # atoms with alternate locations. So we just delete them
+    def accept_atom(self, atom):
+        if not atom.is_disordered() or atom.get_altloc() == 'A':
+            if atom.get_altloc() == 'A':
+                atom.altloc = ' '
+            return True
+        return False
 
 
 class Conformation:
@@ -40,12 +65,14 @@ class Conformation:
     peptides_builder = PPBuilder()
     pdb_io = PDBIO()
 
-    def __init__(self, ab_biological_assembly_id, ag_biological_assembly_id,
-                 pdb_id_b, heavy_chain_id_b,
+    def __init__(self, pdb_id_b, assembly_id_b, heavy_chain_id_b,
                  light_chain_id_b, ag_chain_ids_b,
-                 ab_pdb_id_u, heavy_chain_id_u, light_chain_id_u,
-                 ag_pdb_id_u, ag_chain_ids_u, is_ab_u, is_ag_u, candidate_id):
+                 ab_pdb_id_u, ab_assembly_id, heavy_chain_id_u,
+                 light_chain_id_u,
+                 ag_pdb_id_u, ag_assembly_id, ag_chain_ids_u, is_ab_u, is_ag_u,
+                 candidate_id):
         self.pdb_id_b = pdb_id_b
+        self.assembly_id_b = assembly_id_b
         self.heavy_chain_id_b = heavy_chain_id_b
         self.light_chain_id_b = light_chain_id_b
         self.ag_chain_ids_b = ag_chain_ids_b
@@ -54,13 +81,38 @@ class Conformation:
         self.light_chain_id_u = light_chain_id_u
         self.ag_pdb_id_u = ag_pdb_id_u
         self.ag_chain_ids_u = ag_chain_ids_u
-
-        self.complex_structure_b = self._load_structure(pdb_id_b)
-        self.ab_structure_u = self._load_structure(ab_pdb_id_u)
-        self.ag_structure_u = self._load_structure(ag_pdb_id_u)
+        self.ab_assembly_id = ab_assembly_id
+        self.ag_assembly_id = ag_assembly_id
 
         self.is_ab_u = is_ab_u
+
         self.is_ag_u = is_ag_u
+
+        self.complex_structure_b = self._load_structure(pdb_id_b,
+                                                        self.assembly_id_b)
+        if self.is_ab_u:
+            self.ab_structure_u = self._load_structure(ab_pdb_id_u,
+                                                       self.ab_assembly_id)
+        else:
+            self.ab_structure_u = self.complex_structure_b.copy()
+
+            for model in self.ab_structure_u:
+                for chain in model:
+                    if chain.get_id() not in [self.heavy_chain_id_b,
+                                              self.light_chain_id_b]:
+                        model.detach_child(chain.get_id())
+
+        if self.is_ag_u:
+            self.ag_structure_u = self._load_structure(ag_pdb_id_u,
+                                                       self.ag_assembly_id)
+        else:
+            self.ag_structure_u = self.complex_structure_b.copy()
+
+            for model in self.ag_structure_u:
+                for chain in model:
+                    if chain.get_id() in [self.heavy_chain_id_b,
+                                          self.light_chain_id_b]:
+                        model.detach_child(chain.get_id())
 
         self.ab_chains_b = self.extract_chains(self.complex_structure_b,
                                                [self.heavy_chain_id_b,
@@ -85,9 +137,10 @@ class Conformation:
     def extract_chains(structure, chain_ids):
         chains = []
 
-        for chain in structure:
-            if chain.get_id() in chain_ids:
-                chains.append(chain)
+        for model in structure:
+            for chain in model:
+                if chain.get_id() in chain_ids:
+                    chains.append(chain)
 
         return chains
 
@@ -117,10 +170,22 @@ class Conformation:
         return ab_interface_cas, ag_interface_cas
 
     @staticmethod
-    def _load_structure(pdb_id):
-        return \
-            Conformation.pdb_parser.get_structure(pdb_id,
-                                                  retrieve_pdb(pdb_id))[0]
+    def _load_structure(pdb_id, assembly_id):
+        pdb = Conformation.pdb_parser.get_structure(pdb_id,
+                                                    fetch_all_assemblies(
+                                                        pdb_id)[
+                                                        assembly_id - 1])
+
+        tmp_path = os.path.join(DB_PATH, 'tmp.pdb')
+
+        Conformation.pdb_io.set_structure(pdb)
+        # delete all second variants from disordered atoms in order to get
+        # rid of some problems
+        Conformation.pdb_io.save(tmp_path, select=NotDisordered())
+
+        pdb = Conformation.pdb_parser.get_structure(pdb_id, tmp_path)
+
+        return union_models(pdb)
 
     @staticmethod
     def _matching_atoms_for_chains(chain1, pdb_id1, chain_id1, chain2, pdb_id2,
@@ -216,6 +281,7 @@ class Conformation:
         return atoms1, atoms2
 
     def align_ab(self):
+        # TODO: что-то не так тут выравнивается на 6icc
         if not self.is_ab_u:
             return
 
@@ -273,7 +339,7 @@ class Conformation:
         print(self.super_imposer.rms)
 
     def write_candidate(self):
-        path = os.path.join(self.pdb_id_b, str(self.candidate_id))
+        path = os.path.join(DB_PATH, self.pdb_id_b, str(self.candidate_id))
         name_prefix = os.path.join(path,
                                    self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
 
@@ -283,15 +349,22 @@ class Conformation:
         sb = StructureBuilder()
 
         sb.init_structure('complex')
-        sb.init_model(0)
 
-        for chain in self.ab_structure_u.copy():
-            sb.model.add(chain)
+        counter = 0
 
-        for chain in self.ag_structure_u.copy():
-            sb.model.add(chain)
+        for model in self.ab_structure_u.copy():
+            model.id = counter
+            sb.structure.add(model)
+            counter += 1
 
-        self.pdb_io.set_structure(sb.structure)
+        for model in self.ag_structure_u.copy():
+            model.id = counter
+            sb.structure.add(model)
+            counter += 1
+
+        models_in_struct = union_models(sb.structure)
+
+        self.pdb_io.set_structure(models_in_struct)
         self.pdb_io.save(
             name_prefix + '_complex' + ('_u' if self.is_ab_u else '_b')
             + DOT_PDB)
@@ -347,6 +420,9 @@ def fetch_all_assemblies(pdb_id):
 
         r = get_while_true(curl)
 
+        if r is None:
+            continue
+
         with open(path_to_tmp, 'w') as f:
             f.write(r)
 
@@ -355,7 +431,29 @@ def fetch_all_assemblies(pdb_id):
     return res
 
 
+@memoize
+def assembly_id_by_chains(pdb_id, chains):
+    pdb_parser = PDBParser()
+
+    counter = 1
+    for assembly_path in fetch_all_assemblies(pdb_id):
+        assembly_structure = pdb_parser.get_structure('ba', assembly_path)
+        assembly = union_models(assembly_structure)
+
+        chains_in_assembly = [x.get_id().split('_')[0]
+                              for x in assembly.get_chains()]
+
+        if frozenset(chains) <= frozenset(chains_in_assembly):
+            return counter
+
+        counter += 1
+
+    return None
+
+
 def union_models(struct):
+    available_chain_ids = set(string.ascii_lowercase + string.ascii_uppercase)
+
     models = list(struct.get_models())
 
     if len(models) < 2:
@@ -366,18 +464,16 @@ def union_models(struct):
     sb.init_structure('ba')
     sb.init_model(0)
 
-    chain_names = {}
-
     for model in models:
         for chain in model:
             chain_id = chain.get_id()
             name = chain_id
 
-            if chain_id not in chain_names:
-                chain_names[chain_id] = 0
+            if chain_id in available_chain_ids:
+                available_chain_ids.remove(chain_id)
             else:
-                chain_names[chain_id] += 1
-                name = chain_id + '_' + str(chain_names[chain_id])
+                # TODO: can crash if there are more than 52 chains
+                name = available_chain_ids.pop()
 
             chain_copied = chain.copy()
             chain_copied.id = name
@@ -421,7 +517,8 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
         chains_in_assembly = [x.get_id().split('_')[0]
                               for x in assembly.get_chains()]
 
-        assembly_ids_seqs = list(map(lambda x: (x, target_seqs[x]), chains_in_assembly))
+        assembly_ids_seqs = list(
+            map(lambda x: (x, target_seqs[x]), chains_in_assembly))
 
         chain_matching = defaultdict(list)
 
@@ -435,7 +532,7 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
                     chain_matching[chain_id].append(target_chain_id)
 
         lens_of_matches = list(map(lambda x: len(chain_matching[x]),
-                                   chain_matching.keys()))
+                                   source_chain_ids))
 
         if not lens_of_matches:
             continue
@@ -493,7 +590,8 @@ def matching_to_str(chains, matchings):
     return '|'.join(map(lambda x: ':'.join(x), by_matching))
 
 
-def filter_candidates_pack(pdb_id, candidate_pdb_ids, chain_ids, ty, filtered_csv, rejected_csv):
+def filter_candidates_pack(comp_name, pdb_id, candidate_pdb_ids, chain_ids, ty,
+                           filtered_csv, rejected_csv):
     for candidate_pdb_id in candidate_pdb_ids:
         chains_str = ':'.join(chain_ids)
 
@@ -505,11 +603,11 @@ def filter_candidates_pack(pdb_id, candidate_pdb_ids, chain_ids, ty, filtered_cs
 
             if assembly.is_good:
                 filtered_csv.write(','.join(
-                    [pdb_id, ty, chains_str, candidate_pdb_id,
+                    [comp_name, ty, chains_str, candidate_pdb_id,
                      matching_str, str(assembly.id)]) + '\n')
             else:
                 rejected_csv.write(','.join(
-                    [pdb_id, ty, chains_str, candidate_pdb_id,
+                    [comp_name, ty, chains_str, candidate_pdb_id,
                      matching_str, str(assembly.id),
                      assembly.reason_bad]) + '\n')
 
@@ -525,14 +623,14 @@ def filter_for_unboundness(processed_csv):
             for line in f.readlines():
                 post_processed.add(line.strip())
 
-    with open('filtered_for_unboundness.csv', 'w') as filtered_csv, open(
-            'rejected_for_unboundness.csv', 'w') as rejected_csv, open(
+    with open(FILTERED_COMPLEXES_CSV, 'w') as filtered_csv, open(
+            REJECTED_COMPLEXES_CSV, 'w') as rejected_csv, open(
         'post_processed.csv', 'a') as post_processed_csv:
         filtered_csv.write(
-            'pdb_id,type,chain_ids,candidate_pdb_id,'
+            'comp_name,type,chain_ids,candidate_pdb_id,'
             'candidate_chain_ids,assembly_id\n')
         rejected_csv.write(
-            'pdb_id,type,chain_ids,candidate_pdb_id,'
+            'comp_name,type,chain_ids,candidate_pdb_id,'
             'candidate_chain_ids,assembly_id,reason\n')
 
         for comp_name, candidates in processed_csv.items():
@@ -549,11 +647,11 @@ def filter_for_unboundness(processed_csv):
             ab_candidates_pdb_ids = get_pdb_ids(candidates, AB)
             ag_candidates_pdb_ids = get_pdb_ids(candidates, AG)
 
-            filter_candidates_pack(pdb_id, ab_candidates_pdb_ids,
+            filter_candidates_pack(comp_name, pdb_id, ab_candidates_pdb_ids,
                                    [heavy_chain_id, light_chain_id], AB,
                                    filtered_csv, rejected_csv)
 
-            filter_candidates_pack(pdb_id, ag_candidates_pdb_ids,
+            filter_candidates_pack(comp_name, pdb_id, ag_candidates_pdb_ids,
                                    ag_chains, AG,
                                    filtered_csv, rejected_csv)
 
@@ -561,68 +659,73 @@ def filter_for_unboundness(processed_csv):
             post_processed_csv.flush()
 
 
-def get_pbds_with_chains(candidates, ty):
-    pdbs_to_chains = defaultdict(list)
-
-    for x in candidates:
-        if x[0] != ty:
-            continue
-
-        pdbs_to_chains[x[1]].append(x[2])
-
-    return list(pdbs_to_chains.items())
+def get_pbds_with_chains_and_assembly_ids(candidates, ty):
+    return list(map(
+        lambda x: (x.candidate_pdb_id, x.candidate_chain_ids, x.assembly_id),
+        filter(lambda x: x.ty == ty, candidates)))
 
 
-def process_candidates(db_name, candidates):
-    db_name_split = db_name.split('_')
+def process_candidates(comp_name, candidates):
+    comp_name_split = comp_name.split('_')
 
-    pdb_id_b = db_name_split[0]
-    chains_sep = list(map(lambda x: db_name_split[1][x],
-                          range(len(db_name_split[1]))))
+    pdb_id_b = comp_name_split[0]
+    chains_sep = list(map(lambda x: comp_name_split[1][x],
+                          range(len(comp_name_split[1]))))
 
     # TODO: NO VHHs?
     heavy_chain_id_b = chains_sep[0]
     light_chain_id_b = chains_sep[1]
     ag_chain_ids_b = chains_sep[2:]
 
-    ag_pdbs_with_chains = get_pbds_with_chains(candidates, AG)
-    ab_pdbs_with_chains = get_pbds_with_chains(candidates, AB)
+    ag_pdbs_with_chains = get_pbds_with_chains_and_assembly_ids(candidates, AG)
+    ab_pdbs_with_chains = get_pbds_with_chains_and_assembly_ids(candidates, AB)
 
     is_ab_u = True
     is_ag_u = True
 
+    assembly_id_b = assembly_id_by_chains(pdb_id_b,
+                                          ag_chain_ids_b + [heavy_chain_id_b,
+                                                            light_chain_id_b])
+
+    # TODO: подумать тут
+    if not assembly_id_b:
+        return []
+
     if not ab_pdbs_with_chains:
         is_ab_u = False
-        ab_pdbs_with_chains = [(pdb_id_b, [heavy_chain_id_b + ':' +
-                                           light_chain_id_b])]
+        ab_pdbs_with_chains = [
+            (pdb_id_b, heavy_chain_id_b + ':' + light_chain_id_b,
+             assembly_id_b)]
 
     if not ag_pdbs_with_chains:
         is_ag_u = False
-        ag_pdbs_with_chains = [(pdb_id_b, ag_chain_ids_b)]
+        ag_pdbs_with_chains = [
+            (pdb_id_b, ':'.join(ag_chain_ids_b), assembly_id_b)]
 
     res = []
 
     counter = -1
 
-    for ag_pdb_id_u, chainss_ag in ag_pdbs_with_chains:
-        for chains_ag in chainss_ag:
-            chains_ag_split = chains_ag.split(':')
-            for ab_pdb_id_u, chainss_ab in ab_pdbs_with_chains:
-                for chains_ab in chainss_ab:
-                    counter += 1
+    for ag_pdb_id_u, chains_ag, ag_assembly_id in ag_pdbs_with_chains:
+        chains_ag_split = chains_ag.split(':')
+        for ab_pdb_id_u, chains_ab, ab_assembly_id in ab_pdbs_with_chains:
+            counter += 1
 
-                    [heavy_chain_id_u, light_chain_id_u] = chains_ab.split(':')
-                    conformation = Conformation(pdb_id_b, heavy_chain_id_b,
-                                                light_chain_id_b,
-                                                ag_chain_ids_b, ab_pdb_id_u,
-                                                heavy_chain_id_u,
-                                                light_chain_id_u,
-                                                ag_pdb_id_u, chains_ag_split,
-                                                is_ab_u, is_ag_u, counter)
-                    conformation.align_ab()
-                    conformation.align_ag()
-                    conformation.write_candidate()
-                    res.append(conformation)
+            [heavy_chain_id_u, light_chain_id_u] = chains_ab.split(':')
+            conformation = Conformation(pdb_id_b, assembly_id_b,
+                                        heavy_chain_id_b,
+                                        light_chain_id_b,
+                                        ag_chain_ids_b, ab_pdb_id_u,
+                                        ab_assembly_id,
+                                        heavy_chain_id_u,
+                                        light_chain_id_u,
+                                        ag_pdb_id_u, ag_assembly_id,
+                                        chains_ag_split,
+                                        is_ab_u, is_ag_u, counter)
+            conformation.align_ab()
+            conformation.align_ag()
+            conformation.write_candidate()
+            res.append(conformation)
 
     return res
 
@@ -632,6 +735,32 @@ def process_unbound(path_to_unbound_csv):
 
     for key, value in prepared.items():
         process_candidates(key, value)
+
+
+class FilteredStructure:
+    def __init__(self, line):
+        self.ty = line['type']
+        self.candidate_pdb_id = line['candidate_pdb_id']
+        self.candidate_chain_ids = line['candidate_chain_ids']
+        self.assembly_id = line['assembly_id']
+
+
+def process_filtered_csv(path_to_filtered_structures_csv,
+                         path_to_filtered_complexes_csv,
+                         path_to_rejected_complexes_csv):
+    filtered_structures_csv = pd.read_csv(path_to_filtered_structures_csv)
+
+    by_complex = defaultdict(list)
+
+    for i in range(len(filtered_structures_csv)):
+        by_complex[filtered_structures_csv.iloc[i]['comp_name']].append(
+            FilteredStructure(filtered_structures_csv.iloc[i]))
+
+    with open(path_to_filtered_complexes_csv,
+              'w') as filtered_complexes_csv, open(
+        path_to_rejected_complexes_csv, 'w') as rejected_complexes_csv:
+        for comp_name, structures in by_complex.items():
+            process_candidates(comp_name, structures)
 
 
 # process_unbound('unbound_data.csv')
@@ -647,4 +776,7 @@ def process_unbound(path_to_unbound_csv):
 
 # print(check_structure('6mfp', ['G'], '4dvv', AG))
 
-filter_for_unboundness(process_csv(pd.read_csv('unbound_data.csv')))
+# filter_for_unboundness(process_csv(pd.read_csv('unbound_data-3.csv')))
+#
+process_filtered_csv(FILTERED_STRUCTURES_CSV, FILTERED_COMPLEXES_CSV,
+                     REJECTED_COMPLEXES_CSV)
