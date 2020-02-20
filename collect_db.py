@@ -104,8 +104,16 @@ def get_while_true(curl):
             res = requests.get(curl)
             content = res.content.decode('utf-8')
 
-            if content and not content.startswith('<!DOCTYPE'):
-                not_finished = False
+            if not content:
+                continue
+
+            if '404 Not Found' in content:
+                return None
+
+            if content.startswith('<!DOCTYPE'):
+                continue
+
+            not_finished = False
         except HandlerError:
             return None
         except Exception:
@@ -127,8 +135,16 @@ def post_while_true(url, json):
             res = requests.post(url, json)
             content = res.content.decode('utf-8')
 
-            if content and not content.startswith('<!DOCTYPE'):
-                not_finished = False
+            if not content:
+                continue
+
+            if '404 Not Found' in content:
+                return None
+
+            if content.startswith('<!DOCTYPE'):
+                continue
+
+            not_finished = False
         except HandlerError:
             return None
         except Exception:
@@ -857,9 +873,8 @@ def collect_unbound_structures(overwrite=True, p=None):
                 unbound_antigen_candidates, unbound_antibody_candidates = \
                     find_unbound_conformations(comp)
 
-                if overwrite:
-                    remove_if_contains(comp.complex_dir_path, AG)
-                    remove_if_contains(comp.complex_dir_path, AB)
+                remove_if_contains(comp.complex_dir_path, AG)
+                remove_if_contains(comp.complex_dir_path, AB)
 
                 def helper_writer(candidates, suf):
                     counter = 0
@@ -891,16 +906,15 @@ def collect_unbound_structures(overwrite=True, p=None):
 
                         tmp_paths.add(tmp_path)
 
-                        if overwrite:
-                            unbound_data_csv.write(
-                                '{},{},{},{},{},{}\n'.format(comp.pdb_id,
-                                                             comp.db_name, suf,
-                                                             candidate_name,
-                                                             candidate.pdb_id,
-                                                             ':'.join(
-                                                                 candidate.
-                                                                     chain_ids)))
-                            unbound_data_csv.flush()
+                        unbound_data_csv.write(
+                            '{},{},{},{},{},{}\n'.format(comp.pdb_id,
+                                                         comp.db_name, suf,
+                                                         candidate_name,
+                                                         candidate.pdb_id,
+                                                         ':'.join(
+                                                             candidate.
+                                                                 chain_ids)))
+                        unbound_data_csv.flush()
 
                         counter += 1
 

@@ -15,32 +15,6 @@ from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
     retrieve_pdb, fetch_sequence, with_timeout, memoize, get_while_true, \
     compare_query_and_hit_seqs
 
-# copy=Bio.PDB.Atom.copy
-# def myCopy(self):
-#     shallow = copy.copy(self)
-#     for child in self.child_dict.values():
-#         shallow.disordered_add(child.copy())
-#     return shallow
-# Bio.PDB.Atom.DisorderedAtom.copy=myCopy
-
-# def get_unpacked_list(self):
-#     """
-#     Returns all atoms from the residue,
-#     in case of disordered, keep only first alt loc and remove the alt-loc tag
-#     """
-#     atom_list = self.get_list()
-#     undisordered_atom_list = []
-#     for atom in atom_list:
-#         if atom.is_disordered():
-#             atom.altloc = " "
-#             undisordered_atom_list.append(atom)
-#         else:
-#             undisordered_atom_list.append(atom)
-#     return undisordered_atom_list
-#
-#
-# Bio.PDB.Residue.Residue.get_unpacked_list = get_unpacked_list
-
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
 
@@ -137,10 +111,11 @@ class Conformation:
     def extract_chains(structure, chain_ids):
         chains = []
 
-        for model in structure:
-            for chain in model:
-                if chain.get_id() in chain_ids:
-                    chains.append(chain)
+        for chain_id in chain_ids:
+            for model in structure:
+                for chain in model:
+                    if chain.get_id() == chain_id:
+                        chains.append(chain)
 
         return chains
 
@@ -273,7 +248,9 @@ class Conformation:
         ids1 = get_ids_from_chain(chain1, seq1, ids_in_seq1)
         ids2 = get_ids_from_chain(chain2, seq2, ids_in_seq2)
 
-        mutual_ids = frozenset(ids1.keys()) & frozenset(ids2.keys())
+        mutual_ids = list(
+            filter(lambda x: 'CA' in peps1[ids1[x]] and 'CA' in peps2[ids2[x]],
+                   frozenset(ids1.keys()) & frozenset(ids2.keys())))
 
         atoms1 = [peps1[ids1[i]]['CA'] for i in mutual_ids]
         atoms2 = [peps2[ids2[i]]['CA'] for i in mutual_ids]
@@ -281,7 +258,6 @@ class Conformation:
         return atoms1, atoms2
 
     def align_ab(self):
-        # TODO: что-то не так тут выравнивается на 6icc
         if not self.is_ab_u:
             return
 
@@ -305,8 +281,11 @@ class Conformation:
             self.ab_pdb_id_u,
             self.light_chain_id_u)
 
-        self.super_imposer.set_atoms(heavy_atoms1 + light_atoms1,
-                                     heavy_atoms2 + light_atoms2)
+        atoms1 = heavy_atoms1 + light_atoms1
+        atoms2 = heavy_atoms2 + light_atoms2
+
+        self.super_imposer.set_atoms(atoms1[:3],
+                                     atoms2[:3])
         self.super_imposer.apply(self.ab_structure_u.get_atoms())
 
         print(self.super_imposer.rms)
@@ -339,7 +318,13 @@ class Conformation:
         print(self.super_imposer.rms)
 
     def write_candidate(self):
-        path = os.path.join(DB_PATH, self.pdb_id_b, str(self.candidate_id))
+        pre_path = os.path.join(DB_PATH, self.pdb_id_b)
+
+        self.pdb_io.set_structure(self.complex_structure_b)
+        self.pdb_io.save(os.path.join(pre_path, self.pdb_id_b + DOT_PDB))
+
+        path = os.path.join(pre_path, str(self.candidate_id))
+
         name_prefix = os.path.join(path,
                                    self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
 
@@ -399,6 +384,9 @@ def fetch_number_of_assemblies(pdb_id):
 
     r = get_while_true(curl)
     xml = ElementTree.fromstring(r)
+
+    if 'count' not in xml.attrib:
+        return fetch_number_of_assemblies(pdb_id)
 
     return int(xml.attrib['count'])
 
@@ -683,9 +671,15 @@ def process_candidates(comp_name, candidates):
     is_ab_u = True
     is_ag_u = True
 
-    assembly_id_b = assembly_id_by_chains(pdb_id_b,
-                                          ag_chain_ids_b + [heavy_chain_id_b,
-                                                            light_chain_id_b])
+    try:
+        assembly_id_b = assembly_id_by_chains(pdb_id_b,
+                                              ag_chain_ids_b + [
+                                                  heavy_chain_id_b,
+                                                  light_chain_id_b])
+    except Exception as e:
+        print('Couldn\'t process complex\'s assemblies:', comp_name, 'reason:',
+              e, flush=True)
+        return []
 
     # TODO: подумать тут
     if not assembly_id_b:
@@ -712,20 +706,26 @@ def process_candidates(comp_name, candidates):
             counter += 1
 
             [heavy_chain_id_u, light_chain_id_u] = chains_ab.split(':')
-            conformation = Conformation(pdb_id_b, assembly_id_b,
-                                        heavy_chain_id_b,
-                                        light_chain_id_b,
-                                        ag_chain_ids_b, ab_pdb_id_u,
-                                        ab_assembly_id,
-                                        heavy_chain_id_u,
-                                        light_chain_id_u,
-                                        ag_pdb_id_u, ag_assembly_id,
-                                        chains_ag_split,
-                                        is_ab_u, is_ag_u, counter)
-            conformation.align_ab()
-            conformation.align_ag()
-            conformation.write_candidate()
-            res.append(conformation)
+            try:
+                conformation = Conformation(pdb_id_b, assembly_id_b,
+                                            heavy_chain_id_b,
+                                            light_chain_id_b,
+                                            ag_chain_ids_b, ab_pdb_id_u,
+                                            ab_assembly_id,
+                                            heavy_chain_id_u,
+                                            light_chain_id_u,
+                                            ag_pdb_id_u, ag_assembly_id,
+                                            chains_ag_split,
+                                            is_ab_u, is_ag_u, counter)
+
+                conformation.align_ab()
+                conformation.align_ag()
+                conformation.write_candidate()
+                res.append(conformation)
+            except Exception as e:
+                print('Couldn\'t process candidate', pdb_id_b, ab_pdb_id_u,
+                      'assembly', ab_assembly_id, ag_pdb_id_u, 'assembly',
+                      ag_assembly_id, e, flush=True)
 
     return res
 
