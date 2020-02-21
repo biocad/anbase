@@ -209,7 +209,7 @@ class Complex:
             self.antibody_h_chain]
 
         self.comp_name = form_comp_name(self.pdb_id, self.antibody_chains,
-                                      self.antigen_chains)
+                                        self.antigen_chains)
 
         self.complex_dir_path = os.path.join(DB_PATH, self.pdb_id)
 
@@ -302,7 +302,8 @@ def sub_nan(val):
     return val
 
 
-def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None, only_vhhs=False):
+def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None,
+                        only_vhhs=False):
     complexes = []
 
     obsolete = {}
@@ -330,7 +331,12 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None, only_vhhs=Fal
                 if to_accept and row[PDB_ID].upper() not in to_accept:
                     continue
 
-                if only_vhhs and sub_nan(row[L_CHAIN]) is not None:
+                is_vhh_h = sub_nan(row[H_CHAIN]) is not None and sub_nan(
+                    row[L_CHAIN]) is None
+                is_vhh_l = sub_nan(row[H_CHAIN]) is None and sub_nan(
+                    row[L_CHAIN]) is not None
+
+                if only_vhhs and not (is_vhh_l):
                     continue
 
                 if row[PDB_ID] in obsolete.keys():
@@ -347,9 +353,17 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None, only_vhhs=Fal
                         continue
 
                 antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
-                new_complex = Complex(
-                    row[PDB_ID], sub_nan(row[H_CHAIN]), sub_nan(row[L_CHAIN]),
-                    antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+
+                if is_vhh_l:
+                    new_complex = Complex(
+                        row[PDB_ID], sub_nan(row[L_CHAIN]),
+                        sub_nan(row[H_CHAIN]),
+                        antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+                else:
+                    new_complex = Complex(
+                        row[PDB_ID], sub_nan(row[H_CHAIN]),
+                        sub_nan(row[L_CHAIN]),
+                        antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
 
                 if new_complex.has_unfetched_sequences():
                     print('Has unfetched sequences:', row[PDB_ID])
