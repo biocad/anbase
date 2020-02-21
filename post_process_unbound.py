@@ -75,7 +75,8 @@ class Conformation:
             self.ab_structure_u = self.complex_structure_b.copy()
 
             for model in self.ab_structure_u:
-                for chain in model:
+                chains = list(model.get_chains())
+                for chain in chains:
                     if chain.get_id() not in self.ab_chain_ids_b:
                         model.detach_child(chain.get_id())
 
@@ -86,7 +87,8 @@ class Conformation:
             self.ag_structure_u = self.complex_structure_b.copy()
 
             for model in self.ag_structure_u:
-                for chain in model:
+                chains = list(model.get_chains())
+                for chain in chains:
                     if chain.get_id() in self.ab_chain_ids_b:
                         model.detach_child(chain.get_id())
 
@@ -771,7 +773,7 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
         if antigen_type and 'peptide' in antigen_type:
             comp_name = form_comp_name(entry[PDB_ID],
-                                       [entry[H_CHAIN], entry[L_CHAIN]], entry[
+                                       [sub_nan(entry[H_CHAIN]), sub_nan(entry[L_CHAIN])], entry[
                                            ANTIGEN_CHAIN].split(' | '))
             peptide_complexes.add(comp_name)
 
@@ -793,7 +795,7 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 # print(check_structure('6mfp', ['G'], '4dvv', AG))
 
-filter_for_unboundness(process_csv(pd.read_csv('unbound_full.csv')))
+# filter_for_unboundness(process_csv(pd.read_csv('unbound_full.csv')))
 #
-# process_filtered_csv(FILTERED_STRUCTURES_CSV, FILTERED_COMPLEXES_CSV,
-#                      REJECTED_COMPLEXES_CSV)
+process_filtered_csv(FILTERED_STRUCTURES_CSV, FILTERED_COMPLEXES_CSV,
+                     REJECTED_COMPLEXES_CSV)
