@@ -167,6 +167,22 @@ def is_obsolete(pdb_id):
     return False
 
 
+def form_comp_name(pdb_id, ab_chains, ag_chains):
+    ab_names = list(map(lambda x: x if x else '', ab_chains))
+    comp_name = pdb_id + '_' + ':'.join(ab_names) + '|' + ':'.join(ag_chains)
+    return comp_name
+
+
+def comp_name_to_pdb_and_chains(comp_name):
+    [pdb_id, chains] = comp_name.split('_')
+    ab_chains_s, ag_chains_s = chains.split('|')
+
+    ab_chains = ab_chains_s.split(':')
+    ag_chains = ag_chains_s.split(':')
+
+    return pdb_id, ab_chains, ag_chains
+
+
 class Complex:
     pdb_parser = PDBParser()
 
@@ -175,6 +191,8 @@ class Complex:
         self.pdb_id = pdb_id
         self.antibody_h_chain = h_chain
         self.antibody_l_chain = l_chain
+
+        self.is_vhh = self.antibody_l_chain is None
 
         # if chain ids of antibody's chains are equal up to case,
         # it means that antibody has only one chain
@@ -185,12 +203,13 @@ class Complex:
 
         self.antigen_chains = antigen_chain
         self.antigen_het_name = antigen_het_name
-        self.structure = None
 
-        h_name = self.antibody_h_chain if self.antibody_h_chain else ''
-        l_name = self.antibody_l_chain if self.antibody_l_chain else ''
-        self.db_name = self.pdb_id + '_' + ''.join(
-            [h_name, l_name] + self.antigen_chains)
+        self.antibody_chains = [self.antibody_h_chain,
+                                self.antibody_l_chain] if not self.is_vhh else [
+            self.antibody_h_chain]
+
+        self.db_name = form_comp_name(self.pdb_id, self.antibody_chains,
+                                      self.antigen_chains)
 
         self.complex_dir_path = os.path.join(DB_PATH, self.pdb_id)
 
@@ -207,23 +226,13 @@ class Complex:
         if self.antibody_l_chain:
             self.antibody_l_seq = self._fetch_sequence(self.antibody_l_chain)
 
+        self.antibody_seqs = [self.antibody_h_seq,
+                              self.antibody_l_seq] if not self.is_vhh else [
+            self.antibody_h_seq]
+
     def has_unfetched_sequences(self):
-        return list(filter(lambda x: x is None, self.antigen_chains +
-                           [self.antibody_h_chain, self.antibody_l_chain]))
-
-    def load_structure(self):
-        self.load_structure_from(os.path.join(self.complex_dir_path,
-                                              self.db_name + DOT_PDB))
-
-    def load_structure_from(self, path):
-        try:
-            self.structure = self.pdb_parser.get_structure(self.pdb_id, path)
-        except Exception as e:
-            print('Not loaded:', self.db_name, e)
-            self.structure = None
-
-    def is_bad_structure(self):
-        return self.structure is None
+        return list(filter(lambda x: x is None,
+                           self.antigen_chains + self.antibody_chains))
 
     def _fetch_sequence(self, chain_id):
         fasta_path = os.path.join(self.complex_dir_path,
@@ -287,12 +296,13 @@ def fetch_sequence(pdb_id, chain_id):
     return None
 
 
-def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
-    def sub_nan(val):
-        if isinstance(val, float) and math.isnan(val):
-            return None
-        return val
+def sub_nan(val):
+    if isinstance(val, float) and math.isnan(val):
+        return None
+    return val
 
+
+def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None, only_vhhs=False):
     complexes = []
 
     obsolete = {}
@@ -306,12 +316,8 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
 
         counter = -1
 
-        allowed_types_of_antigen = ['protein', 'peptide', 'protein | protein',
-                                    'protein | protein | protein',
-                                    'protein | peptide',
-                                    'peptide | protein',
-                                    'peptide | peptide | peptide',
-                                    'protein | protein | peptide']
+        allowed_types_of_antigen = ['protein', 'protein | protein',
+                                    'protein | protein | protein']
 
         for _, row in sabdab_summary_df.iterrows():
             counter += 1
@@ -322,6 +328,9 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
             if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] in \
                     allowed_types_of_antigen:
                 if to_accept and row[PDB_ID].upper() not in to_accept:
+                    continue
+
+                if only_vhhs and sub_nan(row[L_CHAIN]) is not None:
                     continue
 
                 if row[PDB_ID] in obsolete.keys():
@@ -363,57 +372,6 @@ class Candidate:
 
     def __repr__(self):
         return str((self.pdb_id, self.chain_ids))
-
-
-def load_bound_complexes(complexes, load_structures=False):
-    tmp_paths = set([])
-
-    io = PDBIO()
-
-    for comp in complexes:
-        pdb_path = os.path.join(comp.complex_dir_path,
-                                comp.db_name + DOT_PDB)
-
-        if os.path.exists(pdb_path):
-            if load_structures:
-                comp.load_structure_from(pdb_path)
-            print(comp.pdb_id, 'loaded', flush=True)
-            continue
-
-        # if os.path.exists(comp.complex_dir_path):
-        #     shutil.rmtree(comp.complex_dir_path)
-
-        if not os.path.exists(comp.complex_dir_path):
-            os.mkdir(comp.complex_dir_path)
-
-        tmp_path = retrieve_pdb(comp.pdb_id)
-
-        if not tmp_path:
-            continue
-
-        comp.load_structure_from(tmp_path)
-
-        if comp.is_bad_structure():
-            continue
-
-        needed_chain_ids = [x for x in [comp.antibody_h_chain,
-                                        comp.antibody_l_chain] +
-                            comp.antigen_chains if x]
-
-        for model in comp.structure:
-            for chain in model:
-                if chain.get_id() not in needed_chain_ids:
-                    model.detach_child(chain.get_id())
-
-        io.set_structure(comp.structure)
-        io.save(pdb_path)
-
-        tmp_paths.add(tmp_path)
-
-        print(comp.pdb_id, 'loaded', flush=True)
-
-    for tmp_path in tmp_paths:
-        os.remove(tmp_path)
 
 
 def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
@@ -730,10 +688,8 @@ def find_unbound_conformations(complex):
 
     unbound_antibody_valid_candidates = \
         find_unbound_structure(complex.pdb_id,
-                               [complex.antibody_h_chain,
-                                complex.antibody_l_chain],
-                               [complex.antibody_h_seq,
-                                complex.antibody_l_seq], True)
+                               complex.antibody_chains, complex.antibody_seqs,
+                               True)
 
     print('unbound antibody:', unbound_antibody_valid_candidates, flush=True)
 
@@ -775,7 +731,6 @@ def run_zlab_test():
 
     comps = get_bound_complexes(structures_summary,
                                 list(map(lambda x: x[0], test_structures)))
-    load_bound_complexes(comps)
 
     for pdb_id, unbound_antibody_id, unbound_antigen_id in test_structures:
         print('processing', pdb_id, flush=True)
@@ -783,8 +738,6 @@ def run_zlab_test():
         comps_found = list(filter(lambda x: x.pdb_id.upper() == pdb_id, comps))
 
         for comp in comps_found:
-            comp.load_structure()
-
             unbound_antigen_candidates, unbound_antibody_candidates = \
                 find_unbound_conformations(comp)
 
@@ -827,13 +780,7 @@ def remove_if_contains(path, s):
 
 
 def collect_unbound_structures(overwrite=True, p=None):
-    comps = get_bound_complexes(structures_summary, p=p)
-    load_bound_complexes(comps)
-
-    tmp_paths = set()
-
-    pdb_parser = PDBParser()
-    io = PDBIO()
+    comps = get_bound_complexes(structures_summary, p=p, only_vhhs=True)
 
     processed = set()
 
@@ -863,11 +810,6 @@ def collect_unbound_structures(overwrite=True, p=None):
                 continue
 
             try:
-                comp.load_structure()
-
-                if comp.is_bad_structure():
-                    raise RuntimeError('Couldn\'t parse: ' + comp.db_name)
-
                 print('processing:', comp.db_name, flush=True)
 
                 unbound_antigen_candidates, unbound_antibody_candidates = \
@@ -883,28 +825,6 @@ def collect_unbound_structures(overwrite=True, p=None):
 
                         candidate_name = comp.pdb_id + '_' + \
                                          suf + '_u_' + str(counter)
-
-                        path_to_candidate_pdb = os.path.join(
-                            comp.complex_dir_path,
-                            candidate_name + DOT_PDB)
-
-                        tmp_path = retrieve_pdb(candidate.pdb_id)
-
-                        if not tmp_path:
-                            continue
-
-                        structure = pdb_parser.get_structure(candidate.pdb_id,
-                                                             tmp_path)
-
-                        for model in comp.structure:
-                            for chain in model:
-                                if chain.get_id() not in candidate.chain_ids:
-                                    model.detach_child(chain.get_id())
-
-                        io.set_structure(structure)
-                        io.save(path_to_candidate_pdb)
-
-                        tmp_paths.add(tmp_path)
 
                         unbound_data_csv.write(
                             '{},{},{},{},{},{}\n'.format(comp.pdb_id,
@@ -927,9 +847,6 @@ def collect_unbound_structures(overwrite=True, p=None):
             except Exception as e:
                 not_processed.write('{}: {}\n'.format(comp.db_name, e))
                 not_processed.flush()
-
-    for tmp_path in tmp_paths:
-        os.remove(tmp_path)
 
 
 if __name__ == '__main__':
