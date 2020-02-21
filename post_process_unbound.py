@@ -360,7 +360,7 @@ def process_csv(csv):
     data = defaultdict(list)
 
     for i in range(len(csv)):
-        data[csv.iloc[i]['db_name']].append((csv.iloc[i]['type'],
+        data[csv.iloc[i]['comp_name']].append((csv.iloc[i]['type'],
                                              csv.iloc[i]['candidate_pdb_id'],
                                              csv.iloc[i][
                                                  'candidate_chain_names']))
@@ -793,7 +793,7 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 # print(check_structure('6mfp', ['G'], '4dvv', AG))
 
-# filter_for_unboundness(process_csv(pd.read_csv('unbound_full.csv')))
+filter_for_unboundness(process_csv(pd.read_csv('unbound_full.csv')))
 #
-process_filtered_csv(FILTERED_STRUCTURES_CSV, FILTERED_COMPLEXES_CSV,
-                     REJECTED_COMPLEXES_CSV)
+# process_filtered_csv(FILTERED_STRUCTURES_CSV, FILTERED_COMPLEXES_CSV,
+#                      REJECTED_COMPLEXES_CSV)

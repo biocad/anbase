@@ -208,7 +208,7 @@ class Complex:
                                 self.antibody_l_chain] if not self.is_vhh else [
             self.antibody_h_chain]
 
-        self.db_name = form_comp_name(self.pdb_id, self.antibody_chains,
+        self.comp_name = form_comp_name(self.pdb_id, self.antibody_chains,
                                       self.antigen_chains)
 
         self.complex_dir_path = os.path.join(DB_PATH, self.pdb_id)
@@ -741,7 +741,7 @@ def run_zlab_test():
             unbound_antigen_candidates, unbound_antibody_candidates = \
                 find_unbound_conformations(comp)
 
-            print(comp.db_name)
+            print(comp.comp_name)
 
             print('antigen', 'expected:', unbound_antigen_id, 'got:',
                   unbound_antigen_candidates, flush=True)
@@ -780,7 +780,7 @@ def remove_if_contains(path, s):
 
 
 def collect_unbound_structures(overwrite=True, p=None):
-    comps = get_bound_complexes(structures_summary, p=p, only_vhhs=True)
+    comps = get_bound_complexes(structures_summary, p=p)
 
     processed = set()
 
@@ -793,7 +793,7 @@ def collect_unbound_structures(overwrite=True, p=None):
                  w_or_a) as unbound_data_csv:
 
         if overwrite:
-            unbound_data_csv.write('pdb_id,db_name,type,candidate,' +
+            unbound_data_csv.write('pdb_id,comp_name,type,candidate,' +
                                    'candidate_pdb_id,candidate_chain_names\n')
             unbound_data_csv.flush()
 
@@ -806,11 +806,11 @@ def collect_unbound_structures(overwrite=True, p=None):
         print('Complexes to process:', len(comps))
 
         for comp in comps:
-            if comp.db_name in processed:
+            if comp.comp_name in processed:
                 continue
 
             try:
-                print('processing:', comp.db_name, flush=True)
+                print('processing:', comp.comp_name, flush=True)
 
                 unbound_antigen_candidates, unbound_antibody_candidates = \
                     find_unbound_conformations(comp)
@@ -828,7 +828,7 @@ def collect_unbound_structures(overwrite=True, p=None):
 
                         unbound_data_csv.write(
                             '{},{},{},{},{},{}\n'.format(comp.pdb_id,
-                                                         comp.db_name, suf,
+                                                         comp.comp_name, suf,
                                                          candidate_name,
                                                          candidate.pdb_id,
                                                          ':'.join(
@@ -841,11 +841,11 @@ def collect_unbound_structures(overwrite=True, p=None):
                 helper_writer(unbound_antigen_candidates, AG)
                 helper_writer(unbound_antibody_candidates, AB)
 
-                processed.add(comp.db_name)
-                processed_log.write(comp.db_name + '\n')
+                processed.add(comp.comp_name)
+                processed_log.write(comp.comp_name + '\n')
                 processed_log.flush()
             except Exception as e:
-                not_processed.write('{}: {}\n'.format(comp.db_name, e))
+                not_processed.write('{}: {}\n'.format(comp.comp_name, e))
                 not_processed.flush()
 
 
