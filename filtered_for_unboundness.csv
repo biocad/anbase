@@ -434,7 +434,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 5w9p_D:E|B,AG,B,5X4R,A,1
 6aru_C:B|A,AB,C:B,1YY8,B:A,1
 6aru_C:B|A,AB,C:B,1YY8,D:C,2
-6n1w_mn2,AB,m:n,4JY5,H:L,1
+6n1w_m:n|2,AB,m:n,4JY5,H:L,1
 6mph_Y:a|B,AB,Y:a,4JY5,H:L,1
 5hys_A:B|G,AB,A:B,4X7T,H:L,1
 5hys_A:B|G,AB,A:B,4X7T,A:B,2
@@ -588,7 +588,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 4wy7_H:L|P,AB,H:L,4LLV,E:F,2
 4wy7_H:L|P,AB,H:L,4LLV,H:L,3
 4wy7_H:L|P,AB,H:L,4LLV,C:D,4
-6osy_562,AB,5:6,4JY5,H:L,1
+6osy_5:6|2,AB,5:6,4JY5,H:L,1
 6n1v_Y:a|B,AB,Y:a,4JY5,H:L,1
 6hjp_I:J|D:C,AB,I:J,6HKG,A:B,1
 6ieq_D:E|B,AB,D:E,4TOY,H:L,1
@@ -651,7 +651,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 1g7l_B:A|C,AG,C,6ABN,A,1
 1g7l_B:A|C,AG,C,6ADF,A,1
 1g7l_B:A|C,AG,C,6FSJ,A,1
-6n1w_56C,AB,5:6,4JY5,H:L,1
+6n1w_5:6|C,AB,5:6,4JY5,H:L,1
 1v7n_K:O|Z,AB,K:O,2ZKH,H:L,1
 4oly_H:L|G,AG,G,6ONH,A,1
 4oly_H:L|G,AG,G,6ONE,A,1
@@ -893,7 +893,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 5hdq_H:L|A,AG,A,4K3V,A,1
 5hdq_H:L|A,AG,A,4K3V,B,2
 5hdq_H:L|A,AG,A,4NNO,A,1
-6mpg_562,AB,5:6,4JY5,H:L,1
+6mpg_5:6|2,AB,5:6,4JY5,H:L,1
 4m8q_A:B|S,AB,A:B,4OB5,H:L,1
 4m8q_A:B|S,AB,A:B,4LRN,H:L,1
 6ayz_B:D|A,AG,A,1ROC,A,1
@@ -1469,7 +1469,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 2dqf_B:A|C,AG,C,6FSJ,A,1
 2hfg_H:L|R,AB,H:L,2HFF,B:A,1
 2hfg_H:L|R,AB,H:L,2HFF,H:L,2
-6cue_782,AB,7:8,5JXA,H:L,1
+6cue_7:8|2,AB,7:8,5JXA,H:L,1
 4ybl_B:C|A,AB,B:C,3TNM,H:L,1
 4ybl_B:C|A,AB,B:C,3TNM,A:B,2
 3ld8_C:B|A,AG,A,6MEV,A,1
@@ -1903,8 +1903,8 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 6nip_A:B|E,AB,A:B,6NIS,H:L,1
 6nip_A:B|E,AB,A:B,6MTX,H:L,1
 6nip_A:B|E,AG,E,5OMZ,A,1
-6e5p_34E,AB,3:4,3OAZ,H:K,1
-6e5p_34E,AB,3:4,3OAZ,M:L,2
+6e5p_3:4|E,AB,3:4,3OAZ,H:K,1
+6e5p_3:4|E,AB,3:4,3OAZ,M:L,2
 6ot1_F:I|E,AB,F:I,4JY5,H:L,1
 4z5r_B:A|N,AG,N,1RH2,A,1
 4z5r_B:A|N,AG,N,1RH2,B,2
@@ -1957,7 +1957,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 6d0u_E:F|A,AB,E:F,4FNL,H:L,1
 6d0u_E:F|A,AB,E:F,4FNL,I:M,2
 5uty_D:E|B,AB,D:E,4TOY,H:L,1
-6n1w_87C,AB,8:7,5JXA,H:L,1
+6n1w_8:7|C,AB,8:7,5JXA,H:L,1
 2hlf_C:D|A,AG,A,3NMO,A,1
 5nj3_C:D|B,AB,C:D,5NIV,B:A,1
 1p2c_B:A|C,AB,B:A,2Q76,B:A,1
@@ -2282,7 +2282,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 5gs0_F:E|B,AG,B,1ZIW,A,1
 5if0_A:B|I,AB,A:B,5IFA,H:L,1
 5if0_A:B|I,AG,I,5IDL,A,1
-6cuf_872,AB,8:7,5JXA,H:L,1
+6cuf_8:7|2,AB,8:7,5JXA,H:L,1
 6avq_H:L|B:A,AB,H:L,5OPY,H:L,1
 6mb3_A:K|E,AG,E,3VDL,A,1
 6mb3_A:K|E,AG,E,3VDL,B,2
@@ -2332,7 +2332,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 4ut9_K:O|C,AG,C,4UTC,A,1
 4ut9_K:O|C,AG,C,4UTC,B,2
 4kk5_C:D|A,AG,A,3NMO,A,1
-6n1w_qr2,AB,q:r,5JXA,H:L,1
+6n1w_q:r|2,AB,q:r,5JXA,H:L,1
 5d1x_C:D|E,AG,E,3RUR,A,1
 5d1x_C:D|E,AG,E,3RUR,B,2
 5d1x_C:D|E,AG,E,3RUR,C,3
@@ -2902,7 +2902,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 4lsp_H:L|G,AG,G,6ONV,A,1
 4lsp_H:L|G,AG,G,6ONH,A,1
 4lsp_H:L|G,AG,G,6ONF,A,1
-6cue_562,AB,5:6,4JY5,H:L,1
+6cue_5:6|2,AB,5:6,4JY5,H:L,1
 5do2_H:L|A,AG,A,4L3N,A,1
 5do2_H:L|A,AG,A,4L3N,B,2
 4z5r_U:T|I,AG,I,1RH2,A,1
@@ -3188,7 +3188,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 6qig_H:L|A,AG,A,3GHN,A,1
 6qig_H:L|A,AG,A,3GHM,A,1
 6qig_H:L|A,AG,A,3VN4,A,1
-1rvf_HL13,AB,H:L,1FOR,H:L,1
+1rvf_H:L|13,AB,H:L,1FOR,H:L,1
 4rrp_H:B|N,AG,N,1WG3,A,1
 4rrp_H:B|N,AG,N,2IDC,A,1
 4rrp_H:B|N,AG,N,1ROC,A,1
@@ -3387,7 +3387,7 @@ comp_name,type,chain_ids,candidate_pdb_id,candidate_chain_ids,assembly_id
 4r8w_H:L|B:A,AG,B:A,4LN6,J:I,7
 4r8w_H:L|B:A,AG,B:A,4LN6,L:K,8
 3det_E:F|B,AG,B,3NMO,A,1
-6cuf_562,AB,5:6,4JY5,H:L,1
+6cuf_5:6|2,AB,5:6,4JY5,H:L,1
 1pkq_G:F|J,AG,J,3CSP,A,1
 1pkq_G:F|J,AG,J,1PKO,A,1
 5utz_B:C|A,AG,A,1M47,A,1
