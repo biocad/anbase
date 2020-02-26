@@ -13,7 +13,8 @@ from Bio.PDB.StructureBuilder import StructureBuilder
 from collect_db import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, get_while_true, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
-    H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains
+    H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
+    fetch_all_sequences
 from post_unboundness_filtering import union_models, rename_chains, \
     fetch_all_assemblies
 
@@ -24,6 +25,7 @@ FILTERED_COMPLEXES_CSV = 'filtered_complexes.csv'
 REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
 
 ALIGNED_EPOCH = 'aligned'
+HETATMS_DELETED = 'hetatms_deleted'
 
 
 class NotDisordered(Select):
@@ -42,6 +44,9 @@ class Conformation:
     super_imposer = Superimposer()
     peptides_builder = PPBuilder()
     pdb_io = PDBIO()
+
+    MAX_NUMBER_OF_ATOMS_IN_SM_TARGET = 5
+    MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT = 15
 
     def __init__(self, comp_name,
                  pdb_id_b, assembly_id_b, ab_chain_ids_b,
@@ -121,6 +126,14 @@ class Conformation:
         self.is_aligned = False
         self.candidate_type = 'U:U' if self.is_ab_u and self.is_ag_u else \
             ('B:U' if self.is_ag_u else 'U:B')
+
+        self.dir_name = self.comp_name.replace(':', '+')
+
+        self.ab_seqs_b = None
+        self.ag_seqs_b = None
+
+        self.ab_seqs_u = None
+        self.ag_seqs_u = None
 
     @staticmethod
     def extract_chains(structure, chain_ids):
@@ -334,6 +347,12 @@ class Conformation:
 
         self.is_aligned = True
 
+    class SmallMoleculeStat:
+        def __init__(self, name, n_atoms, dist):
+            self.name = name
+            self.n_atoms = n_atoms
+            self.dist = dist
+
     def _get_small_molecule_stat_for_struct(self, small_molecules_stat_csv,
                                             molecule_res):
 
@@ -349,13 +368,16 @@ class Conformation:
                     np.linalg.norm(atom.coord - interface_atom.coord),
                     min_dist_to_interface)
 
-        small_molecules_stat_csv.write('{},{},{},{},{},{:.2f}\n'.
-                                       format(self.comp_name,
-                                              self.candidate_id,
-                                              self.candidate_type,
-                                              mol_name, n_atoms,
-                                              min_dist_to_interface))
-        small_molecules_stat_csv.flush()
+        if small_molecules_stat_csv:
+            small_molecules_stat_csv.write('{},{},{},{},{},{:.2f}\n'.
+                                           format(self.comp_name,
+                                                  self.candidate_id,
+                                                  self.candidate_type,
+                                                  mol_name, n_atoms,
+                                                  min_dist_to_interface))
+            small_molecules_stat_csv.flush()
+
+        return self.SmallMoleculeStat(mol_name, n_atoms, min_dist_to_interface)
 
     @staticmethod
     def _is_hoh(residue):
@@ -372,11 +394,17 @@ class Conformation:
                             residue):
                         non_aa_residues.append(residue)
 
-        for residue in non_aa_residues:
-            self._get_small_molecule_stat_for_struct(
-                small_molecules_stat_csv, residue)
+        res = []
 
-        return len(non_aa_residues)
+        for residue in non_aa_residues:
+            res.append(self._get_small_molecule_stat_for_struct(
+                small_molecules_stat_csv, residue))
+
+        return res
+
+    @staticmethod
+    def are_good_mols(mols, a, b):
+        return all(map(lambda x: x.n_atoms <= a or x.dist > b, mols))
 
     def get_small_molecules_stat(self, small_molecules_stat_csv):
         if not self.is_aligned:
@@ -384,20 +412,149 @@ class Conformation:
                 'Small molecules statistics can be calculated only on aligned '
                 'structures.')
 
-        n_mols_ag = self._get_small_molecules_stat_for_struct(small_molecules_stat_csv,
-                                                  self.ag_structure_u)
-        n_mols_ab = self._get_small_molecules_stat_for_struct(small_molecules_stat_csv,
-                                                  self.ab_structure_u)
+        mols_ag = self._get_small_molecules_stat_for_struct(
+            small_molecules_stat_csv,
+            self.ag_structure_u)
+        mols_ab = self._get_small_molecules_stat_for_struct(
+            small_molecules_stat_csv,
+            self.ab_structure_u)
 
-        if n_mols_ab == 0 and n_mols_ag == 0:
+        if small_molecules_stat_csv and len(mols_ab) == 0 and len(
+                mols_ag) == 0:
             small_molecules_stat_csv.write('{},{},{},,,\n'.
                                            format(self.comp_name,
                                                   self.candidate_id,
                                                   self.candidate_type))
             small_molecules_stat_csv.flush()
 
+        return mols_ag + mols_ab
+
+    def small_molecules_logging(self, small_molecules_csv):
+        mols = self.get_small_molecules_stat(None)
+
+        if all(map(
+                lambda x: x.n_atoms <= self.MAX_NUMBER_OF_ATOMS_IN_SM_TARGET,
+                mols)):
+            return
+
+        message = None
+
+        if all(map(lambda x: x.n_atoms <=
+                             self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT, mols)):
+            message = 'small molecules with ' + \
+                      str(self.MAX_NUMBER_OF_ATOMS_IN_SM_TARGET) + \
+                      ' < n_atoms <= ' + \
+                      str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
+                      ' detected'
+        else:
+            message = 'small molecules with' + \
+                      ' n_atoms > ' + \
+                      str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
+                      ' detected'
+
+        small_molecules_csv.write('{},{},{},{}\n'.format(self.comp_name,
+                                                         self.candidate_id,
+                                                         self.candidate_type,
+                                                         message))
+        small_molecules_csv.flush()
+
+    @staticmethod
+    def delete_hetatms(struct):
+        for model in struct:
+            for chain in model:
+                residues = list(chain)
+                for residue in residues:
+                    tags = residue.get_full_id()
+
+                    if tags[3][0] != " ":
+                        chain.detach_child(residue.get_id())
+
+    def hetatms_deletion_epoch(self, epoch_name):
+        self.delete_hetatms(self.ab_structure_u)
+        self.delete_hetatms(self.ag_structure_u)
+        self.write_candidate(epoch_name)
+
+    @staticmethod
+    def _load_sequences_for_pdb_and_chain_ids(prefix, pdb_id, chain_ids):
+        all_seqs = fetch_all_sequences(pdb_id)
+
+        res = []
+
+        for chain_id in chain_ids:
+            for seq_id, seq in all_seqs:
+                if seq_id == chain_id:
+                    path = os.path.join(prefix, '{}_{}.fasta'.format(pdb_id,
+                                                                     seq_id))
+
+                    res.append(seq)
+
+                    if os.path.exists(path):
+                        continue
+
+                    with open(path, 'w') as f:
+                        f.write('>' + seq_id + '\n')
+                        f.write(seq + '\n')
+
+                    break
+
+        return res
+
+    def load_sequences(self):
+        dir_path = os.path.join(DB_PATH, self.dir_name)
+
+        ab_seqs_b = self._load_sequences_for_pdb_and_chain_ids(dir_path,
+                                                               self.pdb_id_b,
+                                                               self.ab_chain_ids_b)
+
+        if not self.ab_seqs_b:
+            self.ab_seqs_b = ab_seqs_b
+
+        ag_seqs_b = self._load_sequences_for_pdb_and_chain_ids(dir_path,
+                                                               self.pdb_id_b,
+                                                               self.ag_chain_ids_b)
+
+        if not self.ag_seqs_b:
+            self.ag_seqs_b = ag_seqs_b
+
+        candidate_path = os.path.join(DB_PATH, self.dir_name,
+                                      str(self.candidate_id))
+
+        ab_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
+                                                               self.ab_pdb_id_u,
+                                                               self.ab_chain_ids_u)
+
+        if not self.ab_seqs_u:
+            self.ab_seqs_u = ab_seqs_u
+
+        ag_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
+                                                               self.ag_pdb_id_u,
+                                                               self.ag_chain_ids_u)
+
+        if not self.ag_seqs_u:
+            self.ag_seqs_u = ag_seqs_u
+
+    def load_candidate(self, epoch_name):
+        prefix = os.path.join(DB_PATH, self.dir_name,
+                              str(self.candidate_id), epoch_name,
+                              self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
+
+        self.ab_pdb_id_u = \
+            self.pdb_parser.get_structure('receptor',
+                                          prefix + '_r' + (
+                                              '_u' if self.is_ab_u else '_b')
+                                          + DOT_PDB)
+
+        self.ab_pdb_id_u = \
+            self.pdb_parser.get_structure('receptor',
+                                          prefix + '_l' + (
+                                              '_u' if self.is_ag_u else '_b')
+                                          + DOT_PDB)
+
+    def prepping_epoch(self, epoch_name):
+        pass
+
     def write_candidate(self, epoch_name):
-        pre_path = os.path.join(DB_PATH, self.comp_name.replace(':', '+'))
+        pre_path = os.path.join(DB_PATH, self.dir_name)
 
         if not os.path.exists(pre_path):
             os.mkdir(pre_path)
@@ -576,7 +733,6 @@ class FilteredStructure:
 
 
 def process_filtered_csv(path_to_filtered_structures_csv,
-                         path_to_filtered_complexes_csv,
                          path_to_rejected_complexes_csv, to_accept=None):
     filtered_structures_csv = pd.read_csv(path_to_filtered_structures_csv)
 
@@ -589,17 +745,15 @@ def process_filtered_csv(path_to_filtered_structures_csv,
     filter_out_peptides(by_complex,
                         pd.read_csv('data/sabdab_summary_all.tsv', sep='\t'))
 
-    with open(path_to_filtered_complexes_csv,
-              'w') as filtered_complexes_csv, open(
-        path_to_rejected_complexes_csv, 'w') as rejected_complexes_csv, \
-            open('small_molecules_stat.csv', 'w') as small_molecules_stats_csv:
+    with open(path_to_rejected_complexes_csv, 'w') as rejected_complexes_csv, \
+            open('small_molecules_log.csv', 'w') as small_molecules_log_csv:
 
-        small_molecules_stats_csv.write('comp_name,candidate_id,'
-                                        'candidate_type,mol_name,n_atoms,'
-                                        'dist_to_interface\n')
-        small_molecules_stats_csv.flush()
+        small_molecules_log_csv.write(
+            'comp_name,candidate_id,candidate_type,reason\n')
+        small_molecules_log_csv.flush()
 
-        rejected_complexes_csv.write('comp_name,candidate_id,reason\n')
+        rejected_complexes_csv.write(
+            'comp_name,candidate_id,candidate_type,reason\n')
         rejected_complexes_csv.flush()
 
         with_candidates = {}
@@ -611,17 +765,28 @@ def process_filtered_csv(path_to_filtered_structures_csv,
             with_candidates[comp_name] = get_candidates(comp_name, structures,
                                                         cache=True)
 
-        for _, candidates in with_candidates.items():
+        counter = 1
+        for comp_name, candidates in with_candidates.items():
+            print('Processing complex', comp_name,
+                  '[{}/{}]'.format(counter, len(with_candidates)))
+
             for candidate in candidates:
                 try:
                     candidate.alignment_epoch(ALIGNED_EPOCH)
 
-                    candidate.get_small_molecules_stat(
-                        small_molecules_stats_csv)
+                    candidate.small_molecules_logging(small_molecules_log_csv)
+
+                    candidate.hetatms_deletion_epoch(HETATMS_DELETED)
+
+                    candidate.load_sequences()
+
                 except Exception as e:
-                    rejected_complexes_csv.write('{},{},{}\n'.format(
-                        candidate.comp_name, candidate.candidate_id, str(e)))
+                    rejected_complexes_csv.write('{},{},{},{}\n'.format(
+                        candidate.comp_name, candidate.candidate_id,
+                        candidate.candidate_type, str(e)))
                     rejected_complexes_csv.flush()
+
+            counter += 1
 
 
 def filter_out_peptides(filtered_structures, sabdab_tb):
@@ -644,5 +809,5 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 
 if __name__ == '__main__':
-    process_filtered_csv(FILTERED_STRUCTURES_CSV, FILTERED_COMPLEXES_CSV,
+    process_filtered_csv(FILTERED_STRUCTURES_CSV,
                          REJECTED_COMPLEXES_CSV)
