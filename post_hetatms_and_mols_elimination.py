@@ -28,6 +28,14 @@ ALIGNED_EPOCH = 'aligned'
 HETATMS_DELETED = 'hetatms_deleted'
 
 
+def comp_name_to_dir_name(comp_name):
+    return comp_name.replace(':', '+')
+
+
+def dir_name_to_comp_name(dir_name):
+    return dir_name.replace('+', ':')
+
+
 class NotDisordered(Select):
     # this crutch is needed due to the fact that biopython is bad at handling
     # atoms with alternate locations. So we just delete them
@@ -127,7 +135,7 @@ class Conformation:
         self.candidate_type = 'U:U' if self.is_ab_u and self.is_ag_u else \
             ('B:U' if self.is_ag_u else 'U:B')
 
-        self.dir_name = self.comp_name.replace(':', '+')
+        self.dir_name = comp_name_to_dir_name(self.comp_name)
 
         self.ab_seqs_b = None
         self.ag_seqs_b = None
@@ -472,6 +480,7 @@ class Conformation:
     def hetatms_deletion_epoch(self, epoch_name):
         self.delete_hetatms(self.ab_structure_u)
         self.delete_hetatms(self.ag_structure_u)
+        self.delete_hetatms(self.complex_structure_b)
         self.write_candidate(epoch_name)
 
     @staticmethod
@@ -550,51 +559,24 @@ class Conformation:
                                               '_u' if self.is_ag_u else '_b')
                                           + DOT_PDB)
 
-    def prepping_epoch(self, epoch_name):
-        pass
-
     def write_candidate(self, epoch_name):
-        pre_path = os.path.join(DB_PATH, self.dir_name)
+        pre_path = os.path.join(DB_PATH, self.dir_name, epoch_name)
 
         if not os.path.exists(pre_path):
-            os.mkdir(pre_path)
+            os.makedirs(pre_path)
 
         complex_b_path = os.path.join(pre_path, self.pdb_id_b + DOT_PDB)
 
-        if not os.path.exists(complex_b_path):
-            self.pdb_io.set_structure(self.complex_structure_b)
-            self.pdb_io.save(complex_b_path)
+        self.pdb_io.set_structure(self.complex_structure_b)
+        self.pdb_io.save(complex_b_path)
 
-        path = os.path.join(pre_path, str(self.candidate_id), epoch_name)
+        path = os.path.join(pre_path, str(self.candidate_id))
 
         if not os.path.exists(path):
             os.makedirs(path)
 
         name_prefix = os.path.join(path,
                                    self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
-
-        sb = StructureBuilder()
-
-        sb.init_structure('complex')
-
-        counter = 0
-
-        for model in self.ab_structure_u.copy():
-            model.id = counter
-            sb.structure.add(model)
-            counter += 1
-
-        for model in self.ag_structure_u.copy():
-            model.id = counter
-            sb.structure.add(model)
-            counter += 1
-
-        models_in_struct = union_models(sb.structure)
-
-        self.pdb_io.set_structure(rename_chains(models_in_struct))
-        self.pdb_io.save(
-            name_prefix + '_complex' + ('_u' if self.is_ab_u else '_b')
-            + DOT_PDB)
 
         self.pdb_io.set_structure(rename_chains(self.ab_structure_u))
         self.pdb_io.save(
