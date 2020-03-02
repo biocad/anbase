@@ -27,6 +27,8 @@ REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
 ALIGNED_EPOCH = 'aligned'
 HETATMS_DELETED = 'hetatms_deleted'
 
+SEQUENCES = 'seqs'
+
 
 def comp_name_to_dir_name(comp_name):
     return comp_name.replace(':', '+')
@@ -484,7 +486,7 @@ class Conformation:
         self.write_candidate(epoch_name)
 
     @staticmethod
-    def _load_sequences_for_pdb_and_chain_ids(prefix, pdb_id, chain_ids):
+    def _load_sequences_for_pdb_and_chain_ids(prefix, pdb_id, name, chain_ids):
         all_seqs = fetch_all_sequences(pdb_id)
 
         res = []
@@ -492,7 +494,7 @@ class Conformation:
         for chain_id in chain_ids:
             for seq_id, seq in all_seqs:
                 if seq_id == chain_id:
-                    path = os.path.join(prefix, '{}_{}.fasta'.format(pdb_id,
+                    path = os.path.join(prefix, '{}_{}.fasta'.format(name,
                                                                      seq_id))
 
                     res.append(seq)
@@ -509,34 +511,42 @@ class Conformation:
         return res
 
     def load_sequences(self):
-        dir_path = os.path.join(DB_PATH, self.dir_name)
+        dir_path = os.path.join(DB_PATH, self.dir_name, SEQUENCES)
+
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path)
 
         ab_seqs_b = self._load_sequences_for_pdb_and_chain_ids(dir_path,
-                                                               self.pdb_id_b,
+                                                               self.pdb_id_b, self.pdb_id_b + '_r_b',
                                                                self.ab_chain_ids_b)
 
         if not self.ab_seqs_b:
             self.ab_seqs_b = ab_seqs_b
 
         ag_seqs_b = self._load_sequences_for_pdb_and_chain_ids(dir_path,
-                                                               self.pdb_id_b,
+                                                               self.pdb_id_b, self.pdb_id_b + '_l_b',
                                                                self.ag_chain_ids_b)
 
         if not self.ag_seqs_b:
             self.ag_seqs_b = ag_seqs_b
 
-        candidate_path = os.path.join(DB_PATH, self.dir_name,
+        candidate_path = os.path.join(dir_path,
                                       str(self.candidate_id))
 
+        if not os.path.exists(candidate_path):
+            os.mkdir(candidate_path)
+
+        name = self.ab_pdb_id_u + '_' + self.ag_pdb_id_u
+
         ab_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
-                                                               self.ab_pdb_id_u,
+                                                               self.ab_pdb_id_u, name + '_r_u',
                                                                self.ab_chain_ids_u)
 
         if not self.ab_seqs_u:
             self.ab_seqs_u = ab_seqs_u
 
         ag_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
-                                                               self.ag_pdb_id_u,
+                                                               self.ag_pdb_id_u, name + '_l_u',
                                                                self.ag_chain_ids_u)
 
         if not self.ag_seqs_u:
