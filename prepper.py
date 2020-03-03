@@ -79,7 +79,7 @@ def run_pdb_fixer(name):
     print('Prepping:', name, flush=True)
     subprocess.run(
         ['pdbfixer', name, '--replace-nonstandard', '--add-residues',
-         '--output={}{}'.format(name, PREP_SUFF)], stdout=subprocess.PIPE)
+         '--output={}{}'.format(name, PREP_SUFF)], stdout=subprocess.PIPE, shell=True)
     print('Prepped:', name, flush=True)
 
 
@@ -88,9 +88,7 @@ def pdb_fixer_prep(file_names, tmp_dir):
 
     os.chdir(tmp_dir)
 
-    pool = multiprocessing.Pool()
-    r = pool.map_async(run_pdb_fixer, file_names)
-    r.wait()
+    list(map(lambda x: run_pdb_fixer(x), file_names))
 
     res = await_expected_files(expected_files, tmp_dir)
 
