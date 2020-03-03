@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 import shutil
 import subprocess
@@ -21,6 +22,7 @@ PDB_FIXER = 'PDBFixer'
 SEQS = 'seqs'
 
 DOT_FASTA = '.fasta'
+
 
 def get_pdb_paths(dir_path, prev_epoch):
     pdb_paths = []
@@ -73,27 +75,22 @@ def schrod_prep(file_names, tmp_dir):
     return res
 
 
+def run_pdb_fixer(name):
+    print('Prepping:', name, flush=True)
+    subprocess.run(
+        ['pdbfixer', name, '--replace-nonstandard', '--add-residues',
+         '--output={}{}'.format(name, PREP_SUFF)], stdout=subprocess.PIPE)
+    print('Prepped:', name, flush=True)
+
+
 def pdb_fixer_prep(file_names, tmp_dir):
     expected_files = set(map(lambda x: x + PREP_SUFF, file_names))
 
     os.chdir(tmp_dir)
 
-    running_ps = set()
-
-    for name in file_names:
-        if len(running_ps) >= 50:
-            while len(running_ps) > 0:
-                for p in list(running_ps):
-                    if p.returncode is not None:
-                        running_ps.remove(p)
-
-                time.sleep(1)
-
-        p = subprocess.Popen(
-            ['pdbfixer', name, '--replace-nonstandard', '--add-residues',
-             '--output={}{}'.format(name, PREP_SUFF)], stdout=subprocess.PIPE)
-
-        running_ps.add(p)
+    pool = multiprocessing.Pool()
+    r = pool.map_async(run_pdb_fixer, file_names)
+    r.wait()
 
     res = await_expected_files(expected_files, tmp_dir)
 
