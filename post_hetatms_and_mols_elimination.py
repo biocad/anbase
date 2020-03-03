@@ -87,63 +87,63 @@ class Conformation:
 
         self.is_ag_u = is_ag_u
 
-        # self.complex_structure_b = self._load_structure(pdb_id_b,
-        #                                                 self.assembly_id_b)
-        # if self.is_ab_u:
-        #     self.ab_structure_u = self._load_structure(ab_pdb_id_u,
-        #                                                self.ab_assembly_id)
-        # else:
-        #     self.ab_structure_u = self.complex_structure_b.copy()
-        #
-        #     for model in self.ab_structure_u:
-        #         chains = list(model.get_chains())
-        #         for chain in chains:
-        #             if chain.get_id() not in self.ab_chain_ids_b:
-        #                 model.detach_child(chain.get_id())
-        #
-        # if self.is_ag_u:
-        #     self.ag_structure_u = self._load_structure(ag_pdb_id_u,
-        #                                                self.ag_assembly_id)
-        # else:
-        #     self.ag_structure_u = self.complex_structure_b.copy()
-        #
-        #     for model in self.ag_structure_u:
-        #         chains = list(model.get_chains())
-        #         for chain in chains:
-        #             if chain.get_id() in self.ab_chain_ids_b:
-        #                 model.detach_child(chain.get_id())
-        #
-        # self.ab_chains_b = self.extract_chains(self.complex_structure_b,
-        #                                        self.ab_chain_ids_b)
-        # self.ag_chains_b = self.extract_chains(self.complex_structure_b,
-        #                                        self.ag_chain_ids_b)
-        #
-        # self.ab_atoms_b = []
-        # self.ag_atoms_b = []
-        #
-        # for chain in self.ab_chains_b:
-        #     self.ab_atoms_b += self.extract_cas(chain)
-        #
-        # for chain in self.ag_chains_b:
-        #     self.ag_atoms_b += self.extract_cas(chain)
-        #
-        # self.ab_interface_cas, self.ag_interface_cas = self.get_interface_cas()
-        # self.interface_atoms = list(self.ab_interface_cas) + list(
-        #     self.ag_interface_cas)
-        #
-        # self.candidate_id = candidate_id
-        #
-        # self.is_aligned = False
-        # self.candidate_type = 'U:U' if self.is_ab_u and self.is_ag_u else \
-        #     ('B:U' if self.is_ag_u else 'U:B')
-        #
-        # self.dir_name = comp_name_to_dir_name(self.comp_name)
-        #
-        # self.ab_seqs_b = None
-        # self.ag_seqs_b = None
-        #
-        # self.ab_seqs_u = None
-        # self.ag_seqs_u = None
+        self.candidate_id = candidate_id
+
+        self.complex_structure_b = self._load_structure(pdb_id_b,
+                                                        self.assembly_id_b)
+        if self.is_ab_u:
+            self.ab_structure_u = self._load_structure(ab_pdb_id_u,
+                                                       self.ab_assembly_id)
+        else:
+            self.ab_structure_u = self.complex_structure_b.copy()
+
+            for model in self.ab_structure_u:
+                chains = list(model.get_chains())
+                for chain in chains:
+                    if chain.get_id() not in self.ab_chain_ids_b:
+                        model.detach_child(chain.get_id())
+
+        if self.is_ag_u:
+            self.ag_structure_u = self._load_structure(ag_pdb_id_u,
+                                                       self.ag_assembly_id)
+        else:
+            self.ag_structure_u = self.complex_structure_b.copy()
+
+            for model in self.ag_structure_u:
+                chains = list(model.get_chains())
+                for chain in chains:
+                    if chain.get_id() in self.ab_chain_ids_b:
+                        model.detach_child(chain.get_id())
+
+        self.ab_chains_b = self.extract_chains(self.complex_structure_b,
+                                               self.ab_chain_ids_b)
+        self.ag_chains_b = self.extract_chains(self.complex_structure_b,
+                                               self.ag_chain_ids_b)
+
+        self.ab_atoms_b = []
+        self.ag_atoms_b = []
+
+        for chain in self.ab_chains_b:
+            self.ab_atoms_b += self.extract_cas(chain)
+
+        for chain in self.ag_chains_b:
+            self.ag_atoms_b += self.extract_cas(chain)
+
+        self.ab_interface_cas, self.ag_interface_cas = self.get_interface_cas()
+        self.interface_atoms = list(self.ab_interface_cas) + list(
+            self.ag_interface_cas)
+
+        self.is_aligned = False
+        self.candidate_type = 'U:U' if self.is_ab_u and self.is_ag_u else \
+            ('B:U' if self.is_ag_u else 'U:B')
+
+        self.dir_name = comp_name_to_dir_name(self.comp_name)
+
+        self.ab_seqs_b = None
+        self.ag_seqs_b = None
+
+        self.ab_seqs_u = None
+        self.ag_seqs_u = None
 
     @staticmethod
     def extract_chains(structure, chain_ids):
@@ -502,7 +502,7 @@ class Conformation:
                     res.append(seq)
 
                     with open(path, 'a') as f:
-                        f.write('>' + seq_id + '\n')
+                        f.write('>{}:{}\n'.format(name, seq_id))
                         f.write(seq + '\n')
 
                     break
@@ -764,11 +764,11 @@ def process_filtered_csv(path_to_filtered_structures_csv,
 
             for candidate in candidates:
                 try:
-                    # candidate.alignment_epoch(ALIGNED_EPOCH)
-                    #
-                    # candidate.small_molecules_logging(small_molecules_log_csv)
-                    #
-                    # candidate.hetatms_deletion_epoch(HETATMS_DELETED)
+                    candidate.alignment_epoch(ALIGNED_EPOCH)
+
+                    candidate.small_molecules_logging(small_molecules_log_csv)
+
+                    candidate.hetatms_deletion_epoch(HETATMS_DELETED)
 
                     candidate.load_sequences()
 
@@ -802,4 +802,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV)
+                         REJECTED_COMPLEXES_CSV) #, to_accept=['5x0t_C:D|F'])

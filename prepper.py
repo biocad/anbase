@@ -9,7 +9,7 @@ DOT_PDB = '.pdb'
 HETATMS_DELETED = 'hetatms_deleted'
 
 PDB_PREP_DIR = 'pdb_prep'
-SCHROD_SCRIPT_PATH = 'schrod_multi_prepare.sh'
+SCHROD_SCRIPT_PATH = 'resources/schrod_multi_prepare.sh'
 
 PREP_SUFF = '.o.pdb'
 
@@ -18,6 +18,9 @@ PREPPED = 'prepared'
 SCHROD = 'schrod'
 PDB_FIXER = 'PDBFixer'
 
+SEQS = 'seqs'
+
+DOT_FASTA = '.fasta'
 
 def get_pdb_paths(dir_path, prev_epoch):
     pdb_paths = []
@@ -33,6 +36,8 @@ def get_pdb_paths(dir_path, prev_epoch):
 def await_expected_files(expected_files, tmp_dir):
     res = {}
 
+    waiting_time = 10 * 60
+
     while len(expected_files) > 0:
         print(expected_files)
         for path in os.listdir('.'):
@@ -42,6 +47,10 @@ def await_expected_files(expected_files, tmp_dir):
                 print(name)
                 res[name] = os.path.join(tmp_dir, path)
         time.sleep(1)
+        waiting_time -= 1
+
+        if waiting_time == 0:
+            break
 
     return res
 
@@ -49,11 +58,13 @@ def await_expected_files(expected_files, tmp_dir):
 def schrod_prep(file_names, tmp_dir):
     expected_files = set(map(lambda x: x + PREP_SUFF, file_names))
 
+    script_name = os.path.basename(SCHROD_SCRIPT_PATH)
+
     shutil.copyfile(SCHROD_SCRIPT_PATH,
-                    os.path.join(tmp_dir, SCHROD_SCRIPT_PATH))
+                    os.path.join(tmp_dir, script_name))
 
     os.chdir(tmp_dir)
-    subprocess.run(['bash', SCHROD_SCRIPT_PATH], stdout=subprocess.PIPE)
+    subprocess.run(['bash', script_name], stdout=subprocess.PIPE)
 
     res = await_expected_files(expected_files, tmp_dir)
 
@@ -92,12 +103,12 @@ def pdb_fixer_prep(file_names, tmp_dir):
 
 
 def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
-    pdb_paths = []
+    pdbs_to_copy = []
 
     for file in os.listdir(db_path):
         dir_path = os.path.join(db_path, file)
         if os.path.isdir(dir_path):
-            pdb_paths += get_pdb_paths(dir_path, last_epoch_name)
+            pdbs_to_copy += get_pdb_paths(dir_path, last_epoch_name)
 
     if not os.path.exists(tmp_dir):
         os.mkdir(tmp_dir)
@@ -106,7 +117,7 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
 
     names = []
 
-    for path in pdb_paths:
+    for path in pdbs_to_copy:
         name = path.replace('+', '_').replace('|', '_').split('/')
         name.reverse()
         name = '_'.join(name).replace(DOT_PDB, '') + DOT_PDB
@@ -114,6 +125,9 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
         path_to_name[path] = name
         names.append(name)
 
+        shutil.copyfile(path.replace(last_epoch_name, SEQS).
+                        replace(DOT_PDB, DOT_FASTA),
+                        os.path.join(tmp_dir, name) + DOT_FASTA)
         shutil.copyfile(path, os.path.join(tmp_dir, name))
 
     path_to_prepped_schrod = schrod_prep(names, tmp_dir) if mode == SCHROD \

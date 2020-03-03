@@ -11,7 +11,7 @@ do
   curbatch=${files[@]:$ix:50}
   for f in  $curbatch
   do
-    $SCHRODINGER/utilities/prepwizard -fillsidechains -disulfides -propka_pH 7.0 -delwater_hbond_cutoff 3 -noepik -f 2005 "$f" "$f.o.pdb"
+    $SCHRODINGER/utilities/prepwizard -disulfides -fillloops -fillsidechains -mse -noepik -noimpref -fasta_file "$f.fasta" -rehtreat "$f" "$f.o.pdb"
   done
   let 'ix += 50'
   sleep 5
