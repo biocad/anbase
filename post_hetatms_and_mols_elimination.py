@@ -515,7 +515,7 @@ class Conformation:
         if not os.path.exists(dir_path):
             os.mkdir(dir_path)
 
-        seqs_b = self.\
+        seqs_b = self. \
             _load_sequences_for_pdb_and_chain_ids(dir_path,
                                                   self.pdb_id_b,
                                                   self.pdb_id_b,
@@ -538,7 +538,8 @@ class Conformation:
 
         ab_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
                                                                self.ab_pdb_id_u,
-                                                               name + '_r_u',
+                                                               name + '_r' + (
+                                                                   '_u' if self.is_ab_u else '_b'),
                                                                self.ab_chain_ids_u)
 
         if not self.ab_seqs_u:
@@ -546,7 +547,8 @@ class Conformation:
 
         ag_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
                                                                self.ag_pdb_id_u,
-                                                               name + '_l_u',
+                                                               name + '_l' + (
+                                                                   '_u' if self.is_ag_u else '_b'),
                                                                self.ag_chain_ids_u)
 
         if not self.ag_seqs_u:
@@ -802,4 +804,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV) #, to_accept=['5x0t_C:D|F'])
+                         REJECTED_COMPLEXES_CSV) # , to_accept=['1tpx_B:C|A'])
