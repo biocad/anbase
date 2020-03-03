@@ -87,63 +87,63 @@ class Conformation:
 
         self.is_ag_u = is_ag_u
 
-        self.complex_structure_b = self._load_structure(pdb_id_b,
-                                                        self.assembly_id_b)
-        if self.is_ab_u:
-            self.ab_structure_u = self._load_structure(ab_pdb_id_u,
-                                                       self.ab_assembly_id)
-        else:
-            self.ab_structure_u = self.complex_structure_b.copy()
-
-            for model in self.ab_structure_u:
-                chains = list(model.get_chains())
-                for chain in chains:
-                    if chain.get_id() not in self.ab_chain_ids_b:
-                        model.detach_child(chain.get_id())
-
-        if self.is_ag_u:
-            self.ag_structure_u = self._load_structure(ag_pdb_id_u,
-                                                       self.ag_assembly_id)
-        else:
-            self.ag_structure_u = self.complex_structure_b.copy()
-
-            for model in self.ag_structure_u:
-                chains = list(model.get_chains())
-                for chain in chains:
-                    if chain.get_id() in self.ab_chain_ids_b:
-                        model.detach_child(chain.get_id())
-
-        self.ab_chains_b = self.extract_chains(self.complex_structure_b,
-                                               self.ab_chain_ids_b)
-        self.ag_chains_b = self.extract_chains(self.complex_structure_b,
-                                               self.ag_chain_ids_b)
-
-        self.ab_atoms_b = []
-        self.ag_atoms_b = []
-
-        for chain in self.ab_chains_b:
-            self.ab_atoms_b += self.extract_cas(chain)
-
-        for chain in self.ag_chains_b:
-            self.ag_atoms_b += self.extract_cas(chain)
-
-        self.ab_interface_cas, self.ag_interface_cas = self.get_interface_cas()
-        self.interface_atoms = list(self.ab_interface_cas) + list(
-            self.ag_interface_cas)
-
-        self.candidate_id = candidate_id
-
-        self.is_aligned = False
-        self.candidate_type = 'U:U' if self.is_ab_u and self.is_ag_u else \
-            ('B:U' if self.is_ag_u else 'U:B')
-
-        self.dir_name = comp_name_to_dir_name(self.comp_name)
-
-        self.ab_seqs_b = None
-        self.ag_seqs_b = None
-
-        self.ab_seqs_u = None
-        self.ag_seqs_u = None
+        # self.complex_structure_b = self._load_structure(pdb_id_b,
+        #                                                 self.assembly_id_b)
+        # if self.is_ab_u:
+        #     self.ab_structure_u = self._load_structure(ab_pdb_id_u,
+        #                                                self.ab_assembly_id)
+        # else:
+        #     self.ab_structure_u = self.complex_structure_b.copy()
+        #
+        #     for model in self.ab_structure_u:
+        #         chains = list(model.get_chains())
+        #         for chain in chains:
+        #             if chain.get_id() not in self.ab_chain_ids_b:
+        #                 model.detach_child(chain.get_id())
+        #
+        # if self.is_ag_u:
+        #     self.ag_structure_u = self._load_structure(ag_pdb_id_u,
+        #                                                self.ag_assembly_id)
+        # else:
+        #     self.ag_structure_u = self.complex_structure_b.copy()
+        #
+        #     for model in self.ag_structure_u:
+        #         chains = list(model.get_chains())
+        #         for chain in chains:
+        #             if chain.get_id() in self.ab_chain_ids_b:
+        #                 model.detach_child(chain.get_id())
+        #
+        # self.ab_chains_b = self.extract_chains(self.complex_structure_b,
+        #                                        self.ab_chain_ids_b)
+        # self.ag_chains_b = self.extract_chains(self.complex_structure_b,
+        #                                        self.ag_chain_ids_b)
+        #
+        # self.ab_atoms_b = []
+        # self.ag_atoms_b = []
+        #
+        # for chain in self.ab_chains_b:
+        #     self.ab_atoms_b += self.extract_cas(chain)
+        #
+        # for chain in self.ag_chains_b:
+        #     self.ag_atoms_b += self.extract_cas(chain)
+        #
+        # self.ab_interface_cas, self.ag_interface_cas = self.get_interface_cas()
+        # self.interface_atoms = list(self.ab_interface_cas) + list(
+        #     self.ag_interface_cas)
+        #
+        # self.candidate_id = candidate_id
+        #
+        # self.is_aligned = False
+        # self.candidate_type = 'U:U' if self.is_ab_u and self.is_ag_u else \
+        #     ('B:U' if self.is_ag_u else 'U:B')
+        #
+        # self.dir_name = comp_name_to_dir_name(self.comp_name)
+        #
+        # self.ab_seqs_b = None
+        # self.ag_seqs_b = None
+        #
+        # self.ab_seqs_u = None
+        # self.ag_seqs_u = None
 
     @staticmethod
     def extract_chains(structure, chain_ids):
@@ -491,18 +491,17 @@ class Conformation:
 
         res = []
 
+        path = os.path.join(prefix, '{}.fasta'.format(name))
+
+        if os.path.exists(path):
+            os.remove(path)
+
         for chain_id in chain_ids:
             for seq_id, seq in all_seqs:
                 if seq_id == chain_id:
-                    path = os.path.join(prefix, '{}_{}.fasta'.format(name,
-                                                                     seq_id))
-
                     res.append(seq)
 
-                    if os.path.exists(path):
-                        continue
-
-                    with open(path, 'w') as f:
+                    with open(path, 'a') as f:
                         f.write('>' + seq_id + '\n')
                         f.write(seq + '\n')
 
@@ -516,19 +515,18 @@ class Conformation:
         if not os.path.exists(dir_path):
             os.mkdir(dir_path)
 
-        ab_seqs_b = self._load_sequences_for_pdb_and_chain_ids(dir_path,
-                                                               self.pdb_id_b, self.pdb_id_b + '_r_b',
-                                                               self.ab_chain_ids_b)
+        seqs_b = self.\
+            _load_sequences_for_pdb_and_chain_ids(dir_path,
+                                                  self.pdb_id_b,
+                                                  self.pdb_id_b,
+                                                  self.ab_chain_ids_b +
+                                                  self.ag_chain_ids_b)
 
         if not self.ab_seqs_b:
-            self.ab_seqs_b = ab_seqs_b
-
-        ag_seqs_b = self._load_sequences_for_pdb_and_chain_ids(dir_path,
-                                                               self.pdb_id_b, self.pdb_id_b + '_l_b',
-                                                               self.ag_chain_ids_b)
+            self.ab_seqs_b = seqs_b[:len(self.ab_chain_ids_b)]
 
         if not self.ag_seqs_b:
-            self.ag_seqs_b = ag_seqs_b
+            self.ag_seqs_b = seqs_b[len(self.ab_chain_ids_b):]
 
         candidate_path = os.path.join(dir_path,
                                       str(self.candidate_id))
@@ -539,14 +537,16 @@ class Conformation:
         name = self.ab_pdb_id_u + '_' + self.ag_pdb_id_u
 
         ab_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
-                                                               self.ab_pdb_id_u, name + '_r_u',
+                                                               self.ab_pdb_id_u,
+                                                               name + '_r_u',
                                                                self.ab_chain_ids_u)
 
         if not self.ab_seqs_u:
             self.ab_seqs_u = ab_seqs_u
 
         ag_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
-                                                               self.ag_pdb_id_u, name + '_l_u',
+                                                               self.ag_pdb_id_u,
+                                                               name + '_l_u',
                                                                self.ag_chain_ids_u)
 
         if not self.ag_seqs_u:
@@ -764,11 +764,11 @@ def process_filtered_csv(path_to_filtered_structures_csv,
 
             for candidate in candidates:
                 try:
-                    candidate.alignment_epoch(ALIGNED_EPOCH)
-
-                    candidate.small_molecules_logging(small_molecules_log_csv)
-
-                    candidate.hetatms_deletion_epoch(HETATMS_DELETED)
+                    # candidate.alignment_epoch(ALIGNED_EPOCH)
+                    #
+                    # candidate.small_molecules_logging(small_molecules_log_csv)
+                    #
+                    # candidate.hetatms_deletion_epoch(HETATMS_DELETED)
 
                     candidate.load_sequences()
 
