@@ -41,12 +41,10 @@ def await_expected_files(expected_files, tmp_dir):
     waiting_time = 10 * 60
 
     while len(expected_files) > 0:
-        print(expected_files)
         for path in os.listdir('.'):
             if path.endswith(PREP_SUFF) and path in expected_files:
                 expected_files.remove(path)
                 name = path[:-len(PREP_SUFF)]
-                print(name)
                 res[name] = os.path.join(tmp_dir, path)
         time.sleep(1)
         waiting_time -= 1
@@ -79,7 +77,7 @@ def run_pdb_fixer(name):
     print('Prepping:', name, flush=True)
     subprocess.run(
         ['pdbfixer', name, '--replace-nonstandard', '--add-residues',
-         '--output={}{}'.format(name, PREP_SUFF)], stdout=subprocess.PIPE, shell=True)
+         '--output={}{}'.format(name, PREP_SUFF)], stdout=subprocess.PIPE)
     print('Prepped:', name, flush=True)
 
 
@@ -122,18 +120,23 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
                         os.path.join(tmp_dir, name) + DOT_FASTA)
         shutil.copyfile(path, os.path.join(tmp_dir, name))
 
-    unprepped_names = frozenset(name_to_path.keys())
+    unprepped_names = set(name_to_path.keys())
 
     while len(unprepped_names) > 0:
+        print('New iteration:', len(unprepped_names))
+
+        with open('unprepped.log', 'w') as f:
+            for name in unprepped_names:
+                f.write(name_to_path[name] + '\n')
+
         path_to_prepped_schrod = schrod_prep(unprepped_names, tmp_dir) if mode == SCHROD \
             else pdb_fixer_prep(unprepped_names, tmp_dir)
 
-        new_unprepped = set()
-
-        for name in unprepped_names:
+        for name in list(unprepped_names):
             if name not in path_to_prepped_schrod.keys():
-                new_unprepped.add(name)
                 continue
+
+            unprepped_names.remove(name)
 
             path_to_prepped = path_to_prepped_schrod[name]
 
@@ -145,7 +148,8 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
             shutil.copyfile(path_to_prepped,
                             new_path)
 
-        unprepped_names = new_unprepped
+            os.remove(path_to_prepped)
+            os.remove(path_to_prepped[:-len(PREP_SUFF)])
 
 
 if __name__ == '__main__':
