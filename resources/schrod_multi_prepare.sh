@@ -11,7 +11,18 @@ do
   curbatch=${files[@]:$ix:50}
   for f in  $curbatch
   do
-    $SCHRODINGER/utilities/prepwizard -disulfides -fillloops -fillsidechains -mse -noepik -noimpref -fasta_file "$f.fasta" -rehtreat "$f" "$f.o.pdb"
+    $SCHRODINGER/utilities/prepwizard $(
+        echo "-disulfides"          # build the disulfide bridges
+        echo "-fillloops"           # fill missing residues
+        echo "-fillsidechains"      # fill side-chains where necessary
+        echo "-mse"                 # convert selenomethionine residues to methionine
+        echo "-noepik"              # turn off epik, since it's used for small molecules and we don't have ones
+        echo "-noimpref"            # IMPORTANT: turn off minimization
+        echo "-rehtreat"            # IMPORTANT: delete existing hydrogen atoms and build new ones
+        echo "-fasta_file $f.fasta" # fasta file which is used to fill missing residues
+        echo "$f"
+        echo "$f.o.pdb"
+    )
   done
   let 'ix += 50'
   sleep 5

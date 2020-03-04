@@ -51,7 +51,7 @@ def await_expected_files(expected_files, tmp_dir):
         time.sleep(1)
         waiting_time -= 1
 
-        if waiting_time == 0:
+        if waiting_time <= 0:
             break
 
     return res
@@ -108,45 +108,44 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
     if not os.path.exists(tmp_dir):
         os.mkdir(tmp_dir)
 
-    path_to_name = {}
-
-    names = []
+    name_to_path = {}
 
     for path in pdbs_to_copy:
         name = path.replace('+', '_').replace('|', '_').split('/')
         name.reverse()
         name = '_'.join(name).replace(DOT_PDB, '') + DOT_PDB
 
-        path_to_name[path] = name
-        names.append(name)
+        name_to_path[name] = path
 
         shutil.copyfile(path.replace(last_epoch_name, SEQS).
                         replace(DOT_PDB, DOT_FASTA),
                         os.path.join(tmp_dir, name) + DOT_FASTA)
         shutil.copyfile(path, os.path.join(tmp_dir, name))
 
-    path_to_prepped_schrod = schrod_prep(names, tmp_dir) if mode == SCHROD \
-        else pdb_fixer_prep(names, tmp_dir)
+    unprepped_names = frozenset(name_to_path.keys())
 
-    unprepped_paths = []
+    while len(unprepped_names) > 0:
+        path_to_prepped_schrod = schrod_prep(unprepped_names, tmp_dir) if mode == SCHROD \
+            else pdb_fixer_prep(unprepped_names, tmp_dir)
 
-    for dir_path, name in path_to_name.items():
-        if name not in path_to_prepped_schrod.keys():
-            unprepped_paths.append(dir_path)
-            continue
-        path_to_prepped = path_to_prepped_schrod[name]
+        new_unprepped = set()
 
-        new_path = dir_path.replace(last_epoch_name, epoch_name)
+        for name in unprepped_names:
+            if name not in path_to_prepped_schrod.keys():
+                new_unprepped.add(name)
+                continue
 
-        if not os.path.exists(os.path.dirname(new_path)):
-            os.makedirs(os.path.dirname(new_path))
+            path_to_prepped = path_to_prepped_schrod[name]
 
-        shutil.copyfile(path_to_prepped,
-                        new_path)
+            new_path = name_to_path[name].replace(last_epoch_name, epoch_name)
 
-    with open('unprepped_pdbs.csv', 'w') as f:
-        for path in unprepped_paths:
-            f.write(path + '\n')
+            if not os.path.exists(os.path.dirname(new_path)):
+                os.makedirs(os.path.dirname(new_path))
+
+            shutil.copyfile(path_to_prepped,
+                            new_path)
+
+        unprepped_names = new_unprepped
 
 
 if __name__ == '__main__':
