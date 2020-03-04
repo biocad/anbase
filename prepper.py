@@ -65,9 +65,11 @@ def prep_in_mode(file_names, tmp_dir, mode):
 
     shutil.copyfile(path_to_script,
                     os.path.join(tmp_dir, script_name))
+    shutil.copymode(path_to_script,
+                    os.path.join(tmp_dir, script_name))
 
     os.chdir(tmp_dir)
-    subprocess.run(['bash', script_name], stdout=subprocess.PIPE)
+    subprocess.call('./{}'.format(script_name), stdout=subprocess.PIPE)
 
     res = await_expected_files(expected_files, tmp_dir)
 
