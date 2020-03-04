@@ -19,7 +19,7 @@ do
         echo "-noepik"              # turn off epik, since it's used for small molecules and we don't have ones
         echo "-noimpref"            # IMPORTANT: turn off minimization
         echo "-rehtreat"            # IMPORTANT: delete existing hydrogen atoms and build new ones
-        echo "-fasta_file $(realpath $f).fasta" # fasta file which is used to fill missing residues
+        echo "-fasta_file $(realpath $f).fasta" # fasta file which is used to fill missing residues. IMPORTANT: has to be absolute
         echo "$f"
         echo "$f.o.pdb"
     )

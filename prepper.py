@@ -11,13 +11,14 @@ HETATMS_DELETED = 'hetatms_deleted'
 
 PDB_PREP_DIR = 'pdb_prep'
 SCHROD_SCRIPT_PATH = 'resources/schrod_multi_prepare.sh'
+PDBFIXER_SCRIPT_PATH = 'resources/pdbfixer_multi_prepare.sh'
 
 PREP_SUFF = '.o.pdb'
 
 PREPPED = 'prepared'
 
 SCHROD = 'schrod'
-PDB_FIXER = 'PDBFixer'
+PDBFIXER = 'PDBFixer'
 
 SEQS = 'seqs'
 
@@ -55,12 +56,14 @@ def await_expected_files(expected_files, tmp_dir):
     return res
 
 
-def schrod_prep(file_names, tmp_dir):
+def prep_in_mode(file_names, tmp_dir, mode):
     expected_files = set(map(lambda x: x + PREP_SUFF, file_names))
 
-    script_name = os.path.basename(SCHROD_SCRIPT_PATH)
+    path_to_script = SCHROD_SCRIPT_PATH if mode == SCHROD else \
+        PDBFIXER_SCRIPT_PATH
+    script_name = os.path.basename(path_to_script)
 
-    shutil.copyfile(SCHROD_SCRIPT_PATH,
+    shutil.copyfile(path_to_script,
                     os.path.join(tmp_dir, script_name))
 
     os.chdir(tmp_dir)
@@ -73,26 +76,12 @@ def schrod_prep(file_names, tmp_dir):
     return res
 
 
-def run_pdb_fixer(name):
-    print('Prepping:', name, flush=True)
-    subprocess.run(
-        ['pdbfixer', name, '--replace-nonstandard', '--add-residues',
-         '--output={}{}'.format(name, PREP_SUFF)], stdout=subprocess.PIPE)
-    print('Prepped:', name, flush=True)
+def schrod_prep(file_names, tmp_dir):
+    return prep_in_mode(file_names, tmp_dir, SCHROD)
 
 
 def pdb_fixer_prep(file_names, tmp_dir):
-    expected_files = set(map(lambda x: x + PREP_SUFF, file_names))
-
-    os.chdir(tmp_dir)
-
-    list(map(lambda x: run_pdb_fixer(x), file_names))
-
-    res = await_expected_files(expected_files, tmp_dir)
-
-    os.chdir('..')
-
-    return res
+    return prep_in_mode(file_names, tmp_dir, PDBFIXER)
 
 
 def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
@@ -161,7 +150,7 @@ if __name__ == '__main__':
     parser.add_option('--mode', default=SCHROD, dest='mode', metavar='MODE',
                       help='{} for preparation using schrodinger. '
                            '{} for preparation using PDBFixer. [default: {}]'.
-                      format(SCHROD, PDB_FIXER, SCHROD))
+                      format(SCHROD, PDBFIXER, SCHROD))
     parser.add_option('--prev-epoch', default=HETATMS_DELETED,
                       dest='prev_epoch', metavar='PREV_EPOCH',
                       help='Name of the epoch structures from which will be '
