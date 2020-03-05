@@ -56,7 +56,7 @@ def await_expected_files(expected_files, tmp_dir):
     return res
 
 
-def prep_in_mode(file_names, tmp_dir, mode):
+def prep_in_mode(file_names, tmp_dir, mode, arg=None):
     expected_files = set(map(lambda x: x + PREP_SUFF, file_names))
 
     path_to_script = SCHROD_SCRIPT_PATH if mode == SCHROD else \
@@ -69,7 +69,10 @@ def prep_in_mode(file_names, tmp_dir, mode):
                     os.path.join(tmp_dir, script_name))
 
     os.chdir(tmp_dir)
-    subprocess.call('./{}'.format(script_name), stdout=subprocess.PIPE)
+
+    command = './{} {}'.format(script_name,
+                               arg) if arg else './{}'.format(script_name)
+    subprocess.call(command, stdout=subprocess.PIPE, shell=arg is not None)
 
     res = await_expected_files(expected_files, tmp_dir)
 
@@ -79,11 +82,11 @@ def prep_in_mode(file_names, tmp_dir, mode):
 
 
 def schrod_prep(file_names, tmp_dir):
-    return prep_in_mode(file_names, tmp_dir, SCHROD)
+    return prep_in_mode(file_names, tmp_dir, SCHROD, DB_PATH)
 
 
 def pdb_fixer_prep(file_names, tmp_dir):
-    return prep_in_mode(file_names, tmp_dir, PDBFIXER)
+    return prep_in_mode(file_names, tmp_dir, PDBFIXER, DB_PATH)
 
 
 def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
@@ -116,11 +119,12 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
     while len(unprepped_names) > 0:
         print('New iteration:', len(unprepped_names))
 
-        with open('unprepped.log', 'w') as f:
+        with open('unprepped_{}.log'.format(mode), 'w') as f:
             for name in unprepped_names:
                 f.write(name_to_path[name] + '\n')
 
-        path_to_prepped_schrod = schrod_prep(unprepped_names, tmp_dir) if mode == SCHROD \
+        path_to_prepped_schrod = schrod_prep(unprepped_names,
+                                             tmp_dir) if mode == SCHROD \
             else pdb_fixer_prep(unprepped_names, tmp_dir)
 
         for name in list(unprepped_names):
@@ -138,9 +142,6 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
 
             shutil.copyfile(path_to_prepped,
                             new_path)
-
-            os.remove(path_to_prepped)
-            os.remove(path_to_prepped[:-len(PREP_SUFF)])
 
 
 if __name__ == '__main__':
