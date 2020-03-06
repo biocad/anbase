@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from Bio import pairwise2
 from Bio.PDB import PDBParser, Superimposer, PDBIO, Select
-from Bio.PDB.Polypeptide import PPBuilder, is_aa
+from Bio.PDB.Polypeptide import PPBuilder, is_aa, d1_to_index, dindex_to_3
 from Bio.PDB.StructureBuilder import StructureBuilder
 
 from collect_db import AG, AB, DB_PATH, DOT_PDB, \
@@ -28,6 +28,8 @@ ALIGNED_EPOCH = 'aligned'
 HETATMS_DELETED = 'hetatms_deleted'
 
 SEQUENCES = 'seqs'
+
+INTERFACE_CUTOFF = 10
 
 
 def comp_name_to_dir_name(comp_name):
@@ -146,6 +148,81 @@ class Conformation:
         self.ag_seqs_u = None
 
     @staticmethod
+    def ids_from_structure(structure):
+        res = set()
+
+        for model in structure:
+            for chain in model:
+                res.add(chain.get_id())
+
+        return res
+
+    @staticmethod
+    def prepend_sequence_info_to_pdb(pdb_path, pdb_id, actual_ids):
+        all_seqs = list(
+            filter(lambda p: p[0] in actual_ids, fetch_all_sequences(pdb_id)))
+
+        def up_to(i, n):
+            res = str(i)
+
+            while len(res) < n:
+                res = ' ' + res
+
+            return res
+
+        def to_3(x, i):
+            if x == 'X' and i == 0:
+                return 'ACE'
+            elif x == 'X':
+                print('WHAT X is this:', pdb_path, pdb_id, i, flush=True)
+                return 'NMA'
+            elif x in d1_to_index:
+                return dindex_to_3[d1_to_index[x]]
+            else:
+                print('WHAT AA is this:', pdb_path, pdb_id, i, flush=True)
+                return 'XXX'
+
+        def seq_to_seqres_section(seq, chain_name):
+            seqres = 'SEQRES'
+            n_of_residue_columns = 13
+
+            full_names = list(
+                map(lambda x: to_3(x[0], x[1]),
+                    zip(list(seq), range(len(seq)))))
+
+            rows = []
+
+            i = 0
+            while len(full_names) > 0:
+                i += 1
+
+                to_take = min(n_of_residue_columns, len(full_names))
+
+                row_names = full_names[:to_take]
+                full_names = full_names[to_take:]
+
+                ser_num = up_to(i, 3)
+                num_res = up_to(len(seq), 3)
+
+                row = '{} {} {} {}  {}'.format(seqres, ser_num, chain_name,
+                                               num_res, ' '.join(row_names))
+
+                rows.append(row)
+
+            return '\n'.join(rows)
+
+        seqres_info = '\n'.join(
+            map(lambda p: seq_to_seqres_section(p[1], p[0]),
+                all_seqs))
+
+        with open(pdb_path, 'r') as f:
+            lines = f.readlines()
+
+        with open(pdb_path, 'w') as f:
+            f.write(seqres_info + '\n')
+            f.writelines(lines)
+
+    @staticmethod
     def extract_chains(structure, chain_ids):
         chains = []
 
@@ -168,15 +245,13 @@ class Conformation:
         return cas
 
     def get_interface_cas(self):
-        interface_cutoff = 10
-
         ab_interface_cas = []
         ag_interface_cas = []
 
         for ab_at in self.ab_atoms_b:
             for ag_at in self.ag_atoms_b:
                 if np.linalg.norm(
-                        ab_at.coord - ag_at.coord) < interface_cutoff:
+                        ab_at.coord - ag_at.coord) < INTERFACE_CUTOFF:
                     ab_interface_cas.append(ab_at)
                     ag_interface_cas.append(ag_at)
 
@@ -206,16 +281,25 @@ class Conformation:
         return union_models(pdb)
 
     @staticmethod
+    def extract_seq(chain):
+        seq = ''
+
+        for x in Conformation.peptides_builder.build_peptides(chain):
+            seq += str(x.get_sequence())
+
+        return seq
+
+    @staticmethod
     def _matching_atoms_for_chains(chain1, pdb_id1, chain_id1, chain2, pdb_id2,
                                    chain_id2):
-        def extract_seq(chain):
-            seq = ''
+        seq1 = fetch_sequence(pdb_id1, chain_id1)
+        seq2 = fetch_sequence(pdb_id2, chain_id2)
 
-            for x in Conformation.peptides_builder.build_peptides(chain):
-                seq += str(x.get_sequence())
+        return Conformation._matching_atoms_for_chains_seqs(chain1, seq1,
+                                                            chain2, seq2)
 
-            return seq
-
+    @staticmethod
+    def _matching_atoms_for_chains_seqs(chain1, seq1, chain2, seq2):
         def extract_peps(chain):
             peps = []
 
@@ -225,7 +309,7 @@ class Conformation:
             return peps
 
         def get_ids_from_chain(chain, seq, ids_in_seq):
-            struct_seq = extract_seq(chain)
+            struct_seq = Conformation.extract_seq(chain)
 
             alignment_loc = \
                 pairwise2.align.localxs(struct_seq, seq, -5, -1,
@@ -254,9 +338,6 @@ class Conformation:
                     res.append((counter_seq, counter))
 
             return {key: value for key, value in res}
-
-        seq1 = fetch_sequence(pdb_id1, chain_id1)
-        seq2 = fetch_sequence(pdb_id2, chain_id2)
 
         alignment = \
             pairwise2.align.localxs(seq1, seq2, -5, -1,
@@ -439,35 +520,6 @@ class Conformation:
 
         return mols_ag + mols_ab
 
-    def small_molecules_logging(self, small_molecules_csv):
-        mols = self.get_small_molecules_stat(None)
-
-        if all(map(
-                lambda x: x.n_atoms <= self.MAX_NUMBER_OF_ATOMS_IN_SM_TARGET,
-                mols)):
-            return
-
-        message = None
-
-        if all(map(lambda x: x.n_atoms <=
-                             self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT, mols)):
-            message = 'small molecules with ' + \
-                      str(self.MAX_NUMBER_OF_ATOMS_IN_SM_TARGET) + \
-                      ' < n_atoms <= ' + \
-                      str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
-                      ' detected'
-        else:
-            message = 'small molecules with' + \
-                      ' n_atoms > ' + \
-                      str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
-                      ' detected'
-
-        small_molecules_csv.write('{},{},{},{}\n'.format(self.comp_name,
-                                                         self.candidate_id,
-                                                         self.candidate_type,
-                                                         message))
-        small_molecules_csv.flush()
-
     @staticmethod
     def delete_hetatms(struct):
         for model in struct:
@@ -487,14 +539,29 @@ class Conformation:
 
     @staticmethod
     def _load_sequences_for_pdb_and_chain_ids(prefix, pdb_id, name, chain_ids):
-        all_seqs = fetch_all_sequences(pdb_id)
-
-        res = []
-
         path = os.path.join(prefix, '{}.fasta'.format(name))
 
         if os.path.exists(path):
-            os.remove(path)
+            res = [None for _ in chain_ids]
+
+            mapping = {k: v for k, v in zip(chain_ids, range(len(chain_ids)))}
+
+            with open(path, 'r') as f:
+                lines = list(map(lambda x: x.strip(), f.readlines()))
+
+                i = 0
+
+                while i < len(lines):
+                    chain_id = lines[i].split(':')[1]
+                    chain_seq = lines[i + 1]
+                    res[mapping[chain_id]] = chain_seq
+                    i += 2
+
+            return res
+
+        all_seqs = fetch_all_sequences(pdb_id)
+
+        res = []
 
         for chain_id in chain_ids:
             for seq_id, seq in all_seqs:
@@ -513,7 +580,7 @@ class Conformation:
         dir_path = os.path.join(DB_PATH, self.dir_name, SEQUENCES)
 
         if not os.path.exists(dir_path):
-            os.mkdir(dir_path)
+            os.makedirs(dir_path)
 
         seqs_b = self. \
             _load_sequences_for_pdb_and_chain_ids(dir_path,
@@ -554,6 +621,185 @@ class Conformation:
         if not self.ag_seqs_u:
             self.ag_seqs_u = ag_seqs_u
 
+    @staticmethod
+    def get_gaps_stats_for_chain(seq_b, interface_residues_b,
+                                 chain_u, interface_residues_u):
+        pdb_seq = Conformation.extract_seq(chain_u)
+
+        alignment = \
+            pairwise2.align.localxs(pdb_seq, seq_b, -5, -1,
+                                    penalize_end_gaps=False,
+                                    one_alignment_only=True)[0]
+
+        gaps_bounds_u = []
+
+        cur_left_bound = None
+        ind_u = -1
+        ind_b = -1
+
+        interface_b_gap_u = 0
+        gap_b_interface_u = 0
+
+        for i in range(len(alignment[0])):
+            symbol_u = alignment[0][i]
+            symbol_b = alignment[1][i]
+
+            if symbol_u == '-' and symbol_b == '-':
+                pass
+            elif symbol_u == '-':
+                ind_b += 1
+
+                if ind_b in interface_residues_b:
+                    interface_b_gap_u += 1
+
+            elif alignment[1][i] == '-':
+                ind_u += 1
+
+                if ind_u in interface_residues_u:
+                    gap_b_interface_u += 1
+            else:
+                ind_b += 1
+                ind_b += 1
+
+            if symbol_u == '-' and cur_left_bound is None:
+                cur_left_bound = ind_u
+            elif symbol_u != '-' and cur_left_bound is not None:
+                gaps_bounds_u.append((cur_left_bound, ind_u))
+                cur_left_bound = None
+
+        if cur_left_bound is not None:
+            gaps_bounds_u.append((cur_left_bound, len(pdb_seq)))
+
+        return interface_b_gap_u, gap_b_interface_u, len(gaps_bounds_u)
+
+    @staticmethod
+    def get_chain_with_id(structure, chain_id):
+        for chain in structure.get_chains():
+            if chain.get_id() == chain_id:
+                return chain
+
+    @staticmethod
+    def gap_stats_for_chains_u(seqs_b, interface_residues_for_chains_b,
+                               chains_u,
+                               interface_residues_for_chains_u):
+        interface_b_gap_u_counter = 0
+        gap_b_interface_u_counter = 0
+        all_gaps_counter = 0
+
+        for i in range(len(seqs_b)):
+            interface_b_gap_u, gap_b_interface_u, all_gaps = Conformation.get_gaps_stats_for_chain(
+                seqs_b[i],
+                interface_residues_for_chains_b[i],
+                chains_u[i],
+                interface_residues_for_chains_u[i])
+            interface_b_gap_u_counter += interface_b_gap_u
+            gap_b_interface_u_counter += gap_b_interface_u
+            all_gaps_counter += all_gaps
+
+        return interface_b_gap_u_counter, \
+               gap_b_interface_u_counter, \
+               all_gaps_counter
+
+    @staticmethod
+    def interface_residue_ids(ab_chains, ag_chains):
+        ab_chain_to_interface_residues = defaultdict(set)
+        ag_chain_to_interface_residues = defaultdict(set)
+
+        for ab_chain in ab_chains:
+            for ag_chain in ag_chains:
+                ab_ind = -1
+                for ab_residue in ab_chain:
+                    ab_ind += 1
+                    ag_ind = -1
+                    for ag_residue in ag_chain:
+                        ag_ind += 1
+                        for ab_at in ab_residue:
+                            if ab_at.get_id() != 'CA':
+                                break
+
+                            can_break = False
+
+                            for ag_at in ag_residue:
+                                if ag_at.get_id() != 'CA':
+                                    break
+
+                                if np.linalg.norm(
+                                        ab_at.coord - ag_at.coord) < \
+                                        INTERFACE_CUTOFF:
+                                    ab_chain_to_interface_residues[
+                                        ab_chain].add(ab_ind)
+                                    ag_chain_to_interface_residues[
+                                        ag_chain].add(ag_ind)
+                                    break
+
+                            if can_break:
+                                break
+        ab_res = []
+        ag_res = []
+
+        for ab_chain in ab_chains:
+            ab_res.append(ab_chain_to_interface_residues[ab_chain])
+
+        for ag_chain in ag_chains:
+            ag_res.append(ag_chain_to_interface_residues[ag_chain])
+
+        return ab_res, ag_res
+
+    def get_gaps_stats(self):
+        if not self.is_aligned:
+            raise RuntimeError(
+                'Gaps statistics can be calculated only on aligned '
+                'structures.')
+
+        ab_chains_u = list(map(
+            lambda x: self.get_chain_with_id(self.ab_structure_u, x),
+            self.ab_chain_ids_u))
+        ag_chains_u = list(map(
+            lambda x: self.get_chain_with_id(self.ag_structure_u, x),
+            self.ag_chain_ids_u))
+
+        ab_interface_residues_inds_b, ag_interface_residues_inds_b = \
+            self.interface_residue_ids(self.ab_chains_b, self.ag_chains_b)
+
+        ab_interface_residues_inds_u, ag_interface_residues_inds_u = \
+            self.interface_residue_ids(ab_chains_u, ag_chains_u)
+
+        interface_b_gap_u_counter = 0
+        gap_b_interface_u_counter = 0
+        all_gaps_counter = 0
+
+        interface_b_gap_u, gap_b_interface_u, all_gaps = self.gap_stats_for_chains_u(
+            self.ab_seqs_b, ab_interface_residues_inds_b, ab_chains_u,
+            ab_interface_residues_inds_u)
+
+        interface_b_gap_u_counter += interface_b_gap_u
+        gap_b_interface_u_counter += gap_b_interface_u
+        all_gaps_counter += all_gaps
+
+        interface_b_gap_u, gap_b_interface_u, all_gaps = self.gap_stats_for_chains_u(
+            self.ag_seqs_b, ag_interface_residues_inds_b, ag_chains_u,
+            ag_interface_residues_inds_u)
+
+        interface_b_gap_u_counter += interface_b_gap_u
+        gap_b_interface_u_counter += gap_b_interface_u
+        all_gaps_counter += all_gaps
+
+        return interface_b_gap_u_counter, gap_b_interface_u_counter, all_gaps_counter
+
+    def gaps_logging(self, file):
+        interface_b_gap_u_counter, \
+        gap_b_interface_u_counter, \
+        all_gaps_counter = self.get_gaps_stats()
+
+        file.write(
+            '{},{},{},{},{},{}\n'.format(self.comp_name,
+                                         self.candidate_id,
+                                         self.candidate_type,
+                                         interface_b_gap_u_counter,
+                                         gap_b_interface_u_counter,
+                                         all_gaps_counter))
+        file.flush()
+
     def load_candidate(self, epoch_name):
         prefix = os.path.join(DB_PATH, self.dir_name,
                               str(self.candidate_id), epoch_name,
@@ -571,6 +817,14 @@ class Conformation:
                                               '_u' if self.is_ag_u else '_b')
                                           + DOT_PDB)
 
+    @staticmethod
+    def write_structure(structure, path, pdb_id):
+        Conformation.pdb_io.set_structure(structure)
+        Conformation.pdb_io.save(path)
+        Conformation.prepend_sequence_info_to_pdb(path, pdb_id,
+                                                  Conformation.ids_from_structure(
+                                                      structure))
+
     def write_candidate(self, epoch_name):
         pre_path = os.path.join(DB_PATH, self.dir_name, epoch_name)
 
@@ -579,8 +833,9 @@ class Conformation:
 
         complex_b_path = os.path.join(pre_path, self.pdb_id_b + DOT_PDB)
 
-        self.pdb_io.set_structure(self.complex_structure_b)
-        self.pdb_io.save(complex_b_path)
+        if not os.path.exists(complex_b_path):
+            self.write_structure(self.complex_structure_b, complex_b_path,
+                                 self.pdb_id_b)
 
         path = os.path.join(pre_path, str(self.candidate_id))
 
@@ -590,15 +845,42 @@ class Conformation:
         name_prefix = os.path.join(path,
                                    self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
 
-        self.pdb_io.set_structure(rename_chains(self.ab_structure_u))
-        self.pdb_io.save(
-            name_prefix + '_r' + ('_u' if self.is_ab_u else '_b')
-            + DOT_PDB)
+        self.write_structure(self.ab_structure_u, name_prefix + '_r' + (
+            '_u' if self.is_ab_u else '_b')
+                             + DOT_PDB, self.ab_pdb_id_u)
 
-        self.pdb_io.set_structure(rename_chains(self.ag_structure_u))
-        self.pdb_io.save(
-            name_prefix + '_l' + ('_u' if self.is_ag_u else '_b')
-            + DOT_PDB)
+        self.write_structure(self.ag_structure_u, name_prefix + '_l' + (
+            '_u' if self.is_ag_u else '_b')
+                             + DOT_PDB, self.ag_pdb_id_u)
+
+    def write_info(self, db_info_csv):
+        mols = self.get_small_molecules_stat(None)
+
+        if all(map(
+                lambda x: x.n_atoms <= self.MAX_NUMBER_OF_ATOMS_IN_SM_TARGET,
+                mols)):
+            mols_message = 'NA'
+        elif all(map(lambda x: x.n_atoms <=
+                               self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT,
+                     mols)):
+            mols_message = 'small molecules with ' + \
+                           str(self.MAX_NUMBER_OF_ATOMS_IN_SM_TARGET) + \
+                           ' < n_atoms <= ' + \
+                           str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
+                           ' detected'
+        else:
+            mols_message = 'small molecules with' + \
+                           ' n_atoms > ' + \
+                           str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
+                           ' detected'
+
+        db_info_csv.write(','.join(['{}'] * 11).format(
+            self.comp_name, self.candidate_type, self.candidate_id,
+            self.pdb_id_b, ':'.join(self.ab_chain_ids_b),
+            ':'.join(self.ag_chain_ids_b), self.ab_pdb_id_u,
+            ':'.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
+            ':'.join(self.ag_chain_ids_u), mols_message) + '\n')
+        db_info_csv.flush()
 
 
 def process_csv(csv):
@@ -740,11 +1022,13 @@ def process_filtered_csv(path_to_filtered_structures_csv,
                         pd.read_csv('data/sabdab_summary_all.tsv', sep='\t'))
 
     with open(path_to_rejected_complexes_csv, 'w') as rejected_complexes_csv, \
-            open('small_molecules_log.csv', 'w') as small_molecules_log_csv:
+            open('db_info.csv', 'w') as db_info_csv:
 
-        small_molecules_log_csv.write(
-            'comp_name,candidate_id,candidate_type,reason\n')
-        small_molecules_log_csv.flush()
+        db_info_csv.write(
+            'comp_name,candidate_id,candidate_type,candidate_id,pdb_id_b,'
+            'ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_'
+            'pdb_id_u,ag_chain_ids_u,small_mols_message\n')
+        db_info_csv.flush()
 
         rejected_complexes_csv.write(
             'comp_name,candidate_id,candidate_type,reason\n')
@@ -766,13 +1050,10 @@ def process_filtered_csv(path_to_filtered_structures_csv,
 
             for candidate in candidates:
                 try:
-                    candidate.alignment_epoch(ALIGNED_EPOCH)
-
-                    candidate.small_molecules_logging(small_molecules_log_csv)
-
-                    candidate.hetatms_deletion_epoch(HETATMS_DELETED)
-
                     candidate.load_sequences()
+                    candidate.alignment_epoch(ALIGNED_EPOCH)
+                    candidate.hetatms_deletion_epoch(HETATMS_DELETED)
+                    candidate.write_info(db_info_csv)
 
                 except Exception as e:
                     rejected_complexes_csv.write('{},{},{},{}\n'.format(
@@ -804,4 +1085,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV) # , to_accept=['1tpx_B:C|A'])
+                         REJECTED_COMPLEXES_CSV, to_accept=['5vlp_H:L|A'])
