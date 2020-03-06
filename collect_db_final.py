@@ -170,12 +170,11 @@ class Conformation:
 
             return res
 
-        def to_3(x, i):
+        def to_3(x, i, seq_len):
             if x == 'X' and i == 0:
                 return 'ACE'
-            elif x == 'X':
-                print('WHAT X is this:', pdb_path, pdb_id, i, flush=True)
-                return 'NMA'
+            elif x == 'X' and i == seq_len - 1:
+                return 'NME'
             elif x in d1_to_index:
                 return dindex_to_3[d1_to_index[x]]
             else:
@@ -187,7 +186,7 @@ class Conformation:
             n_of_residue_columns = 13
 
             full_names = list(
-                map(lambda x: to_3(x[0], x[1]),
+                map(lambda x: to_3(x[0], x[1], len(seq)),
                     zip(list(seq), range(len(seq)))))
 
             rows = []
@@ -1085,4 +1084,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV, to_accept=['5vlp_H:L|A'])
+                         REJECTED_COMPLEXES_CSV)
