@@ -117,11 +117,12 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
     unprepped_names = set(name_to_path.keys())
 
     while len(unprepped_names) > 0:
-        print('New iteration:', len(unprepped_names))
+        print('New iteration:', len(unprepped_names), flush=True)
 
         with open('unprepped_{}.log'.format(mode), 'w') as f:
             for name in unprepped_names:
                 f.write(name_to_path[name] + '\n')
+                f.flush()
 
         path_to_prepped_schrod = schrod_prep(unprepped_names,
                                              tmp_dir) if mode == SCHROD \
