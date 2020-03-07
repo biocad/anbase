@@ -779,20 +779,6 @@ class Conformation:
 
         return interface_b_gap_u_counter, gap_b_interface_u_counter, all_gaps_counter
 
-    def gaps_logging(self, file):
-        interface_b_gap_u_counter, \
-        gap_b_interface_u_counter, \
-        all_gaps_counter = self.get_gaps_stats()
-
-        file.write(
-            '{},{},{},{},{},{}\n'.format(self.comp_name,
-                                         self.candidate_id,
-                                         self.candidate_type,
-                                         interface_b_gap_u_counter,
-                                         gap_b_interface_u_counter,
-                                         all_gaps_counter))
-        file.flush()
-
     def load_candidate(self, epoch_name):
         prefix = os.path.join(DB_PATH, self.dir_name,
                               str(self.candidate_id), epoch_name,
@@ -866,12 +852,17 @@ class Conformation:
                            str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
                            ' detected'
 
-        db_info_csv.write(','.join(['{}'] * 11).format(
+        interface_b_gap_u_counter, gap_b_interface_u_counter, \
+            all_gaps_counter = self.get_gaps_stats()
+
+        db_info_csv.write(','.join(['{}'] * 14).format(
             self.comp_name, self.candidate_type, self.candidate_id,
             self.pdb_id_b, ':'.join(self.ab_chain_ids_b),
             ':'.join(self.ag_chain_ids_b), self.ab_pdb_id_u,
             ':'.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
-            ':'.join(self.ag_chain_ids_u), mols_message) + '\n')
+            ':'.join(self.ag_chain_ids_u), mols_message,
+            interface_b_gap_u_counter, gap_b_interface_u_counter,
+            all_gaps_counter) + '\n')
         db_info_csv.flush()
 
 
@@ -1042,7 +1033,8 @@ def process_filtered_csv(path_to_filtered_structures_csv,
         db_info_csv.write(
             'comp_name,candidate_type,candidate_id,pdb_id_b,'
             'ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_'
-            'pdb_id_u,ag_chain_ids_u,small_mols_message\n')
+            'pdb_id_u,ag_chain_ids_u,small_molecules_message,'
+            'interface_b_gap_u_cnt,gap_b_interface_u_cnt,gap_total_cnt\n')
         db_info_csv.flush()
 
         rejected_complexes_csv.write(
