@@ -1,5 +1,6 @@
 import os
 import pickle
+import string
 from collections import defaultdict
 from xml.etree import ElementTree
 
@@ -15,7 +16,7 @@ from collect_db import AG, AB, DB_PATH, DOT_PDB, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
     fetch_all_sequences
-from post_unboundness_filtering import union_models, rename_chains, \
+from post_unboundness_filtering import union_models, \
     fetch_all_assemblies
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
@@ -148,19 +149,10 @@ class Conformation:
         self.ag_seqs_u = None
 
     @staticmethod
-    def ids_from_structure(structure):
-        res = set()
-
-        for model in structure:
-            for chain in model:
-                res.add(chain.get_id())
-
-        return res
-
-    @staticmethod
-    def prepend_sequence_info_to_pdb(pdb_path, pdb_id, actual_ids):
-        all_seqs = list(
-            filter(lambda p: p[0] in actual_ids, fetch_all_sequences(pdb_id)))
+    def prepend_sequence_info_to_pdb(pdb_path, pdb_id, mapping):
+        all_seqs = {k: v for k, v in
+                    filter(lambda p: p[0] in mapping.values(),
+                           fetch_all_sequences(pdb_id))}
 
         def up_to(i, n):
             res = str(i)
@@ -179,11 +171,12 @@ class Conformation:
                 return dindex_to_3[d1_to_index[x]]
             else:
                 print('WHAT AA is this:', pdb_path, pdb_id, i, flush=True)
-                return 'XXX'
+                return 'UNK'
 
         def seq_to_seqres_section(seq, chain_name):
             seqres = 'SEQRES'
             n_of_residue_columns = 13
+            len_of_pdb_row = 80
 
             full_names = list(
                 map(lambda x: to_3(x[0], x[1], len(seq)),
@@ -201,18 +194,19 @@ class Conformation:
                 full_names = full_names[to_take:]
 
                 ser_num = up_to(i, 3)
-                num_res = up_to(len(seq), 3)
+                num_res = up_to(len(seq), 4)
 
-                row = '{} {} {} {}  {}'.format(seqres, ser_num, chain_name,
+                row = '{} {} {} {}  {}'.format(seqres, ser_num,
+                                               chain_name,
                                                num_res, ' '.join(row_names))
 
-                rows.append(row)
+                rows.append(row + (len_of_pdb_row - len(row)) * ' ')
 
             return '\n'.join(rows)
 
         seqres_info = '\n'.join(
-            map(lambda p: seq_to_seqres_section(p[1], p[0]),
-                all_seqs))
+            map(lambda x: seq_to_seqres_section(all_seqs[mapping[x]], x),
+                mapping.keys()))
 
         with open(pdb_path, 'r') as f:
             lines = f.readlines()
@@ -818,11 +812,11 @@ class Conformation:
 
     @staticmethod
     def write_structure(structure, path, pdb_id):
-        Conformation.pdb_io.set_structure(structure)
+        struct_with_renamed_chains, mapping = rename_chains(structure)
+
+        Conformation.pdb_io.set_structure(struct_with_renamed_chains)
         Conformation.pdb_io.save(path)
-        Conformation.prepend_sequence_info_to_pdb(path, pdb_id,
-                                                  Conformation.ids_from_structure(
-                                                      structure))
+        Conformation.prepend_sequence_info_to_pdb(path, pdb_id, mapping)
 
     def write_candidate(self, epoch_name):
         pre_path = os.path.join(DB_PATH, self.dir_name, epoch_name)
@@ -841,8 +835,7 @@ class Conformation:
         if not os.path.exists(path):
             os.makedirs(path)
 
-        name_prefix = os.path.join(path,
-                                   self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
+        name_prefix = os.path.join(path, self.pdb_id_b)
 
         self.write_structure(self.ab_structure_u, name_prefix + '_r' + (
             '_u' if self.is_ab_u else '_b')
@@ -880,6 +873,29 @@ class Conformation:
             ':'.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
             ':'.join(self.ag_chain_ids_u), mols_message) + '\n')
         db_info_csv.flush()
+
+
+def rename_chains(struct):
+    new_struct = struct.copy()
+
+    available_chain_ids = set(string.ascii_lowercase + string.ascii_uppercase)
+
+    mapping = {}
+
+    for model in new_struct:
+        for chain in model:
+            chain_id = chain.get_id()
+
+            if chain_id in available_chain_ids:
+                mapping[chain_id] = chain_id
+                available_chain_ids.remove(chain_id)
+            else:
+                # TODO: can crash if there are more than 52 chains
+                chain.id = available_chain_ids.pop()
+
+                mapping[chain.id] = chain_id[0]
+
+    return new_struct, mapping
 
 
 def process_csv(csv):
@@ -1024,7 +1040,7 @@ def process_filtered_csv(path_to_filtered_structures_csv,
             open('db_info.csv', 'w') as db_info_csv:
 
         db_info_csv.write(
-            'comp_name,candidate_id,candidate_type,candidate_id,pdb_id_b,'
+            'comp_name,candidate_type,candidate_id,pdb_id_b,'
             'ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_'
             'pdb_id_u,ag_chain_ids_u,small_mols_message\n')
         db_info_csv.flush()
@@ -1051,8 +1067,8 @@ def process_filtered_csv(path_to_filtered_structures_csv,
                 try:
                     candidate.load_sequences()
                     candidate.alignment_epoch(ALIGNED_EPOCH)
-                    candidate.hetatms_deletion_epoch(HETATMS_DELETED)
                     candidate.write_info(db_info_csv)
+                    candidate.hetatms_deletion_epoch(HETATMS_DELETED)
 
                 except Exception as e:
                     rejected_complexes_csv.write('{},{},{},{}\n'.format(

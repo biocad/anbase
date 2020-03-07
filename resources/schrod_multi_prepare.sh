@@ -5,14 +5,13 @@ ix=0
 len=${#files[@]}
 while [[ $ix -lt $len ]]
 do
-  ctime=$(date)
-  echo "[$ctime] Started iteration $ix" >> LOG.txt
+  echo "[$(date)] Started iteration $ix" >> LOG.txt
   tasks=$($SCHRODINGER/jobcontrol -list | wc -l)
   while [[ $tasks -le $maxtasks ]] && [[ $ix -lt $len ]]
   do
     f=${files[ix]}
     if test -f "$f.o.pdb"; then
-        echo "[$ctime] Already prepared: $f" >> LOG.txt
+        echo "[$(date)] Already prepared: $f" >> LOG.txt
     else
         $SCHRODINGER/utilities/prepwizard $(
             echo "-disulfides"                      # build the disulfide bridges
@@ -28,8 +27,16 @@ do
         )
         sleep 0.1
         tasks=$($SCHRODINGER/jobcontrol -list | wc -l)
-        echo "[$ctime] Prepping: $f" >> LOG.txt
+        echo "[$(date)] Prepping: $f" >> LOG.txt
     fi
     let "ix += 1"
+  done
+
+  tasks=$($SCHRODINGER/jobcontrol -list | wc -l)
+  while [[ $tasks -ne 1 ]]
+  do
+    sleep 5
+    tasks=$($SCHRODINGER/jobcontrol -list | wc -l)
+    echo "[$(date)] waiting" >> LOG.txt
   done
 done
