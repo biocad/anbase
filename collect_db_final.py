@@ -83,8 +83,8 @@ class Conformation:
         self.ag_pdb_id_u = ag_pdb_id_u
         self.ag_chain_ids_u = ag_chain_ids_u
 
-        self.ab_assembly_id = ab_assembly_id
-        self.ag_assembly_id = ag_assembly_id
+        self.ab_assembly_id_u = ab_assembly_id
+        self.ag_assembly_id_u = ag_assembly_id
 
         self.is_ab_u = is_ab_u
 
@@ -96,7 +96,7 @@ class Conformation:
                                                         self.assembly_id_b)
         if self.is_ab_u:
             self.ab_structure_u = self._load_structure(ab_pdb_id_u,
-                                                       self.ab_assembly_id)
+                                                       self.ab_assembly_id_u)
         else:
             self.ab_structure_u = self.complex_structure_b.copy()
 
@@ -108,7 +108,7 @@ class Conformation:
 
         if self.is_ag_u:
             self.ag_structure_u = self._load_structure(ag_pdb_id_u,
-                                                       self.ag_assembly_id)
+                                                       self.ag_assembly_id_u)
         else:
             self.ag_structure_u = self.complex_structure_b.copy()
 
@@ -122,6 +122,13 @@ class Conformation:
                                                self.ab_chain_ids_b)
         self.ag_chains_b = self.extract_chains(self.complex_structure_b,
                                                self.ag_chain_ids_b)
+
+        self.complex_structure_b, self.complex_mapping_b = rename_chains(
+            self.complex_structure_b)
+        self.ab_structure_u, self.ab_mapping_u = rename_chains(
+            self.ab_structure_u)
+        self.ag_structure_u, self.ag_mapping_u = rename_chains(
+            self.ag_structure_u)
 
         self.ab_atoms_b = []
         self.ag_atoms_b = []
@@ -150,9 +157,7 @@ class Conformation:
 
     @staticmethod
     def prepend_sequence_info_to_pdb(pdb_path, pdb_id, mapping):
-        all_seqs = {k: v for k, v in
-                    filter(lambda p: p[0] in mapping.values(),
-                           fetch_all_sequences(pdb_id))}
+        all_seqs = {k: v for k, v in fetch_all_sequences(pdb_id)}
 
         def up_to(i, n):
             res = str(i)
@@ -531,7 +536,8 @@ class Conformation:
         self.write_candidate(epoch_name)
 
     @staticmethod
-    def _load_sequences_for_pdb_and_chain_ids(prefix, pdb_id, name, chain_ids):
+    def _load_sequences_for_pdb_and_chain_ids(prefix, pdb_id, name, chain_ids,
+                                              mapping):
         path = os.path.join(prefix, '{}.fasta'.format(name))
 
         if os.path.exists(path):
@@ -547,24 +553,26 @@ class Conformation:
                 while i < len(lines):
                     chain_id = lines[i].split(':')[1]
                     chain_seq = lines[i + 1]
-                    res[mapping[chain_id]] = chain_seq
+
+                    if chain_id in chain_ids:
+                        res[mapping[chain_id]] = chain_seq
                     i += 2
 
             return res
 
-        all_seqs = fetch_all_sequences(pdb_id)
+        all_seqs = {k: v for k, v in fetch_all_sequences(pdb_id)}
 
         res = []
 
+        for new_chain_name, old_chain_name in mapping.items():
+            with open(path, 'a') as f:
+                f.write('>{}:{}\n'.format(name, new_chain_name))
+                f.write(all_seqs[old_chain_name] + '\n')
+
         for chain_id in chain_ids:
-            for seq_id, seq in all_seqs:
+            for seq_id, seq in all_seqs.items():
                 if seq_id == chain_id:
                     res.append(seq)
-
-                    with open(path, 'a') as f:
-                        f.write('>{}:{}\n'.format(name, seq_id))
-                        f.write(seq + '\n')
-
                     break
 
         return res
@@ -580,7 +588,8 @@ class Conformation:
                                                   self.pdb_id_b,
                                                   self.pdb_id_b,
                                                   self.ab_chain_ids_b +
-                                                  self.ag_chain_ids_b)
+                                                  self.ag_chain_ids_b,
+                                                  self.complex_mapping_b)
 
         if not self.ab_seqs_b:
             self.ab_seqs_b = seqs_b[:len(self.ab_chain_ids_b)]
@@ -600,7 +609,8 @@ class Conformation:
                                                                self.ab_pdb_id_u,
                                                                name + '_r' + (
                                                                    '_u' if self.is_ab_u else '_b'),
-                                                               self.ab_chain_ids_u)
+                                                               self.ab_chain_ids_u,
+                                                               self.ab_mapping_u)
 
         if not self.ab_seqs_u:
             self.ab_seqs_u = ab_seqs_u
@@ -609,7 +619,8 @@ class Conformation:
                                                                self.ag_pdb_id_u,
                                                                name + '_l' + (
                                                                    '_u' if self.is_ag_u else '_b'),
-                                                               self.ag_chain_ids_u)
+                                                               self.ag_chain_ids_u,
+                                                               self.ag_mapping_u)
 
         if not self.ag_seqs_u:
             self.ag_seqs_u = ag_seqs_u
@@ -779,28 +790,9 @@ class Conformation:
 
         return interface_b_gap_u_counter, gap_b_interface_u_counter, all_gaps_counter
 
-    def load_candidate(self, epoch_name):
-        prefix = os.path.join(DB_PATH, self.dir_name,
-                              str(self.candidate_id), epoch_name,
-                              self.ab_pdb_id_u + '_' + self.ag_pdb_id_u)
-
-        self.ab_pdb_id_u = \
-            self.pdb_parser.get_structure('receptor',
-                                          prefix + '_r' + (
-                                              '_u' if self.is_ab_u else '_b')
-                                          + DOT_PDB)
-
-        self.ab_pdb_id_u = \
-            self.pdb_parser.get_structure('receptor',
-                                          prefix + '_l' + (
-                                              '_u' if self.is_ag_u else '_b')
-                                          + DOT_PDB)
-
     @staticmethod
-    def write_structure(structure, path, pdb_id):
-        struct_with_renamed_chains, mapping = rename_chains(structure)
-
-        Conformation.pdb_io.set_structure(struct_with_renamed_chains)
+    def write_structure(structure, path, pdb_id, mapping):
+        Conformation.pdb_io.set_structure(structure)
         Conformation.pdb_io.save(path)
         Conformation.prepend_sequence_info_to_pdb(path, pdb_id, mapping)
 
@@ -814,7 +806,7 @@ class Conformation:
 
         if not os.path.exists(complex_b_path):
             self.write_structure(self.complex_structure_b, complex_b_path,
-                                 self.pdb_id_b)
+                                 self.pdb_id_b, self.complex_mapping_b)
 
         path = os.path.join(pre_path, str(self.candidate_id))
 
@@ -825,11 +817,11 @@ class Conformation:
 
         self.write_structure(self.ab_structure_u, name_prefix + '_r' + (
             '_u' if self.is_ab_u else '_b')
-                             + DOT_PDB, self.ab_pdb_id_u)
+                             + DOT_PDB, self.ab_pdb_id_u, self.ab_mapping_u)
 
         self.write_structure(self.ag_structure_u, name_prefix + '_l' + (
             '_u' if self.is_ag_u else '_b')
-                             + DOT_PDB, self.ag_pdb_id_u)
+                             + DOT_PDB, self.ag_pdb_id_u, self.ag_mapping_u)
 
     def write_info(self, db_info_csv):
         mols = self.get_small_molecules_stat(None)
@@ -852,17 +844,12 @@ class Conformation:
                            str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
                            ' detected'
 
-        interface_b_gap_u_counter, gap_b_interface_u_counter, \
-            all_gaps_counter = self.get_gaps_stats()
-
-        db_info_csv.write(','.join(['{}'] * 14).format(
+        db_info_csv.write(','.join(['{}'] * 11).format(
             self.comp_name, self.candidate_type, self.candidate_id,
             self.pdb_id_b, ':'.join(self.ab_chain_ids_b),
             ':'.join(self.ag_chain_ids_b), self.ab_pdb_id_u,
             ':'.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
-            ':'.join(self.ag_chain_ids_u), mols_message,
-            interface_b_gap_u_counter, gap_b_interface_u_counter,
-            all_gaps_counter) + '\n')
+            ':'.join(self.ag_chain_ids_u), mols_message) + '\n')
         db_info_csv.flush()
 
 
@@ -1033,8 +1020,7 @@ def process_filtered_csv(path_to_filtered_structures_csv,
         db_info_csv.write(
             'comp_name,candidate_type,candidate_id,pdb_id_b,'
             'ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_'
-            'pdb_id_u,ag_chain_ids_u,small_molecules_message,'
-            'interface_b_gap_u_cnt,gap_b_interface_u_cnt,gap_total_cnt\n')
+            'pdb_id_u,ag_chain_ids_u,small_molecules_message\n')
         db_info_csv.flush()
 
         rejected_complexes_csv.write(
@@ -1092,4 +1078,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV)
+                         REJECTED_COMPLEXES_CSV) # , to_accept=['5vlp_H:L|A', '6de7_D:E|B'])
