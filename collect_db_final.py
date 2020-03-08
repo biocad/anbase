@@ -594,7 +594,7 @@ class Conformation:
         if not os.path.exists(candidate_path):
             os.mkdir(candidate_path)
 
-        name = self.ab_pdb_id_u + '_' + self.ag_pdb_id_u
+        name = self.pdb_id_b
 
         ab_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
                                                                self.ab_pdb_id_u,
