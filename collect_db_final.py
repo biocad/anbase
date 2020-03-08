@@ -10,6 +10,7 @@ from Bio import pairwise2
 from Bio.PDB import PDBParser, Superimposer, PDBIO, Select
 from Bio.PDB.Polypeptide import PPBuilder, is_aa, d1_to_index, dindex_to_3
 from Bio.PDB.StructureBuilder import StructureBuilder
+from Bio.pairwise2 import format_alignment
 
 from collect_db import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, get_while_true, \
@@ -279,15 +280,6 @@ class Conformation:
         return union_models(pdb)
 
     @staticmethod
-    def extract_seq(chain):
-        seq = ''
-
-        for x in Conformation.peptides_builder.build_peptides(chain):
-            seq += str(x.get_sequence())
-
-        return seq
-
-    @staticmethod
     def _matching_atoms_for_chains(chain1, pdb_id1, chain_id1, chain2, pdb_id2,
                                    chain_id2):
         seq1 = fetch_sequence(pdb_id1, chain_id1)
@@ -306,15 +298,15 @@ class Conformation:
 
             return peps
 
-        def get_ids_from_chain(chain, seq, ids_in_seq):
-            struct_seq = Conformation.extract_seq(chain)
+        def get_local_ids_from_chain(chain, seq, ids_in_seq):
+            struct_seq = extract_seq(chain)
 
             alignment_loc = \
-                pairwise2.align.localxs(struct_seq, seq, -5, -1,
+                pairwise2.align.localxs(struct_seq, seq, -1, 0,
                                         penalize_end_gaps=False,
                                         one_alignment_only=True)[0]
 
-            counter = -1
+            counter_local = -1
             counter_seq = -1
 
             res = []
@@ -326,27 +318,27 @@ class Conformation:
                     counter_seq += 1
                     continue
                 elif alignment_loc[1][i] == '-':
-                    counter += 1
+                    counter_local += 1
                     continue
                 else:
-                    counter += 1
+                    counter_local += 1
                     counter_seq += 1
 
                 if counter_seq in ids_in_seq:
-                    res.append((counter_seq, counter))
+                    res.append((counter_seq, counter_local))
 
             return {key: value for key, value in res}
 
         alignment = \
-            pairwise2.align.localxs(seq1, seq2, -5, -1,
+            pairwise2.align.localxs(seq1, seq2, -1, 0,
                                     penalize_end_gaps=False,
                                     one_alignment_only=True)[0]
 
         counter1 = -1
         counter2 = -1
 
-        ids_in_seq1 = []
-        ids_in_seq2 = []
+        seq1_to_universal = {}
+        seq2_to_universal = {}
 
         for i in range(len(alignment[0])):
             if alignment[0][i] == '-' and alignment[1][i] == '-':
@@ -361,21 +353,36 @@ class Conformation:
                 counter1 += 1
                 counter2 += 1
 
-            ids_in_seq1.append(counter1)
-            ids_in_seq2.append(counter2)
+            seq1_to_universal[counter1] = i
+            seq2_to_universal[counter2] = i
 
         peps1 = extract_peps(chain1)
         peps2 = extract_peps(chain2)
 
-        ids1 = get_ids_from_chain(chain1, seq1, ids_in_seq1)
-        ids2 = get_ids_from_chain(chain2, seq2, ids_in_seq2)
+        universal_to_seq1 = {k: v for v, k in seq1_to_universal.items()}
+        universal_to_seq2 = {k: v for v, k in seq2_to_universal.items()}
 
-        mutual_ids = list(
-            filter(lambda x: 'CA' in peps1[ids1[x]] and 'CA' in peps2[ids2[x]],
-                   frozenset(ids1.keys()) & frozenset(ids2.keys())))
+        seq1_to_local = get_local_ids_from_chain(chain1, seq1,
+                                                 seq1_to_universal.keys())
+        seq2_to_local = get_local_ids_from_chain(chain2, seq2,
+                                                 seq2_to_universal.keys())
 
-        atoms1 = [peps1[ids1[i]]['CA'] for i in mutual_ids]
-        atoms2 = [peps2[ids2[i]]['CA'] for i in mutual_ids]
+        common_universal_ids = frozenset(map(lambda x: seq1_to_universal[x],
+                                             seq1_to_local.keys())) & \
+                               frozenset(map(lambda x: seq2_to_universal[x],
+                                             seq2_to_local.keys()))
+
+        ca_common_universal_ids = list(
+            filter(
+                lambda x: 'CA' in peps1[
+                    seq1_to_local[universal_to_seq1[x]]] and 'CA' in
+                          peps2[seq2_to_local[universal_to_seq2[x]]],
+                common_universal_ids))
+
+        atoms1 = [peps1[seq1_to_local[universal_to_seq1[i]]]['CA'] for i in
+                  ca_common_universal_ids]
+        atoms2 = [peps2[seq2_to_local[universal_to_seq2[i]]]['CA'] for i in
+                  ca_common_universal_ids]
 
         return atoms1, atoms2
 
@@ -624,171 +631,6 @@ class Conformation:
 
         if not self.ag_seqs_u:
             self.ag_seqs_u = ag_seqs_u
-
-    @staticmethod
-    def get_gaps_stats_for_chain(seq_b, interface_residues_b,
-                                 chain_u, interface_residues_u):
-        pdb_seq = Conformation.extract_seq(chain_u)
-
-        alignment = \
-            pairwise2.align.localxs(pdb_seq, seq_b, -5, -1,
-                                    penalize_end_gaps=False,
-                                    one_alignment_only=True)[0]
-
-        gaps_bounds_u = []
-
-        cur_left_bound = None
-        ind_u = -1
-        ind_b = -1
-
-        interface_b_gap_u = 0
-        gap_b_interface_u = 0
-
-        for i in range(len(alignment[0])):
-            symbol_u = alignment[0][i]
-            symbol_b = alignment[1][i]
-
-            if symbol_u == '-' and symbol_b == '-':
-                pass
-            elif symbol_u == '-':
-                ind_b += 1
-
-                if ind_b in interface_residues_b:
-                    interface_b_gap_u += 1
-
-            elif alignment[1][i] == '-':
-                ind_u += 1
-
-                if ind_u in interface_residues_u:
-                    gap_b_interface_u += 1
-            else:
-                ind_b += 1
-                ind_b += 1
-
-            if symbol_u == '-' and cur_left_bound is None:
-                cur_left_bound = ind_u
-            elif symbol_u != '-' and cur_left_bound is not None:
-                gaps_bounds_u.append((cur_left_bound, ind_u))
-                cur_left_bound = None
-
-        if cur_left_bound is not None:
-            gaps_bounds_u.append((cur_left_bound, len(pdb_seq)))
-
-        return interface_b_gap_u, gap_b_interface_u, len(gaps_bounds_u)
-
-    @staticmethod
-    def get_chain_with_id(structure, chain_id):
-        for chain in structure.get_chains():
-            if chain.get_id() == chain_id:
-                return chain
-
-    @staticmethod
-    def gap_stats_for_chains_u(seqs_b, interface_residues_for_chains_b,
-                               chains_u,
-                               interface_residues_for_chains_u):
-        interface_b_gap_u_counter = 0
-        gap_b_interface_u_counter = 0
-        all_gaps_counter = 0
-
-        for i in range(len(seqs_b)):
-            interface_b_gap_u, gap_b_interface_u, all_gaps = Conformation.get_gaps_stats_for_chain(
-                seqs_b[i],
-                interface_residues_for_chains_b[i],
-                chains_u[i],
-                interface_residues_for_chains_u[i])
-            interface_b_gap_u_counter += interface_b_gap_u
-            gap_b_interface_u_counter += gap_b_interface_u
-            all_gaps_counter += all_gaps
-
-        return interface_b_gap_u_counter, \
-               gap_b_interface_u_counter, \
-               all_gaps_counter
-
-    @staticmethod
-    def interface_residue_ids(ab_chains, ag_chains):
-        ab_chain_to_interface_residues = defaultdict(set)
-        ag_chain_to_interface_residues = defaultdict(set)
-
-        for ab_chain in ab_chains:
-            for ag_chain in ag_chains:
-                ab_ind = -1
-                for ab_residue in ab_chain:
-                    ab_ind += 1
-                    ag_ind = -1
-                    for ag_residue in ag_chain:
-                        ag_ind += 1
-                        for ab_at in ab_residue:
-                            if ab_at.get_id() != 'CA':
-                                break
-
-                            can_break = False
-
-                            for ag_at in ag_residue:
-                                if ag_at.get_id() != 'CA':
-                                    break
-
-                                if np.linalg.norm(
-                                        ab_at.coord - ag_at.coord) < \
-                                        INTERFACE_CUTOFF:
-                                    ab_chain_to_interface_residues[
-                                        ab_chain].add(ab_ind)
-                                    ag_chain_to_interface_residues[
-                                        ag_chain].add(ag_ind)
-                                    break
-
-                            if can_break:
-                                break
-        ab_res = []
-        ag_res = []
-
-        for ab_chain in ab_chains:
-            ab_res.append(ab_chain_to_interface_residues[ab_chain])
-
-        for ag_chain in ag_chains:
-            ag_res.append(ag_chain_to_interface_residues[ag_chain])
-
-        return ab_res, ag_res
-
-    def get_gaps_stats(self):
-        if not self.is_aligned:
-            raise RuntimeError(
-                'Gaps statistics can be calculated only on aligned '
-                'structures.')
-
-        ab_chains_u = list(map(
-            lambda x: self.get_chain_with_id(self.ab_structure_u, x),
-            self.ab_chain_ids_u))
-        ag_chains_u = list(map(
-            lambda x: self.get_chain_with_id(self.ag_structure_u, x),
-            self.ag_chain_ids_u))
-
-        ab_interface_residues_inds_b, ag_interface_residues_inds_b = \
-            self.interface_residue_ids(self.ab_chains_b, self.ag_chains_b)
-
-        ab_interface_residues_inds_u, ag_interface_residues_inds_u = \
-            self.interface_residue_ids(ab_chains_u, ag_chains_u)
-
-        interface_b_gap_u_counter = 0
-        gap_b_interface_u_counter = 0
-        all_gaps_counter = 0
-
-        interface_b_gap_u, gap_b_interface_u, all_gaps = self.gap_stats_for_chains_u(
-            self.ab_seqs_b, ab_interface_residues_inds_b, ab_chains_u,
-            ab_interface_residues_inds_u)
-
-        interface_b_gap_u_counter += interface_b_gap_u
-        gap_b_interface_u_counter += gap_b_interface_u
-        all_gaps_counter += all_gaps
-
-        interface_b_gap_u, gap_b_interface_u, all_gaps = self.gap_stats_for_chains_u(
-            self.ag_seqs_b, ag_interface_residues_inds_b, ag_chains_u,
-            ag_interface_residues_inds_u)
-
-        interface_b_gap_u_counter += interface_b_gap_u
-        gap_b_interface_u_counter += gap_b_interface_u
-        all_gaps_counter += all_gaps
-
-        return interface_b_gap_u_counter, gap_b_interface_u_counter, all_gaps_counter
 
     @staticmethod
     def write_structure(structure, path, pdb_id, mapping):
@@ -1055,6 +897,15 @@ def process_filtered_csv(path_to_filtered_structures_csv,
                     rejected_complexes_csv.flush()
 
             counter += 1
+
+
+def extract_seq(chain):
+    seq = ''
+
+    for x in Conformation.peptides_builder.build_peptides(chain):
+        seq += str(x.get_sequence())
+
+    return seq
 
 
 def filter_out_peptides(filtered_structures, sabdab_tb):
