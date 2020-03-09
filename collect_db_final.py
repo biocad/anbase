@@ -698,7 +698,8 @@ class Conformation:
 def rename_chains(struct):
     new_struct = struct.copy()
 
-    available_chain_ids = set(string.ascii_lowercase + string.ascii_uppercase)
+    available_chain_ids = set(
+        string.ascii_lowercase + string.ascii_uppercase + string.digits)
 
     mapping = {}
 
@@ -710,7 +711,6 @@ def rename_chains(struct):
                 mapping[chain_id] = chain_id
                 available_chain_ids.remove(chain_id)
             else:
-                # TODO: can crash if there are more than 52 chains
                 chain.id = available_chain_ids.pop()
 
                 mapping[chain.id] = chain_id[0]
@@ -929,4 +929,5 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV) # , to_accept=['5vlp_H:L|A', '6de7_D:E|B'])
+                         REJECTED_COMPLEXES_CSV, to_accept=[
+            '6osy_5:6|2', '5vlp_H:L|A', '6de7_D:E|B'])
