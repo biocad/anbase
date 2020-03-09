@@ -22,6 +22,9 @@ MAX_NOT_SUSPICIOUS_LENGTH_OF_GAP = 15
 
 pdb_parser = PDBParser()
 
+GAP_STATS_B_CSV = 'gap_stats_b.csv'
+GAP_STATS_U_CSV = 'gap_stats_u.csv'
+
 
 def get_chains(structure, chain_ids):
     return list(map(lambda x: get_chain_with_id(structure, x), chain_ids))
@@ -185,7 +188,7 @@ def interface_residue_ids(ab_chains, ag_chains):
 
                             if np.linalg.norm(
                                     ab_at.coord - ag_at.coord) < \
-                                    INTERFACE_CUTOFF +\
+                                    INTERFACE_CUTOFF + \
                                     MAGIC_INTERFACE_EXTENSION_CONSTANT:
                                 ab_chain_to_interface_residues[
                                     ab_chain].add(ab_ind)
@@ -238,7 +241,8 @@ def read_fasta(path):
     return res
 
 
-def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_set,
+def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_csv,
+                      processed_comps,
                       gap_stats_u_csv):
     pdb_id_b, _, _ = comp_name_to_pdb_and_chains(candidate.comp_name)
 
@@ -284,7 +288,14 @@ def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_set,
                                              complex_fasta_b, ab_fasta_u,
                                              ag_fasta_u)
 
-    gap_stats_b_set.add((candidate.comp_name, gap_stats_b))
+    if candidate.comp_name not in processed_comps:
+        processed_comps.add(candidate.comp_name)
+        gap_stats_b_csv.write(
+            '{},{},{},{},{}\n'.format(candidate.comp_name,
+                                      gap_stats_b[0],
+                                      gap_stats_b[1], gap_stats_b[2],
+                                      gap_stats_b[3]))
+
     gap_stats_u_csv.write(
         '{},{},{},{},{},{}\n'.format(candidate.comp_name,
                                      candidate.candidate_id, gap_stats_u[0],
@@ -317,31 +328,45 @@ if __name__ == '__main__':
                           HETATMS_DELETED))
     options, _ = parser.parse_args()
 
-    with open('gap_stats_b.csv', 'w') as gap_stats_csv_b, \
-            open('gap_stats_u.csv', 'w') as gap_stats_csv_u:
+    processed_comps = set([])
+    processed_candidates = frozenset([])
 
+    if os.path.exists(GAP_STATS_B_CSV):
+        with open(GAP_STATS_B_CSV, 'r') as f:
+            lines = f.readlines()[1:]
+            processed_comps = set(map(lambda x: x.split(',')[0], lines))
+    else:
         header_b = 'comp_name,in_between,one_side,long,total\n'
+
+        with open(GAP_STATS_B_CSV, 'w') as f:
+            f.write(header_b)
+            f.flush()
+
+    if os.path.exists(GAP_STATS_U_CSV):
+        with open(GAP_STATS_U_CSV, 'r') as f:
+            lines = f.readlines()[1:]
+            processed_candidates = frozenset(
+                map(lambda x: '_'.join(x.split(',')[:2]), lines))
+    else:
         header_u = 'comp_name,candidate_id,in_between,one_side,long,total\n'
 
-        gap_stats_csv_b.write(header_b)
-        gap_stats_csv_b.flush()
+        with open(GAP_STATS_U_CSV, 'w') as f:
+            f.write(header_u)
+            f.flush()
 
-        gap_stats_csv_u.write(header_u)
-        gap_stats_csv_u.flush()
+    with open(GAP_STATS_B_CSV, 'a') as gap_stats_csv_b, \
+            open(GAP_STATS_U_CSV, 'a') as gap_stats_csv_u:
 
-        gap_stats_b_set = set()
-
-        df = pd.read_csv(options.db_info)
+        df = pd.read_csv(options.db_info, dtype=str)
 
         for i in range(len(df)):
-            process_candidate(CandidateInfo(df.iloc[i]), options.db,
-                              options.prev_epoch, gap_stats_b_set,
-                              gap_stats_csv_u)
+            candidate_info = CandidateInfo(df.iloc[i])
 
-        for entry in gap_stats_b_set:
-            gap_stats_csv_b.write(
-                '{},{},{},{},{}\n'.format(entry[0], entry[1][0],
-                                          entry[1][1],
-                                          entry[1][2],
-                                          entry[1][3]))
-            gap_stats_csv_b.flush()
+            if '_'.join([candidate_info.comp_name,
+                         candidate_info.candidate_id]) in processed_candidates:
+                continue
+
+            process_candidate(candidate_info, options.db,
+                              options.prev_epoch, gap_stats_csv_b,
+                              processed_comps,
+                              gap_stats_csv_u)
