@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import time
+import re
 
 DB_PATH = 'data'
 DOT_PDB = '.pdb'
@@ -24,13 +25,25 @@ SEQS = 'seqs'
 
 DOT_FASTA = '.fasta'
 
+DB_INFO_PATH = 'db_info.csv'
 
-def get_pdb_paths(dir_path, prev_epoch):
+
+def get_pdb_paths(dir_path, prev_epoch, uu_comps):
+    def accept_path(p):
+        if not uu_comps:
+            return True
+
+        m = re.search('/(...._(.\+.|.)\|(.\+.\+.\+.|.\+.\+.|.\+.|.))/', p)
+        comp_name = m.group(1).replace('+', ':')
+
+        return comp_name in uu_comps
+
     pdb_paths = []
 
     for root, _, files in os.walk(dir_path):
         for file in files:
-            if prev_epoch in root and file.endswith(DOT_PDB):
+            if prev_epoch in root and accept_path(root) \
+                    and file.endswith(DOT_PDB):
                 pdb_paths.append(os.path.join(root, file))
 
     return pdb_paths
@@ -89,13 +102,22 @@ def pdb_fixer_prep(file_names, tmp_dir):
     return prep_in_mode(file_names, tmp_dir, PDBFIXER, DB_PATH)
 
 
-def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir):
+def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir, only_uu):
     pdbs_to_copy = []
+
+    uu_comps = None
+
+    if only_uu:
+        with open(DB_INFO_PATH, 'r') as f:
+            uu_comps = frozenset(map(lambda x: x[0],
+                                     filter(lambda x: x[1] == 'U:U',
+                                            map(lambda x: x.split(','),
+                                                f.readlines()))))
 
     for file in os.listdir(db_path):
         dir_path = os.path.join(db_path, file)
         if os.path.isdir(dir_path):
-            pdbs_to_copy += get_pdb_paths(dir_path, last_epoch_name)
+            pdbs_to_copy += get_pdb_paths(dir_path, last_epoch_name, uu_comps)
 
     if not os.path.exists(tmp_dir):
         os.mkdir(tmp_dir)
@@ -168,7 +190,11 @@ if __name__ == '__main__':
                       dest='cur_epoch', metavar='CUR_EPOCH',
                       help='Name of the preparation epoch. [default: {}]'.
                       format(PREPPED))
+    parser.add_option('--only-uu', default=False,
+                      dest='only_uu', metavar='ONLY_UU',
+                      help='Flag to prepare only candidates of type UU. '
+                           '[default: False]')
     options, _ = parser.parse_args()
 
     prep_pdbs(options.prev_epoch, options.cur_epoch, options.db, options.mode,
-              options.tmp_dir)
+              options.tmp_dir, options.only_uu)
