@@ -25,7 +25,7 @@ do
             echo "$f"
             echo "$f.o.pdb"
         )
-        sleep 0.1
+        sleep 1
         tasks=$($SCHRODINGER/jobcontrol -list | wc -l)
         echo "[$(date)] Prepping: $f" >> LOG.txt
     fi
