@@ -59,7 +59,7 @@ class Conformation:
     peptides_builder = PPBuilder()
     pdb_io = PDBIO()
 
-    MAX_NUMBER_OF_ATOMS_IN_SM_TARGET = 5
+    MAX_NUMBER_OF_ATOMS_IN_SM_TARGET = 7
     MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT = 15
 
     def __init__(self, comp_name,
@@ -929,5 +929,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV, to_accept=[
-            '6osy_5:6|2', '5vlp_H:L|A', '6de7_D:E|B'])
+                         REJECTED_COMPLEXES_CSV) #, to_accept=['6osy_5:6|2', '5vlp_H:L|A', '6de7_D:E|B'])
