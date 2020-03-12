@@ -326,47 +326,63 @@ if __name__ == '__main__':
                       help='Name of the epoch structures from which will be '
                            'checked for gaps. [default: {}]'.format(
                           HETATMS_DELETED))
+    parser.add_option('--only-uu', default=False,
+                      dest='only_uu', metavar='ONLY_UU',
+                      help='Flag to process only candidates of type UU. '
+                           '[default: False]')
     options, _ = parser.parse_args()
 
     processed_comps = set([])
     processed_candidates = frozenset([])
 
-    if os.path.exists(GAP_STATS_B_CSV):
-        with open(GAP_STATS_B_CSV, 'r') as f:
+    gap_stats_b_csv_path = options.prev_epoch + '_' + GAP_STATS_B_CSV
+    gap_stats_u_csv_path = options.prev_epoch + '_' + GAP_STATS_U_CSV
+
+    if os.path.exists(gap_stats_b_csv_path):
+        with open(gap_stats_b_csv_path, 'r') as f:
             lines = f.readlines()[1:]
             processed_comps = set(map(lambda x: x.split(',')[0], lines))
     else:
         header_b = 'comp_name,in_between,one_side,long,total\n'
 
-        with open(GAP_STATS_B_CSV, 'w') as f:
+        with open(gap_stats_b_csv_path, 'w') as f:
             f.write(header_b)
             f.flush()
 
-    if os.path.exists(GAP_STATS_U_CSV):
-        with open(GAP_STATS_U_CSV, 'r') as f:
+    if os.path.exists(gap_stats_u_csv_path):
+        with open(gap_stats_u_csv_path, 'r') as f:
             lines = f.readlines()[1:]
             processed_candidates = frozenset(
                 map(lambda x: '_'.join(x.split(',')[:2]), lines))
     else:
         header_u = 'comp_name,candidate_id,in_between,one_side,long,total\n'
 
-        with open(GAP_STATS_U_CSV, 'w') as f:
+        with open(gap_stats_u_csv_path, 'w') as f:
             f.write(header_u)
             f.flush()
 
-    with open(GAP_STATS_B_CSV, 'a') as gap_stats_csv_b, \
-            open(GAP_STATS_U_CSV, 'a') as gap_stats_csv_u:
+    with open(gap_stats_b_csv_path, 'a') as gap_stats_csv_b, \
+            open(gap_stats_u_csv_path, 'a') as gap_stats_csv_u:
 
         df = pd.read_csv(options.db_info, dtype=str)
 
         for i in range(len(df)):
             candidate_info = CandidateInfo(df.iloc[i])
 
-            if '_'.join([candidate_info.comp_name,
-                         candidate_info.candidate_id]) in processed_candidates:
+            if options.only_uu and candidate_info.candidate_type != 'U:U':
                 continue
 
-            process_candidate(candidate_info, options.db,
-                              options.prev_epoch, gap_stats_csv_b,
-                              processed_comps,
-                              gap_stats_csv_u)
+            candidate_name = '_'.join([candidate_info.comp_name,
+                                       candidate_info.candidate_id])
+
+            if candidate_name in processed_candidates:
+                continue
+
+            try:
+                process_candidate(candidate_info, options.db,
+                                  options.prev_epoch, gap_stats_csv_b,
+                                  processed_comps,
+                                  gap_stats_csv_u)
+            except Exception as e:
+                print('Couldn\'t process candidate:', candidate_name,
+                      'reason:', e, flush=True)
