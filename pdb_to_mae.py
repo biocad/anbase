@@ -5,6 +5,7 @@ HETATMS_DELETED = 'hetatms_deleted'
 DB_PATH = 'data'
 
 DOT_PDB = '.pdb'
+DOT_MAE = '.mae'
 
 
 def convert_pdb_paths(dir_path, cur_epoch):
@@ -12,7 +13,7 @@ def convert_pdb_paths(dir_path, cur_epoch):
         for file in files:
             if cur_epoch and file.endswith(DOT_PDB):
                 path_to_pdb = os.path.join(os.path.abspath(root), file)
-                path_to_mae = path_to_pdb.replace('pdb', 'mae')
+                path_to_mae = path_to_pdb[:-4] + DOT_MAE
                 command = '$SCHRODINGER/utilities/structconvert ' \
                           '-ipdb \'{}\' -omae \'{}\''.format(path_to_pdb, path_to_mae)
                 subprocess.call(command, stdout=subprocess.PIPE, shell=True)
