@@ -128,17 +128,17 @@ def similarity_of_two_seqs(seq1, seq2):
 
 
 def similarity_of_abs(comp1, comp2):
-    for cdr in CDRS:
-        seq1 = comp1.ab_cdrs_annotation_b[cdr]
-        seq2 = comp2.ab_cdrs_annotation_b[cdr]
+    for i in range(len(comp1.ab_chain_ids_b)):
+        for cdr in CDRS:
+            seq1 = comp1.ab_cdrs_annotation_b[i][cdr]
+            seq2 = comp2.ab_cdrs_annotation_b[i][cdr]
 
-        _, mismatches = calc_matches_mismatches(
-            comp1.ab_cdrs_annotation_b[cdr], comp2.ab_cdrs_annotation_b[cdr])
+            _, mismatches = calc_matches_mismatches(seq1, seq2)
 
-        if mismatches >= 2:
-            print('Not equal:', seq1, 'and', seq2, ', mismatches:', mismatches,
-                  flush=True)
-            return False
+            if mismatches >= 2:
+                print('Not equal:', seq1, 'and', seq2, ', mismatches:', mismatches,
+                      flush=True)
+                return False
     return True
 
 
@@ -187,6 +187,7 @@ if __name__ == '__main__':
         complexes.add(candidate_info.comp_name)
 
         candidate_info.load_sequences(options.db)
+        candidate_info.load_ab_annotation(options.db)
         complexes_with_chains.append(candidate_info)
 
     with open(DUPLICATES_CSV, 'w') as duplicates_csv:
