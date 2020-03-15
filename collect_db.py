@@ -707,25 +707,25 @@ def find_unbound_conformations(complex):
 structures_summary = read_csv('data/sabdab_summary_all.tsv',
                               sep='\t')
 
-test_structures = [#('1AHW', '1FGN', '1TFH'),
-                   # ('1BVK', '1BVL', '3LZT'),
-                   # ('1DQJ', '1DQQ', '3LZT'),
-                   # ('1E6J', '1E6O', '1A43'),
-                   # ('1JPS', '1JPT', '1TFH'),
-                   # ('1MLC', '1MLB', '3LZT'),
-                   # ('1VFB', '1VFA', '8LYZ'),
-                   # ('1WEJ', '1QBL', '1HRC'),
-                   # ('2FD6', '2FAT', '1YWH'),
-                   # ('2VIS', '1GIG', '2VIU'),
-                   # ('2VXT', '2VXU', '1J0S'),
-                   # ('2W9E', '2W9D', '1QM1'),
-                   # ('3EOA', '3EO9', '3F74'),
-                   # ('3HMX', '3HMW', '1F45'),
-                   # ('3MXW', '3MXV', '3M1N'),
-                   # ('3RVW', '3RVT', '3F5V'),
-                   # ('4DN4', '4DN3', '1DOL'),
-                   # ('4FQI', '4FQH', '2FK0'),
-                   # ('4G6J', '4G5Z', 'H5N1'),
+test_structures = [('1AHW', '1FGN', '1TFH'),
+                   ('1BVK', '1BVL', '3LZT'),
+                   ('1DQJ', '1DQQ', '3LZT'),
+                   ('1E6J', '1E6O', '1A43'),
+                   ('1JPS', '1JPT', '1TFH'),
+                   ('1MLC', '1MLB', '3LZT'),
+                   ('1VFB', '1VFA', '8LYZ'),
+                   ('1WEJ', '1QBL', '1HRC'),
+                   ('2FD6', '2FAT', '1YWH'),
+                   ('2VIS', '1GIG', '2VIU'),
+                   ('2VXT', '2VXU', '1J0S'),
+                   ('2W9E', '2W9D', '1QM1'),
+                   ('3EOA', '3EO9', '3F74'),
+                   ('3HMX', '3HMW', '1F45'),
+                   ('3MXW', '3MXV', '3M1N'),
+                   ('3RVW', '3RVT', '3F5V'),
+                   ('4DN4', '4DN3', '1DOL'),
+                   ('4FQI', '4FQH', '2FK0'),
+                   ('4G6J', '4G5Z', 'H5N1'),
                    ('4G6M', '4G6K', '4I1B'),
                    ('4GXU', '4GXV', '4I1B')]
 
@@ -786,9 +786,9 @@ def remove_if_contains(path, s):
             os.remove(os.path.join(path, file))
 
 
-def collect_unbound_structures(overwrite=True, p=None):
+def collect_unbound_structures(overwrite=True, p=None, to_accept=None):
     comps = get_bound_complexes(structures_summary, p=p,
-                                to_accept=['3U2S', '3U4E'])
+                                to_accept=to_accept)
 
     processed = set()
 
@@ -854,16 +854,23 @@ def collect_unbound_structures(overwrite=True, p=None):
 
 
 if __name__ == '__main__':
-    # if sys.argv and sys.argv[0] == 'test':
-    run_zlab_test()
-# else:
-#     p = list(filter(lambda x: x.startswith('--range='), sys.argv))
-#
-#     if p:
-#         rest = p[0][8:].strip('(').strip(')').split(',')
-#         p = (int(rest[0]), int(rest[1]))
-#     else:
-#         p = None
-#
-#     collect_unbound_structures(overwrite=len(
-#         list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p)
+    if sys.argv and sys.argv[0] == 'test':
+        run_zlab_test()
+    else:
+        p = list(filter(lambda x: x.startswith('--range='), sys.argv))
+
+        if p:
+            rest = p[0][8:].strip('(').strip(')').split(',')
+            p = (int(rest[0]), int(rest[1]))
+        else:
+            p = None
+
+        to_accept = None
+
+        if os.path.exists('uus.txt'):
+            with open('uus.txt', 'r') as f:
+                to_accept = list(map(lambda x: x[:4].upper(), f.readlines()))
+
+        collect_unbound_structures(overwrite=len(
+            list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p,
+                                   to_accept=to_accept)
