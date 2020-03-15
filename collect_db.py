@@ -173,7 +173,8 @@ def is_obsolete(pdb_id):
 
 def form_comp_name(pdb_id, ab_chains, ag_chains):
     ab_names = list(map(lambda x: x if x else '', ab_chains))
-    comp_name = pdb_id + '_' + CHAINS_SEPARATOR.join(ab_names) + '|' + CHAINS_SEPARATOR.join(ag_chains)
+    comp_name = pdb_id + '_' + CHAINS_SEPARATOR.join(ab_names) + '|' + \
+                CHAINS_SEPARATOR.join(ag_chains)
     return comp_name
 
 
@@ -431,46 +432,12 @@ def compare_query_and_hit_seqs(query_seq, hit_seq, pdb_ids, chain_ids,
     cut_off_half = int(0.1 * len(query_seq) / 2)
     len_diff = abs(len(query_seq) - len(hit_seq))
 
-    c1 = align_and_check(query_seq, hit_seq, pdb_ids, chain_ids, write_log,
+    c1 = align_and_check(query_seq[cut_off_half:-cut_off_half],
+                         hit_seq[cut_off_half:-cut_off_half], pdb_ids,
+                         chain_ids, write_log,
                          len_diff, is_ab=is_ab)
 
-    if c1:
-        return True
-
-    c2 = align_and_check(query_seq[cut_off_half:-cut_off_half], hit_seq,
-                         pdb_ids, chain_ids, write_log, len_diff, is_ab=is_ab)
-
-    if c2:
-        return True
-
-    c3 = align_and_check(hit_seq[cut_off_half:-cut_off_half], query_seq,
-                         pdb_ids, chain_ids, write_log, len_diff, is_ab=is_ab)
-
-    if c3:
-        return True
-
-    c4 = align_and_check(query_seq[:-2 * cut_off_half], hit_seq, pdb_ids,
-                         chain_ids, write_log, len_diff, is_ab=is_ab)
-
-    if c4:
-        return True
-
-    c5 = align_and_check(hit_seq[:-2 * cut_off_half], query_seq, pdb_ids,
-                         chain_ids, write_log, len_diff, is_ab=is_ab)
-
-    if c5:
-        return True
-
-    c6 = align_and_check(query_seq[2 * cut_off_half:], hit_seq, pdb_ids,
-                         chain_ids, write_log, len_diff, is_ab=is_ab)
-
-    if c6:
-        return True
-
-    c7 = align_and_check(hit_seq[2 * cut_off_half:], query_seq, pdb_ids,
-                         chain_ids, write_log, len_diff, is_ab=is_ab)
-
-    return c7
+    return c1
 
 
 def is_match(query_seq, query_alignment, hit_alignment, pdb_ids, chain_ids,
@@ -520,13 +487,17 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
                         hsp_qseq = hsp.find('Hsp_qseq').text
                         hsp_hseq = hsp.find('Hsp_hseq').text
 
-                        if not is_match(seq, hsp_qseq, hsp_hseq,
-                                        (pdb_id, hit_pdb_id),
-                                        (chain_id, hit_chain_ids[0]),
-                                        is_ab=is_ab):
-                            continue
+                        good_chain_ids = []
 
-                        res.append(Candidate(hit_pdb_id, hit_chain_ids))
+                        for hit_chain_id in hit_chain_ids:
+                            if is_match(seq, hsp_qseq, hsp_hseq,
+                                        (pdb_id, hit_pdb_id),
+                                        (chain_id, hit_chain_id),
+                                        is_ab=is_ab):
+                                good_chain_ids.append(hit_chain_id)
+
+                        if good_chain_ids:
+                            res.append(Candidate(hit_pdb_id, good_chain_ids))
 
     return res
 
@@ -647,15 +618,18 @@ def sort_and_take_unbound(unbound_candidates):
     return unbound_candidates[:50]
 
 
-def all_id_sets(l, i, acc, res):
-    if i == len(l):
-        res.append(acc.copy())
-        return
+def all_id_sets(ls, n):
+    res = []
 
-    for j in range(len(l[i])):
-        acc.append(l[i][j])
-        all_id_sets(l, i + 1, acc, res)
-        acc.pop()
+    for i in range(n):
+        acc = []
+
+        for x in ls:
+            acc.append(x[i])
+
+        res.append(acc)
+
+    return res
 
 
 def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
@@ -684,8 +658,9 @@ def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
         for x in candidates_dicts:
             candidate_chain_idss.append(x[candidate_id])
 
-        all_sets_of_candidate_ids = []
-        all_id_sets(candidate_chain_idss, 0, [], all_sets_of_candidate_ids)
+        # this works on a hunch
+        all_sets_of_candidate_ids = all_id_sets(candidate_chain_idss,
+                                                len(candidate_chain_idss[0]))
 
         for set_of_chain_ids in all_sets_of_candidate_ids:
             res_for_candidate = check_unbound(candidate_id, set_of_chain_ids,
@@ -699,7 +674,16 @@ def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
 
 def sort_and_take_ress(unbound_ress):
     unbound_ress.sort(key=lambda x: retrieve_resolution(x.pdb_id))
-    return unbound_ress[:5]
+
+    taken_ids = set()
+    res = []
+
+    for candidate in unbound_ress:
+        if candidate.pdb_id not in taken_ids:
+            res.append(candidate)
+            taken_ids.add(candidate.pdb_id)
+
+    return res[:5]
 
 
 def find_unbound_conformations(complex):
@@ -724,24 +708,24 @@ structures_summary = read_csv('data/sabdab_summary_all.tsv',
                               sep='\t')
 
 test_structures = [#('1AHW', '1FGN', '1TFH'),
-                   ('1BVK', '1BVL', '3LZT'),
-                   ('1DQJ', '1DQQ', '3LZT'),
-                   ('1E6J', '1E6O', '1A43'),
-                   ('1JPS', '1JPT', '1TFH'),
-                   ('1MLC', '1MLB', '3LZT'),
-                   ('1VFB', '1VFA', '8LYZ'),
-                   ('1WEJ', '1QBL', '1HRC'),
-                   ('2FD6', '2FAT', '1YWH'),
-                   ('2VIS', '1GIG', '2VIU'),
-                   ('2VXT', '2VXU', '1J0S'),
-                   ('2W9E', '2W9D', '1QM1'),
-                   ('3EOA', '3EO9', '3F74'),
-                   ('3HMX', '3HMW', '1F45'),
-                   ('3MXW', '3MXV', '3M1N'),
-                   ('3RVW', '3RVT', '3F5V'),
-                   ('4DN4', '4DN3', '1DOL'),
-                   ('4FQI', '4FQH', '2FK0'),
-                   ('4G6J', '4G5Z', 'H5N1'),
+                   # ('1BVK', '1BVL', '3LZT'),
+                   # ('1DQJ', '1DQQ', '3LZT'),
+                   # ('1E6J', '1E6O', '1A43'),
+                   # ('1JPS', '1JPT', '1TFH'),
+                   # ('1MLC', '1MLB', '3LZT'),
+                   # ('1VFB', '1VFA', '8LYZ'),
+                   # ('1WEJ', '1QBL', '1HRC'),
+                   # ('2FD6', '2FAT', '1YWH'),
+                   # ('2VIS', '1GIG', '2VIU'),
+                   # ('2VXT', '2VXU', '1J0S'),
+                   # ('2W9E', '2W9D', '1QM1'),
+                   # ('3EOA', '3EO9', '3F74'),
+                   # ('3HMX', '3HMW', '1F45'),
+                   # ('3MXW', '3MXV', '3M1N'),
+                   # ('3RVW', '3RVT', '3F5V'),
+                   # ('4DN4', '4DN3', '1DOL'),
+                   # ('4FQI', '4FQH', '2FK0'),
+                   # ('4G6J', '4G5Z', 'H5N1'),
                    ('4G6M', '4G6K', '4I1B'),
                    ('4GXU', '4GXV', '4I1B')]
 
