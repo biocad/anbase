@@ -98,9 +98,8 @@ def read_annotation(path):
 
 
 def calc_matches_mismatches(seq1, seq2):
-    alignment_list = pairwise2.align.localxs(seq1, seq2, -1, -1,
-                                             penalize_end_gaps=False,
-                                             one_alignment_only=True)
+    alignment_list = pairwise2.align.globalxs(seq1, seq2, -1, -1,
+                                              one_alignment_only=True)
 
     if not alignment_list:
         return False
@@ -155,6 +154,8 @@ def similarity_of_two_complexes(comp1, comp2):
 
 
 if __name__ == '__main__':
+    a = similarity_of_two_seqs('GYSFTGH', 'GFNIKDT')
+
     from optparse import OptionParser
 
     parser = OptionParser()
