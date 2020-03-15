@@ -34,7 +34,7 @@ def get_pdb_paths(dir_path, prev_epoch, uu_comps):
             return True
 
         m = re.search('/(...._(.\+.|.)\|(.\+.\+.\+.|.\+.\+.|.\+.|.))/', p)
-        comp_name = m.group(1).replace('+', ':')
+        comp_name = m.group(1)
 
         return comp_name in uu_comps
 

@@ -11,7 +11,7 @@ DOT_MAE = '.mae'
 def convert_pdb_paths(dir_path, cur_epoch):
     for root, _, files in os.walk(dir_path):
         for file in files:
-            if cur_epoch and file.endswith(DOT_PDB):
+            if cur_epoch in root and file.endswith(DOT_PDB):
                 path_to_pdb = os.path.join(os.path.abspath(root), file)
                 path_to_mae = path_to_pdb[:-4] + DOT_MAE
                 command = '$SCHRODINGER/utilities/structconvert ' \

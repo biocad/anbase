@@ -12,11 +12,12 @@ from Bio.PDB.Polypeptide import PPBuilder, is_aa, d1_to_index, dindex_to_3
 from Bio.PDB.StructureBuilder import StructureBuilder
 from Bio.pairwise2 import format_alignment
 
+import alignments
 from collect_db import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, get_while_true, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
-    fetch_all_sequences
+    fetch_all_sequences, CHAINS_SEPARATOR
 from post_unboundness_filtering import union_models, \
     fetch_all_assemblies
 
@@ -32,14 +33,6 @@ HETATMS_DELETED = 'hetatms_deleted'
 SEQUENCES = 'seqs'
 
 INTERFACE_CUTOFF = 10
-
-
-def comp_name_to_dir_name(comp_name):
-    return comp_name.replace(':', '+')
-
-
-def dir_name_to_comp_name(dir_name):
-    return dir_name.replace('+', ':')
 
 
 class NotDisordered(Select):
@@ -158,7 +151,7 @@ class Conformation:
 
     @staticmethod
     def prepend_sequence_info_to_pdb(pdb_path, pdb_id, mapping):
-        all_seqs = {k: v for k, v in fetch_all_sequences(pdb_id)}
+        all_seqs = fetch_all_sequences(pdb_id)
 
         def up_to(i, n):
             res = str(i)
@@ -302,9 +295,8 @@ class Conformation:
             struct_seq = extract_seq(chain)
 
             alignment_loc = \
-                pairwise2.align.localxs(struct_seq, seq, -1, 0,
-                                        penalize_end_gaps=False,
-                                        one_alignment_only=True)[0]
+                alignments.align_possibly_gapped_sequence_on_its_complete_version(
+                    struct_seq, seq)[0]
 
             counter_local = -1
             counter_seq = -1
@@ -330,9 +322,8 @@ class Conformation:
             return {key: value for key, value in res}
 
         alignment = \
-            pairwise2.align.localxs(seq1, seq2, -1, 0,
-                                    penalize_end_gaps=False,
-                                    one_alignment_only=True)[0]
+            alignments.subsequence_without_gaps(
+                seq1, seq2)[0]
 
         counter1 = -1
         counter2 = -1
@@ -567,7 +558,7 @@ class Conformation:
 
             return res
 
-        all_seqs = {k: v for k, v in fetch_all_sequences(pdb_id)}
+        all_seqs = fetch_all_sequences(pdb_id)
 
         res = []
 
@@ -665,6 +656,17 @@ class Conformation:
             '_u' if self.is_ag_u else '_b')
                              + DOT_PDB, self.ag_pdb_id_u, self.ag_mapping_u)
 
+    MOLS_WARNING = 'small molecules with ' + \
+                   str(MAX_NUMBER_OF_ATOMS_IN_SM_TARGET) + \
+                   ' < n_atoms <= ' + \
+                   str(MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
+                   ' detected'
+
+    MOLS_ERROR = 'small molecules with' + \
+                 ' n_atoms > ' + \
+                 str(MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
+                 ' detected'
+
     def write_info(self, db_info_csv):
         mols = self.get_small_molecules_stat(None)
 
@@ -675,23 +677,16 @@ class Conformation:
         elif all(map(lambda x: x.n_atoms <=
                                self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT,
                      mols)):
-            mols_message = 'small molecules with ' + \
-                           str(self.MAX_NUMBER_OF_ATOMS_IN_SM_TARGET) + \
-                           ' < n_atoms <= ' + \
-                           str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
-                           ' detected'
+            mols_message = self.MOLS_WARNING
         else:
-            mols_message = 'small molecules with' + \
-                           ' n_atoms > ' + \
-                           str(self.MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
-                           ' detected'
+            mols_message = self.MOLS_ERROR
 
         db_info_csv.write(','.join(['{}'] * 11).format(
             self.comp_name, self.candidate_type, self.candidate_id,
-            self.pdb_id_b, ':'.join(self.ab_chain_ids_b),
-            ':'.join(self.ag_chain_ids_b), self.ab_pdb_id_u,
-            ':'.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
-            ':'.join(self.ag_chain_ids_u), mols_message) + '\n')
+            self.pdb_id_b, CHAINS_SEPARATOR.join(self.ab_chain_ids_b),
+            CHAINS_SEPARATOR.join(self.ag_chain_ids_b), self.ab_pdb_id_u,
+            CHAINS_SEPARATOR.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
+            CHAINS_SEPARATOR.join(self.ag_chain_ids_u), mols_message) + '\n')
         db_info_csv.flush()
 
 
@@ -783,27 +778,27 @@ def get_candidates(comp_name, candidates, cache=False):
     if not ab_pdbs_with_chains:
         is_ab_u = False
         ab_pdbs_with_chains = [
-            (pdb_id_b, ':'.join(ab_chain_ids_b),
+            (pdb_id_b, CHAINS_SEPARATOR.join(ab_chain_ids_b),
              assembly_id_b)]
 
     if not ag_pdbs_with_chains:
         is_ag_u = False
         ag_pdbs_with_chains = [
-            (pdb_id_b, ':'.join(ag_chain_ids_b), assembly_id_b)]
+            (pdb_id_b, CHAINS_SEPARATOR.join(ag_chain_ids_b), assembly_id_b)]
 
     res = []
 
     counter = -1
 
     for ag_pdb_id_u, chains_ag, ag_assembly_id in ag_pdbs_with_chains:
-        chains_ag_split = chains_ag.split(':')
+        chains_ag_split = chains_ag.split(CHAINS_SEPARATOR)
         for ab_pdb_id_u, chains_ab, ab_assembly_id in ab_pdbs_with_chains:
             counter += 1
 
-            ab_chain_ids_u = chains_ab.split(':')
+            ab_chain_ids_u = chains_ab.split(CHAINS_SEPARATOR)
             try:
                 pickled_path = os.path.join(DB_PATH,
-                                            comp_name.replace(':', '+') + '_'
+                                            comp_name + '_'
                                             + str(counter) + '.pickle')
 
                 conformation = None
@@ -929,4 +924,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV) #, to_accept=['6osy_5:6|2', '5vlp_H:L|A', '6de7_D:E|B'])
+                         REJECTED_COMPLEXES_CSV)  # , to_accept=['6osy_5:6|2', '5vlp_H:L|A', '6de7_D:E|B'])

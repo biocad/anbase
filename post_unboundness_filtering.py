@@ -9,7 +9,7 @@ from Bio.PDB.StructureBuilder import StructureBuilder
 
 from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
     get_while_true, \
-    compare_query_and_hit_seqs, comp_name_to_pdb_and_chains
+    compare_query_and_hit_seqs, comp_name_to_pdb_and_chains, CHAINS_SEPARATOR
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
@@ -22,10 +22,10 @@ def process_csv(csv):
     data = defaultdict(list)
 
     for i in range(len(csv)):
-        data[csv.iloc[i]['comp_name']].append((csv.iloc[i]['type'],
+        data[csv.iloc[i]['comp_name']].append((csv.iloc[i]['candidate_type'],
                                                csv.iloc[i]['candidate_pdb_id'],
                                                csv.iloc[i][
-                                                   'candidate_chain_names']))
+                                                   'candidate_chain_id']))
 
     return data
 
@@ -70,24 +70,6 @@ def fetch_all_assemblies(pdb_id):
         res.append(path_to_tmp)
 
     return res
-
-
-def rename_chains(struct):
-    new_struct = struct.copy()
-
-    available_chain_ids = set(string.ascii_lowercase + string.ascii_uppercase)
-
-    for model in new_struct:
-        for chain in model:
-            chain_id = chain.get_id()
-
-            if chain_id in available_chain_ids:
-                available_chain_ids.remove(chain_id)
-            else:
-                # TODO: can crash if there are more than 52 chains
-                chain.id = available_chain_ids.pop()
-
-    return new_struct
 
 
 def union_models(struct):
@@ -138,9 +120,9 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
     is_ab = type == AB
 
     source_seqs = list(filter(lambda x: x[0] in source_chain_ids,
-                              fetch_all_sequences(source_pdb_id)))
+                              fetch_all_sequences(source_pdb_id).items()))
 
-    target_seqs = {k: v for k, v in fetch_all_sequences(target_pdb_id)}
+    target_seqs = fetch_all_sequences(target_pdb_id)
 
     res = []
 
@@ -226,13 +208,13 @@ def matching_to_str(chains, matchings):
         for chain in chains:
             by_matching[-1].append(matchings[chain][i])
 
-    return '|'.join(map(lambda x: ':'.join(x), by_matching))
+    return '|'.join(map(lambda x: CHAINS_SEPARATOR.join(x), by_matching))
 
 
 def filter_candidates_pack(comp_name, pdb_id, candidate_pdb_ids, chain_ids, ty,
                            filtered_csv, rejected_csv):
     for candidate_pdb_id in candidate_pdb_ids:
-        chains_str = ':'.join(chain_ids)
+        chains_str = CHAINS_SEPARATOR.join(chain_ids)
 
         assemblies = check_structure(pdb_id,
                                      chain_ids,

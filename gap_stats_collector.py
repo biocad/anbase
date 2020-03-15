@@ -4,6 +4,7 @@ from collections import defaultdict
 from Bio import pairwise2
 from Bio.PDB import PDBParser
 
+from candidate_info import CandidateInfo
 from collect_db import comp_name_to_pdb_and_chains
 from collect_db_final import SEQUENCES, HETATMS_DELETED, comp_name_to_dir_name, \
     INTERFACE_CUTOFF, extract_seq
@@ -211,22 +212,6 @@ def interface_residue_ids(ab_chains, ag_chains):
     return ab_res, ag_res
 
 
-class CandidateInfo:
-    def __init__(self, df_row):
-        self.comp_name = df_row['comp_name']
-        self.candidate_type = df_row['candidate_type']
-        self.candidate_id = df_row['candidate_id']
-
-        self.pdb_id_b = df_row['pdb_id_b']
-        self.ab_chain_ids_b = df_row['ab_chain_ids_b'].split(':')
-        self.ag_chain_ids_b = df_row['ag_chain_ids_b'].split(':')
-
-        self.ab_pdb_id_u = df_row['ab_pdb_id_u']
-        self.ab_chain_ids_u = df_row['ab_chain_ids_u'].split(':')
-        self.ag_pdb_id_u = df_row['ag_pdb_id_u']
-        self.ag_chain_ids_u = df_row['ag_chain_ids_u'].split(':')
-
-
 def read_fasta(path):
     res = {}
 
@@ -295,6 +280,7 @@ def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_csv,
                                       gap_stats_b[0],
                                       gap_stats_b[1], gap_stats_b[2],
                                       gap_stats_b[3]))
+        gap_stats_b_csv.flush()
 
     gap_stats_u_csv.write(
         '{},{},{},{},{},{}\n'.format(candidate.comp_name,
@@ -302,13 +288,6 @@ def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_csv,
                                      gap_stats_u[1], gap_stats_u[2],
                                      gap_stats_u[3]))
     gap_stats_u_csv.flush()
-
-
-def process_db_info(db_path, db_info_path, prev_epoch):
-    df = pd.read_csv(db_info_path)
-
-    for i in range(len(df)):
-        process_candidate(CandidateInfo(df.iloc[i]), db_path, prev_epoch)
 
 
 if __name__ == '__main__':

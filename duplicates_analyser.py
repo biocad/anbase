@@ -1,9 +1,7 @@
 import pandas as pd
-import os
 
-from Bio import pairwise2
-
-from collect_db_final import comp_name_to_dir_name
+import alignments
+from candidate_info import CandidateInfo
 
 DB_INFO_PATH = 'db_info.csv'
 DB_PATH = 'data'
@@ -18,88 +16,8 @@ DUPLICATES_CSV = 'duplicates.csv'
 CDRS = ['CDR1', 'CDR2', 'CDR3']
 
 
-class CandidateInfo:
-    def __init__(self, df_row):
-        self.comp_name = df_row['comp_name']
-        self.candidate_type = df_row['candidate_type']
-        self.candidate_id = df_row['candidate_id']
-
-        self.pdb_id_b = df_row['pdb_id_b']
-        self.ab_chain_ids_b = df_row['ab_chain_ids_b'].split(':')
-        self.ag_chain_ids_b = df_row['ag_chain_ids_b'].split(':')
-
-        self.ab_pdb_id_u = df_row['ab_pdb_id_u']
-        self.ab_chain_ids_u = df_row['ab_chain_ids_u'].split(':')
-        self.ag_pdb_id_u = df_row['ag_pdb_id_u']
-        self.ag_chain_ids_u = df_row['ag_chain_ids_u'].split(':')
-
-        self.ab_seqs = []
-        self.ag_seqs = []
-
-        self.ab_cdrs_annotation_b = []
-
-    def load_ab_annotation(self, db_path):
-        comp_path = os.path.join(db_path,
-                                 comp_name_to_dir_name(self.comp_name))
-        ab_fasta_b = read_annotation(
-            os.path.join(os.path.join(comp_path, ANNOTATION), self.pdb_id_b +
-                         DOT_FASTA))
-
-        for x in self.ab_chain_ids_b:
-            annotation = {}
-
-            for cdr in CDRS:
-                annotation[cdr] = ab_fasta_b[(x, cdr)]
-
-            self.ab_cdrs_annotation_b.append(annotation)
-
-    def load_sequences(self, db_path):
-        comp_path = os.path.join(db_path,
-                                 comp_name_to_dir_name(self.comp_name))
-
-        complex_fasta_b = read_fasta(
-            os.path.join(os.path.join(comp_path, SEQS), self.pdb_id_b +
-                         DOT_FASTA))
-
-        for x in self.ab_chain_ids_b:
-            self.ab_seqs.append(complex_fasta_b[x])
-
-        for x in self.ag_chain_ids_b:
-            self.ag_seqs.append(complex_fasta_b[x])
-
-
-def read_fasta(path):
-    res = {}
-
-    with open(path, 'r') as f:
-        lines = f.readlines()
-
-        i = 0
-        while i < len(lines):
-            res[lines[i].split(':')[1].strip()] = lines[i + 1].strip()
-            i += 2
-
-    return res
-
-
-def read_annotation(path):
-    res = {}
-
-    with open(path, 'r') as f:
-        lines = f.readlines()
-
-        i = 0
-        while i < len(lines):
-            [chain_id, region] = lines[i].strip()[1:].split(':')
-            res[(chain_id, region)] = lines[i + 1].strip()
-            i += 2
-
-    return res
-
-
 def calc_matches_mismatches(seq1, seq2):
-    alignment_list = pairwise2.align.globalxs(seq1, seq2, -1, -1,
-                                              one_alignment_only=True)
+    alignment_list = alignments.subsequence_without_gaps(seq1, seq2)[0]
 
     if not alignment_list:
         return False
@@ -154,8 +72,6 @@ def similarity_of_two_complexes(comp1, comp2):
 
 
 if __name__ == '__main__':
-    a = similarity_of_two_seqs('GYSFTGH', 'GFNIKDT')
-
     from optparse import OptionParser
 
     parser = OptionParser()
@@ -184,6 +100,9 @@ if __name__ == '__main__':
 
         if candidate_info.comp_name in complexes:
             continue
+
+        # if candidate_info.comp_name not in ['3u2s_H:L|G', '3u4e_H:L|G']:
+        #     continue
 
         complexes.add(candidate_info.comp_name)
 

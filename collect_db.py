@@ -16,6 +16,8 @@ import sys
 import signal
 import functools
 
+import alignments
+
 complexes = []
 
 PDB_ID = 'pdb'
@@ -36,6 +38,8 @@ MISMATCHED_LOG = 'mismatched.log'
 
 AG = 'AG'
 AB = 'AB'
+
+CHAINS_SEPARATOR = '+'
 
 
 class HandlerError(RuntimeError):
@@ -169,7 +173,7 @@ def is_obsolete(pdb_id):
 
 def form_comp_name(pdb_id, ab_chains, ag_chains):
     ab_names = list(map(lambda x: x if x else '', ab_chains))
-    comp_name = pdb_id + '_' + ':'.join(ab_names) + '|' + ':'.join(ag_chains)
+    comp_name = pdb_id + '_' + CHAINS_SEPARATOR.join(ab_names) + '|' + CHAINS_SEPARATOR.join(ag_chains)
     return comp_name
 
 
@@ -177,8 +181,8 @@ def comp_name_to_pdb_and_chains(comp_name):
     [pdb_id, chains] = comp_name.split('_')
     ab_chains_s, ag_chains_s = chains.split('|')
 
-    ab_chains = ab_chains_s.split(':')
-    ag_chains = ag_chains_s.split(':')
+    ab_chains = ab_chains_s.split(CHAINS_SEPARATOR)
+    ag_chains = ag_chains_s.split(CHAINS_SEPARATOR)
 
     return pdb_id, ab_chains, ag_chains
 
@@ -282,16 +286,14 @@ def fetch_all_sequences(pdb_id):
 
             seqs[-1][1] += line
 
-    return list(map(lambda y: (y[0], y[1]), seqs))
+    return {y[0]: y[1] for y in seqs}
 
 
 def fetch_sequence(pdb_id, chain_id):
     seqs = fetch_all_sequences(pdb_id)
 
-    potential_res = list(filter(lambda x: x[0] == chain_id, seqs))
-
-    if potential_res:
-        return potential_res[0][1]
+    if chain_id in seqs:
+        return seqs[chain_id]
 
     return None
 
@@ -302,8 +304,7 @@ def sub_nan(val):
     return val
 
 
-def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None,
-                        only_vhhs=False):
+def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
     complexes = []
 
     obsolete = {}
@@ -331,13 +332,8 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None,
                 if to_accept and row[PDB_ID].upper() not in to_accept:
                     continue
 
-                is_vhh_h = sub_nan(row[H_CHAIN]) is not None and sub_nan(
-                    row[L_CHAIN]) is None
                 is_vhh_l = sub_nan(row[H_CHAIN]) is None and sub_nan(
                     row[L_CHAIN]) is not None
-
-                if only_vhhs and not (is_vhh_l):
-                    continue
 
                 if row[PDB_ID] in obsolete.keys():
                     if obsolete[row[PDB_ID]]:
@@ -390,11 +386,9 @@ class Candidate:
 
 def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
                     len_diff, is_ab=True):
-    cut_off = int(0.03 * len(target_seq))
+    cut_off = int(0.03 * len(query_seq))
 
-    alignment_list = pairwise2.align.localxs(query_seq, target_seq, -10, -10,
-                                             penalize_end_gaps=False,
-                                             one_alignment_only=True)
+    alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
 
     if not alignment_list:
         return False
@@ -622,40 +616,30 @@ def check_names(names):
     return len(unknown_list) == 2
 
 
-def check_unbound(pdb_id, chain_ids_and_seqs, query_pdb_id, is_ab):
-    all_seqs_in_pdb = fetch_all_sequences(pdb_id)
+def check_unbound(candidate_pdb_id, candidate_chain_ids,
+                  query_pdb_id, query_chain_ids, query_seqs, is_ab):
+    candidate_seqs_dict = fetch_all_sequences(candidate_pdb_id)
+    candidate_seqs = list(map(lambda x: candidate_seqs_dict[x],
+                              candidate_chain_ids))
 
-    for _, seq in all_seqs_in_pdb:
+    for seq in candidate_seqs:
         if 'X' in seq:
-            return []
+            return None
 
-    chain_matches = defaultdict(list)
+    for i in range(len(query_seqs)):
+        if not compare_query_and_hit_seqs(query_seqs[i], candidate_seqs[i],
+                                          (query_pdb_id, candidate_pdb_id),
+                                          (query_chain_ids[i],
+                                           candidate_chain_ids[i]),
+                                          is_ab=is_ab):
+            return None
 
-    for chain_id, chain_seq in chain_ids_and_seqs:
-        for target_chain_id, seq in all_seqs_in_pdb:
-            if compare_query_and_hit_seqs(chain_seq, seq,
-                                          (query_pdb_id, pdb_id),
-                                          (chain_id, target_chain_id),
-                                          write_log=True, is_ab=is_ab):
-                chain_matches[chain_id].append(target_chain_id)
+    c1 = check_names(retrieve_names(candidate_pdb_id))
 
-    # we check that for every queried chain there is a matching chain in the
-    # given pdb
-    # also if names of all structures in pdb are different in no more than
-    # one word (for example, 'my ab heavy chain' and 'my ab light chain)
-    # it usually means that structures form one macromolecule,
-    # hence their complex is unbound
-    c1 = all(map(lambda x: len(chain_matches[x]) > 0, chain_matches.keys()))
-    c2 = check_names(retrieve_names(pdb_id))
+    if not c1:
+        return None
 
-    if c1 and c2:
-        res = []
-        for i in range(len(chain_matches[chain_ids_and_seqs[0][0]])):
-            res.append(Candidate(pdb_id, list(
-                map(lambda x: chain_matches[x][i], chain_matches.keys()))))
-        return res
-
-    return []
+    return Candidate(candidate_pdb_id, candidate_chain_ids)
 
 
 def sort_and_take_unbound(unbound_candidates):
@@ -663,10 +647,23 @@ def sort_and_take_unbound(unbound_candidates):
     return unbound_candidates[:50]
 
 
+def all_id_sets(l, i, acc, res):
+    if i == len(l):
+        res.append(acc.copy())
+        return
+
+    for j in range(len(l[i])):
+        acc.append(l[i][j])
+        all_id_sets(l, i + 1, acc, res)
+        acc.pop()
+
+
 def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
     candidates = [get_blast_data(pdb_id, chain_id, seq, is_ab) for
                   chain_id, seq in
                   zip(chain_ids, seqs)]
+
+    candidates_dicts = [{x.pdb_id: x.chain_ids for x in l} for l in candidates]
 
     pdb_ids_in_intersection_prep = reduce(operator.and_,
                                           [set([x.pdb_id for x in candidate])
@@ -682,8 +679,20 @@ def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
         if candidate_id.upper() == pdb_id.upper():
             continue
 
-        res += check_unbound(candidate_id, list(zip(chain_ids, seqs)), pdb_id,
-                             is_ab)
+        candidate_chain_idss = []
+
+        for x in candidates_dicts:
+            candidate_chain_idss.append(x[candidate_id])
+
+        all_sets_of_candidate_ids = []
+        all_id_sets(candidate_chain_idss, 0, [], all_sets_of_candidate_ids)
+
+        for set_of_chain_ids in all_sets_of_candidate_ids:
+            res_for_candidate = check_unbound(candidate_id, set_of_chain_ids,
+                                              pdb_id, chain_ids, seqs, is_ab)
+
+            if res_for_candidate:
+                res.append(res_for_candidate)
 
     return res
 
@@ -714,7 +723,7 @@ def find_unbound_conformations(complex):
 structures_summary = read_csv('data/sabdab_summary_all.tsv',
                               sep='\t')
 
-test_structures = [('1AHW', '1FGN', '1TFH'),
+test_structures = [#('1AHW', '1FGN', '1TFH'),
                    ('1BVK', '1BVL', '3LZT'),
                    ('1DQJ', '1DQQ', '3LZT'),
                    ('1E6J', '1E6O', '1A43'),
@@ -794,7 +803,8 @@ def remove_if_contains(path, s):
 
 
 def collect_unbound_structures(overwrite=True, p=None):
-    comps = get_bound_complexes(structures_summary, p=p)
+    comps = get_bound_complexes(structures_summary, p=p,
+                                to_accept=['3U2S', '3U4E'])
 
     processed = set()
 
@@ -807,8 +817,8 @@ def collect_unbound_structures(overwrite=True, p=None):
                  w_or_a) as unbound_data_csv:
 
         if overwrite:
-            unbound_data_csv.write('pdb_id,comp_name,type,candidate,' +
-                                   'candidate_pdb_id,candidate_chain_names\n')
+            unbound_data_csv.write('pdb_id,comp_name,candidate_type,' +
+                                   'candidate_pdb_id,candidate_chain_ids\n')
             unbound_data_csv.flush()
 
         if not overwrite:
@@ -837,17 +847,13 @@ def collect_unbound_structures(overwrite=True, p=None):
                     for candidate in candidates:
                         print('candidate:', candidate, flush=True)
 
-                        candidate_name = comp.pdb_id + '_' + \
-                                         suf + '_u_' + str(counter)
-
                         unbound_data_csv.write(
-                            '{},{},{},{},{},{}\n'.format(comp.pdb_id,
-                                                         comp.comp_name, suf,
-                                                         candidate_name,
-                                                         candidate.pdb_id,
-                                                         ':'.join(
-                                                             candidate.
-                                                                 chain_ids)))
+                            '{},{},{},{},{}\n'.format(comp.pdb_id,
+                                                      comp.comp_name, suf,
+                                                      candidate.pdb_id,
+                                                      ':'.join(
+                                                          candidate.
+                                                              chain_ids)))
                         unbound_data_csv.flush()
 
                         counter += 1
@@ -864,18 +870,16 @@ def collect_unbound_structures(overwrite=True, p=None):
 
 
 if __name__ == '__main__':
-    if sys.argv and sys.argv[0] == 'test':
-        run_zlab_test()
-    else:
-        p = list(filter(lambda x: x.startswith('--range='), sys.argv))
-
-        if p:
-            rest = p[0][8:].strip('(').strip(')').split(',')
-            p = (int(rest[0]), int(rest[1]))
-        else:
-            p = None
-
-        print(p)
-
-        collect_unbound_structures(overwrite=len(
-            list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p)
+    # if sys.argv and sys.argv[0] == 'test':
+    run_zlab_test()
+# else:
+#     p = list(filter(lambda x: x.startswith('--range='), sys.argv))
+#
+#     if p:
+#         rest = p[0][8:].strip('(').strip(')').split(',')
+#         p = (int(rest[0]), int(rest[1]))
+#     else:
+#         p = None
+#
+#     collect_unbound_structures(overwrite=len(
+#         list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p)
