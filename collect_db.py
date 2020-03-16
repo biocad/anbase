@@ -429,7 +429,7 @@ def calc_mismatches_stat(query_seq, target_seq):
 
 
 def is_subsequence_of(query_seq, target_seq, is_ab=True):
-    min_match_cutoff = 0.9 * len(query_seq)
+    min_intersection_len = int(0.9 * len(query_seq))
     max_miss_cutoff = max(10, int(0.03 * len(query_seq))) if is_ab else int(
         0.05 * len(query_seq))
 
@@ -437,7 +437,7 @@ def is_subsequence_of(query_seq, target_seq, is_ab=True):
         query_seq,
         target_seq)
 
-    return matches_count >= min_match_cutoff and (
+    return matches_count + mismatches_count >= min_intersection_len and (
                 not is_ab or max_miss_len < 3) and mismatches_count <= \
         max_miss_cutoff
 
@@ -449,7 +449,7 @@ def is_match(query_seq, hit_alignment,
 
     hit_with_removed_gaps = hit_alignment.replace('-', '')
 
-    if len(hit_with_removed_gaps) < 0.9 * len(query_seq):
+    if len(hit_with_removed_gaps) < int(0.9 * len(query_seq)):
         return False
 
     return is_subsequence_of(query_seq, hit_with_removed_gaps, is_ab=is_ab)
@@ -485,6 +485,9 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
                         good_chain_ids = []
 
                         for hit_chain_id in hit_chain_ids:
+                            if hit_pdb_id == '2A91':
+                                print(seq, hsp_hseq)
+
                             if is_match(seq, hsp_hseq,
                                         is_ab=is_ab):
                                 good_chain_ids.append(hit_chain_id)
