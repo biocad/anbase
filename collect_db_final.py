@@ -17,7 +17,7 @@ from collect_db import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, get_while_true, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
-    fetch_all_sequences, CHAINS_SEPARATOR
+    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat
 from post_unboundness_filtering import union_models, \
     fetch_all_assemblies
 
@@ -33,6 +33,17 @@ HETATMS_DELETED = 'hetatms_deleted'
 SEQUENCES = 'seqs'
 
 INTERFACE_CUTOFF = 10
+
+DB_INFO_COLUMNS = ['comp_name', 'candidate_type', 'candidate_id', 'pdb_id_b',
+                   'ab_chain_ids_b', 'ag_chain_ids_b', 'ab_pdb_id_u',
+                   'ab_chain_ids_u', 'ag_pdb_id_u', 'ag_chain_ids_u',
+                   'ab_mismatches_cnt', 'ag_mismatches_cnt',
+                   'small_molecules_message']
+DB_INFO_HEADER = ','.join(DB_INFO_COLUMNS)
+
+REJECTED_COMPLEXES_COLUMNS = ['comp_name', 'candidate_id', 'candidate_type',
+                              'reason']
+REJECTED_COMPLEXES_HEADER = ','.join(REJECTED_COMPLEXES_COLUMNS)
 
 
 class NotDisordered(Select):
@@ -667,6 +678,16 @@ class Conformation:
                  str(MAX_NUMBER_OF_ATOMS_IN_SM_COMMITMENT) + \
                  ' detected'
 
+    @staticmethod
+    def calc_mismatches(seqs1, seqs2):
+        cnt = 0
+
+        for x, y in zip(seqs1, seqs2):
+            _, c, _ = calc_mismatches_stat(x, y)
+            cnt += c
+
+        return cnt
+
     def write_info(self, db_info_csv):
         mols = self.get_small_molecules_stat(None)
 
@@ -681,12 +702,16 @@ class Conformation:
         else:
             mols_message = self.MOLS_ERROR
 
-        db_info_csv.write(','.join(['{}'] * 11).format(
+        ab_mismatches = self.calc_mismatches(self.ab_seqs_u, self.ab_seqs_b)
+        ag_mismatches = self.calc_mismatches(self.ag_seqs_u, self.ag_seqs_b)
+
+        db_info_csv.write(','.join(['{}'] * 13).format(
             self.comp_name, self.candidate_type, self.candidate_id,
             self.pdb_id_b, CHAINS_SEPARATOR.join(self.ab_chain_ids_b),
             CHAINS_SEPARATOR.join(self.ag_chain_ids_b), self.ab_pdb_id_u,
             CHAINS_SEPARATOR.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
-            CHAINS_SEPARATOR.join(self.ag_chain_ids_u), mols_message) + '\n')
+            CHAINS_SEPARATOR.join(self.ag_chain_ids_u), ab_mismatches,
+            ag_mismatches, mols_message) + '\n')
         db_info_csv.flush()
 
 
@@ -854,14 +879,10 @@ def process_filtered_csv(path_to_filtered_structures_csv,
     with open(path_to_rejected_complexes_csv, 'w') as rejected_complexes_csv, \
             open('db_info.csv', 'w') as db_info_csv:
 
-        db_info_csv.write(
-            'comp_name,candidate_type,candidate_id,pdb_id_b,'
-            'ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_'
-            'pdb_id_u,ag_chain_ids_u,small_molecules_message\n')
+        db_info_csv.write(DB_INFO_HEADER + '\n')
         db_info_csv.flush()
 
-        rejected_complexes_csv.write(
-            'comp_name,candidate_id,candidate_type,reason\n')
+        rejected_complexes_csv.write(REJECTED_COMPLEXES_HEADER + '\n')
         rejected_complexes_csv.flush()
 
         with_candidates = {}

@@ -25,7 +25,7 @@ def process_csv(csv):
         data[csv.iloc[i]['comp_name']].append((csv.iloc[i]['candidate_type'],
                                                csv.iloc[i]['candidate_pdb_id'],
                                                csv.iloc[i][
-                                                   'candidate_chain_id']))
+                                                   'candidate_chain_ids']))
 
     return data
 
@@ -277,4 +277,4 @@ def filter_for_unboundness(processed_csv):
 
 
 if __name__ == '__main__':
-    filter_for_unboundness(process_csv(pd.read_csv('unbound_full.csv')))
+    filter_for_unboundness(process_csv(pd.read_csv('unbound_data.csv')))

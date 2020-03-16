@@ -389,7 +389,7 @@ def calc_mismatches_stat(query_seq, target_seq):
     alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
 
     if not alignment_list:
-        return len(query_seq), len(query_seq)
+        return 0, len(query_seq), len(query_seq)
 
     alignment = alignment_list[0]
 
@@ -406,7 +406,7 @@ def calc_mismatches_stat(query_seq, target_seq):
             match_ids.append(i)
 
     if not match_ids:
-        return len(query_seq), len(query_seq)
+        return 0, len(query_seq), len(query_seq)
 
     first_match_id = match_ids[0]
     last_match_id = match_ids[-1]
@@ -425,17 +425,21 @@ def calc_mismatches_stat(query_seq, target_seq):
             max_miss_len = max(max_miss_len, cur_miss_len)
             cur_miss_len = 0
 
-    return mismatches_count, max_miss_len
+    return len(match_ids), mismatches_count, max_miss_len
 
 
 def is_subsequence_of(query_seq, target_seq, is_ab=True):
-    cut_off = max(10, int(0.03 * len(query_seq))) if is_ab else int(
+    min_match_cutoff = 0.9 * len(query_seq)
+    max_miss_cutoff = max(10, int(0.03 * len(query_seq))) if is_ab else int(
         0.05 * len(query_seq))
 
-    mismatches_count, max_miss_len = calc_mismatches_stat(query_seq,
-                                                          target_seq)
+    matches_count, mismatches_count, max_miss_len = calc_mismatches_stat(
+        query_seq,
+        target_seq)
 
-    return (not is_ab or max_miss_len < 3) and mismatches_count <= cut_off
+    return matches_count >= min_match_cutoff and (
+                not is_ab or max_miss_len < 3) and mismatches_count <= \
+        max_miss_cutoff
 
 
 def is_match(query_seq, hit_alignment,
@@ -445,7 +449,7 @@ def is_match(query_seq, hit_alignment,
 
     hit_with_removed_gaps = hit_alignment.replace('-', '')
 
-    if len(hit_with_removed_gaps) < 0.8 * len(query_seq):
+    if len(hit_with_removed_gaps) < 0.9 * len(query_seq):
         return False
 
     return is_subsequence_of(query_seq, hit_with_removed_gaps, is_ab=is_ab)
@@ -858,7 +862,6 @@ if __name__ == '__main__':
 
         collect_unbound_structures(overwrite=len(
             list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p,
-                                                     to_accept=to_accept)
-
+                                   to_accept=to_accept)
 
 # 1jps,1jps_H+L|T,AB,1JPT,H:L
