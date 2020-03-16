@@ -389,7 +389,7 @@ def calc_mismatches_stat(query_seq, target_seq):
     alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
 
     if not alignment_list:
-        return False
+        return len(query_seq), len(query_seq)
 
     alignment = alignment_list[0]
 
@@ -404,6 +404,9 @@ def calc_mismatches_stat(query_seq, target_seq):
         if query_alignment[i] != '-' and query_alignment[i] == \
                 target_alignment[i]:
             match_ids.append(i)
+
+    if not match_ids:
+        return len(query_seq), len(query_seq)
 
     first_match_id = match_ids[0]
     last_match_id = match_ids[-1]
@@ -427,7 +430,7 @@ def calc_mismatches_stat(query_seq, target_seq):
 
 def is_subsequence_of(query_seq, target_seq, is_ab=True):
     cut_off = max(10, int(0.03 * len(query_seq))) if is_ab else int(
-        0.03 * len(query_seq))
+        0.05 * len(query_seq))
 
     mismatches_count, max_miss_len = calc_mismatches_stat(query_seq,
                                                           target_seq)
@@ -435,22 +438,17 @@ def is_subsequence_of(query_seq, target_seq, is_ab=True):
     return (not is_ab or max_miss_len < 3) and mismatches_count <= cut_off
 
 
-def is_match(query_seq, query_alignment, hit_alignment,
+def is_match(query_seq, hit_alignment,
              is_ab=True):
     if query_seq == hit_alignment:
         return True
 
-    query_with_stripped_gaps = query_alignment.strip('-')
+    hit_with_removed_gaps = hit_alignment.replace('-', '')
 
-    if '-' in query_with_stripped_gaps:
+    if len(hit_with_removed_gaps) < 0.8 * len(query_seq):
         return False
 
-    hit_with_stripped_gaps = hit_alignment.strip('-')
-
-    if '-' in hit_with_stripped_gaps:
-        return False
-
-    return is_subsequence_of(query_seq, hit_with_stripped_gaps, is_ab=is_ab)
+    return is_subsequence_of(query_seq, hit_with_removed_gaps, is_ab=is_ab)
 
 
 def get_blast_data(pdb_id, chain_id, seq, is_ab):
@@ -478,13 +476,12 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
                     hit_chain_ids = [x for x in hit_def_parts[2].split(',')]
 
                     for hsp in hit.find('Hit_hsps'):
-                        hsp_qseq = hsp.find('Hsp_qseq').text
                         hsp_hseq = hsp.find('Hsp_hseq').text
 
                         good_chain_ids = []
 
                         for hit_chain_id in hit_chain_ids:
-                            if is_match(seq, hsp_qseq, hsp_hseq,
+                            if is_match(seq, hsp_hseq,
                                         is_ab=is_ab):
                                 good_chain_ids.append(hit_chain_id)
 
@@ -861,4 +858,7 @@ if __name__ == '__main__':
 
         collect_unbound_structures(overwrite=len(
             list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p,
-                                   to_accept=to_accept)
+                                                     to_accept=to_accept)
+
+
+# 1jps,1jps_H+L|T,AB,1JPT,H:L
