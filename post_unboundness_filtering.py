@@ -8,8 +8,8 @@ from Bio.PDB import PDBParser
 from Bio.PDB.StructureBuilder import StructureBuilder
 
 from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
-    get_while_true, \
-    compare_query_and_hit_seqs, comp_name_to_pdb_and_chains, CHAINS_SEPARATOR
+    get_while_true, comp_name_to_pdb_and_chains, CHAINS_SEPARATOR, \
+    is_subsequence_of
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
@@ -145,11 +145,7 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
 
         for chain_id, chain_seq in source_seqs:
             for target_chain_id, target_seq in assembly_ids_seqs:
-                if compare_query_and_hit_seqs(chain_seq, target_seq,
-                                              None,
-                                              None,
-                                              write_log=False,
-                                              is_ab=is_ab):
+                if is_subsequence_of(chain_seq, target_seq, is_ab=is_ab):
                     chain_matching[chain_id].append(target_chain_id)
 
         lens_of_matches = list(map(lambda x: len(chain_matching[x]),

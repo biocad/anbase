@@ -385,8 +385,7 @@ class Candidate:
         return str((self.pdb_id, self.chain_ids))
 
 
-def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
-                    len_diff, is_ab=True):
+def is_subsequence_of(query_seq, target_seq, is_ab=True):
     cut_off = int(0.03 * len(query_seq))
 
     alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
@@ -401,15 +400,22 @@ def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
     query_alignment = alignment[0]
     target_alignment = alignment[1]
 
+    match_ids = []
+
+    for i in range(len(query_alignment)):
+        if query_alignment[i] != '-' and query_alignment[i] == target_alignment[i]:
+            match_ids.append(i)
+
+    first_match_id = match_ids[0]
+    last_match_id = match_ids[-1]
+
+    query_alignment = query_alignment[first_match_id: last_match_id + 1]
+    target_alignment = target_alignment[first_match_id: last_match_id + 1]
+
     cur_miss_len = 0
     max_miss_len = 0
 
     for i in range(len(query_alignment)):
-        if query_alignment[i] == '-' or target_alignment[i] == '-':
-            max_miss_len = max(max_miss_len, cur_miss_len)
-            cur_miss_len = 0
-            continue
-
         if query_alignment[i] != target_alignment[i]:
             cur_miss_len += 1
             mismatches_count += 1
@@ -417,30 +423,10 @@ def align_and_check(query_seq, target_seq, pdb_ids, chain_ids, write_log,
             max_miss_len = max(max_miss_len, cur_miss_len)
             cur_miss_len = 0
 
-    if write_log and 0 < mismatches_count <= cut_off:
-        with open(MISMATCHED_LOG, 'a') as f:
-            f.write(','.join(
-                [pdb_ids[0], pdb_ids[1], chain_ids[0].upper(),
-                 chain_ids[1].upper(),
-                 str(mismatches_count), str(len_diff)]) + '\n')
-
     return (not is_ab or max_miss_len < 3) and mismatches_count <= cut_off
 
 
-def compare_query_and_hit_seqs(query_seq, hit_seq, pdb_ids, chain_ids,
-                               write_log=False, is_ab=True):
-    cut_off_half = int(0.1 * len(query_seq) / 2)
-    len_diff = abs(len(query_seq) - len(hit_seq))
-
-    c1 = align_and_check(query_seq[cut_off_half:-cut_off_half],
-                         hit_seq[cut_off_half:-cut_off_half], pdb_ids,
-                         chain_ids, write_log,
-                         len_diff, is_ab=is_ab)
-
-    return c1
-
-
-def is_match(query_seq, query_alignment, hit_alignment, pdb_ids, chain_ids,
+def is_match(query_seq, query_alignment, hit_alignment,
              is_ab=True):
     if query_seq == hit_alignment:
         return True
@@ -455,8 +441,7 @@ def is_match(query_seq, query_alignment, hit_alignment, pdb_ids, chain_ids,
     if '-' in hit_with_stripped_gaps:
         return False
 
-    return compare_query_and_hit_seqs(query_seq, hit_with_stripped_gaps,
-                                      pdb_ids, chain_ids, is_ab=is_ab)
+    return is_subsequence_of(query_seq, hit_with_stripped_gaps, is_ab=is_ab)
 
 
 def get_blast_data(pdb_id, chain_id, seq, is_ab):
@@ -491,8 +476,6 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
 
                         for hit_chain_id in hit_chain_ids:
                             if is_match(seq, hsp_qseq, hsp_hseq,
-                                        (pdb_id, hit_pdb_id),
-                                        (chain_id, hit_chain_id),
                                         is_ab=is_ab):
                                 good_chain_ids.append(hit_chain_id)
 
@@ -587,8 +570,7 @@ def check_names(names):
     return len(unknown_list) == 2
 
 
-def check_unbound(candidate_pdb_id, candidate_chain_ids,
-                  query_pdb_id, query_chain_ids, query_seqs, is_ab):
+def check_unbound(candidate_pdb_id, candidate_chain_ids, query_seqs, is_ab):
     candidate_seqs_dict = fetch_all_sequences(candidate_pdb_id)
     candidate_seqs = list(map(lambda x: candidate_seqs_dict[x],
                               candidate_chain_ids))
@@ -598,11 +580,7 @@ def check_unbound(candidate_pdb_id, candidate_chain_ids,
             return None
 
     for i in range(len(query_seqs)):
-        if not compare_query_and_hit_seqs(query_seqs[i], candidate_seqs[i],
-                                          (query_pdb_id, candidate_pdb_id),
-                                          (query_chain_ids[i],
-                                           candidate_chain_ids[i]),
-                                          is_ab=is_ab):
+        if not is_subsequence_of(query_seqs[i], candidate_seqs[i], is_ab=is_ab):
             return None
 
     c1 = check_names(retrieve_names(candidate_pdb_id))
@@ -664,7 +642,7 @@ def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
 
         for set_of_chain_ids in all_sets_of_candidate_ids:
             res_for_candidate = check_unbound(candidate_id, set_of_chain_ids,
-                                              pdb_id, chain_ids, seqs, is_ab)
+                                              seqs, is_ab)
 
             if res_for_candidate:
                 res.append(res_for_candidate)
