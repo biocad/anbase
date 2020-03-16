@@ -385,9 +385,7 @@ class Candidate:
         return str((self.pdb_id, self.chain_ids))
 
 
-def is_subsequence_of(query_seq, target_seq, is_ab=True):
-    cut_off = int(0.03 * len(query_seq))
-
+def calc_mismatches_stat(query_seq, target_seq):
     alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
 
     if not alignment_list:
@@ -403,7 +401,8 @@ def is_subsequence_of(query_seq, target_seq, is_ab=True):
     match_ids = []
 
     for i in range(len(query_alignment)):
-        if query_alignment[i] != '-' and query_alignment[i] == target_alignment[i]:
+        if query_alignment[i] != '-' and query_alignment[i] == \
+                target_alignment[i]:
             match_ids.append(i)
 
     first_match_id = match_ids[0]
@@ -422,6 +421,16 @@ def is_subsequence_of(query_seq, target_seq, is_ab=True):
         else:
             max_miss_len = max(max_miss_len, cur_miss_len)
             cur_miss_len = 0
+
+    return mismatches_count, max_miss_len
+
+
+def is_subsequence_of(query_seq, target_seq, is_ab=True):
+    cut_off = max(10, int(0.03 * len(query_seq))) if is_ab else int(
+        0.03 * len(query_seq))
+
+    mismatches_count, max_miss_len = calc_mismatches_stat(query_seq,
+                                                          target_seq)
 
     return (not is_ab or max_miss_len < 3) and mismatches_count <= cut_off
 
@@ -580,7 +589,8 @@ def check_unbound(candidate_pdb_id, candidate_chain_ids, query_seqs, is_ab):
             return None
 
     for i in range(len(query_seqs)):
-        if not is_subsequence_of(query_seqs[i], candidate_seqs[i], is_ab=is_ab):
+        if not is_subsequence_of(query_seqs[i], candidate_seqs[i],
+                                 is_ab=is_ab):
             return None
 
     c1 = check_names(retrieve_names(candidate_pdb_id))
