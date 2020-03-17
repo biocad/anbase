@@ -120,8 +120,13 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
     is_ab = type == AB
     pdb_parser = PDBParser()
 
-    struct = pdb_parser.get_structure(source_pdb_id,
-                                      fetch_struct(source_pdb_id))
+    try:
+        struct = pdb_parser.get_structure(source_pdb_id,
+                                          fetch_struct(source_pdb_id))
+    except Exception as e:
+        print('ERROR:', e, flush=True)
+        return []
+
     source_seqs = list(filter(lambda x: x[0] in source_chain_ids,
                               fetch_all_sequences(source_pdb_id).items()))
     real_source_seqs = list(
@@ -135,7 +140,11 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
     for assembly_path in fetch_all_assemblies(target_pdb_id):
         n += 1
 
-        assembly_structure = pdb_parser.get_structure('ba', assembly_path)
+        try:
+            assembly_structure = pdb_parser.get_structure('ba', assembly_path)
+        except Exception as e:
+            print('BAD ASSEMBLY FOR {}:'.format(target_pdb_id), e, flush=True)
+            continue
 
         assembly = union_models(assembly_structure)
 
