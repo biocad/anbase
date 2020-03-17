@@ -31,6 +31,8 @@ class CandidateInfo:
         self.ag_pdb_id_u = df_row['ag_pdb_id_u']
         self.ag_chain_ids_u = df_row['ag_chain_ids_u'].split(CHAINS_SEPARATOR)
 
+        self.ab_mismatches = df_row['ab_mismatches_cnt']
+        self.ag_mismatches = df_row['ag_mismatches_cnt']
         self.small_mols_msg = sub_nan(df_row['small_molecules_message'])
 
         self.ab_seqs = []
@@ -43,7 +45,7 @@ class CandidateInfo:
         self.long = 0
         self.total = 0
 
-        if not df_gaps:
+        if df_gaps is None:
             return
 
         selection = np.logical_and(df_gaps['comp_name'] == self.comp_name,
@@ -68,6 +70,8 @@ class CandidateInfo:
                          ':'.join(self.ab_chain_ids_u),
                          self.ag_pdb_id_u,
                          ':'.join(self.ag_chain_ids_u),
+                         self.ab_mismatches,
+                         self.ag_mismatches,
                          self.small_mols_msg if self.small_mols_msg
                          else 'NA',
                          str(self.in_between),
@@ -101,6 +105,7 @@ class CandidateInfo:
 
         for x in self.ag_chain_ids_b:
             self.ag_seqs.append(complex_fasta_b[x])
+
 
 def read_fasta(path):
     res = {}

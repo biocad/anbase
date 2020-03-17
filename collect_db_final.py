@@ -6,18 +6,15 @@ from xml.etree import ElementTree
 
 import numpy as np
 import pandas as pd
-from Bio import pairwise2
 from Bio.PDB import PDBParser, Superimposer, PDBIO, Select
 from Bio.PDB.Polypeptide import PPBuilder, is_aa, d1_to_index, dindex_to_3
-from Bio.PDB.StructureBuilder import StructureBuilder
-from Bio.pairwise2 import format_alignment
 
 import alignments
 from collect_db import AG, AB, DB_PATH, DOT_PDB, \
-    fetch_sequence, memoize, get_while_true, \
+    fetch_sequence, memoize, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
-    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat
+    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat, extract_seq
 from post_unboundness_filtering import union_models, \
     fetch_all_assemblies
 
@@ -27,7 +24,7 @@ REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
 FILTERED_COMPLEXES_CSV = 'filtered_complexes.csv'
 REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
 
-ALIGNED_EPOCH = 'aligned'
+ALIGNED = 'aligned'
 HETATMS_DELETED = 'hetatms_deleted'
 
 SEQUENCES = 'seqs'
@@ -152,7 +149,7 @@ class Conformation:
         self.candidate_type = 'U:U' if self.is_ab_u and self.is_ag_u else \
             ('B:U' if self.is_ag_u else 'U:B')
 
-        self.dir_name = comp_name_to_dir_name(self.comp_name)
+        self.dir_name = self.comp_name
 
         self.ab_seqs_b = None
         self.ag_seqs_b = None
@@ -902,7 +899,7 @@ def process_filtered_csv(path_to_filtered_structures_csv,
             for candidate in candidates:
                 try:
                     candidate.load_sequences()
-                    candidate.alignment_epoch(ALIGNED_EPOCH)
+                    candidate.alignment_epoch(ALIGNED)
                     candidate.write_info(db_info_csv)
                     candidate.hetatms_deletion_epoch(HETATMS_DELETED)
 
@@ -913,15 +910,6 @@ def process_filtered_csv(path_to_filtered_structures_csv,
                     rejected_complexes_csv.flush()
 
             counter += 1
-
-
-def extract_seq(chain):
-    seq = ''
-
-    for x in Conformation.peptides_builder.build_peptides(chain):
-        seq += str(x.get_sequence())
-
-    return seq
 
 
 def filter_out_peptides(filtered_structures, sabdab_tb):
@@ -945,4 +933,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV)  # , to_accept=['6osy_5:6|2', '5vlp_H:L|A', '6de7_D:E|B'])
+                         REJECTED_COMPLEXES_CSV)

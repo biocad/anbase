@@ -1,9 +1,12 @@
+import os
+import shutil
+
 import pandas as pd
 from collections import defaultdict
-import math
-import numpy as np
 
-from collect_db_final import Conformation
+from candidate_info import CandidateInfo, ANNOTATION
+from collect_db_final import Conformation, ALIGNED, HETATMS_DELETED, SEQUENCES
+from prepper import PREPPED, SCHROD
 
 ABASE_SUMMARY_CSV = 'abase_summary.csv'
 
@@ -12,62 +15,16 @@ DB_INFO_PATH = 'db_info.csv'
 DUPLICATES_PATH = 'duplicates.csv'
 GAPS_PATH = 'gap_stats_u.csv'
 
+ABASE_SUMMARY_COLUMNS = ['comp_name', 'candidate_type', 'pdb_id_b',
+                         'ab_chain_ids_b', 'ag_chain_ids_b', 'ab_pdb_id_u',
+                         'ab_chain_ids_u', 'ag_pdb_id_u', 'ag_chain_ids_u',
+                         'ab_mismatches_cnt', 'ag_mismatches_cnt',
+                         'small_molecules_message', 'in_between_gaps',
+                         'one_side_gaps', 'long_gaps', 'total_gaps',
+                         'is_perfect']
+ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
 
-def sub_nan(val):
-    if isinstance(val, float) and math.isnan(val):
-        return None
-    return val
-
-
-class CandidateInfo:
-    def __init__(self, df_row, df_gaps):
-        self.comp_name = df_row['comp_name']
-        self.candidate_type = df_row['candidate_type']
-        self.candidate_id = df_row['candidate_id']
-
-        self.pdb_id_b = df_row['pdb_id_b']
-        self.ab_chain_ids_b = df_row['ab_chain_ids_b'].split(':')
-        self.ag_chain_ids_b = df_row['ag_chain_ids_b'].split(':')
-
-        self.ab_pdb_id_u = df_row['ab_pdb_id_u']
-        self.ab_chain_ids_u = df_row['ab_chain_ids_u'].split(':')
-        self.ag_pdb_id_u = df_row['ag_pdb_id_u']
-        self.ag_chain_ids_u = df_row['ag_chain_ids_u'].split(':')
-
-        self.small_mols_msg = sub_nan(df_row['small_molecules_message'])
-
-        selection = np.logical_and(df_gaps['comp_name'] == self.comp_name,
-                                   df_gaps[
-                                       'candidate_id'] == self.candidate_id)
-
-        self.in_between = 0
-        self.one_side = 0
-        self.long = 0
-        self.total = 0
-
-        if any(selection):
-            df_gaps_row = df_gaps[selection].iloc[0]
-            self.in_between = int(df_gaps_row['in_between'])
-            self.one_side = int(df_gaps_row['one_side'])
-            self.long = int(df_gaps_row['long'])
-            self.total = int(df_gaps_row['total'])
-
-    def to_string(self, with_candidate_id=True):
-        addition = [self.candidate_id] if with_candidate_id else []
-        return ','.join([self.comp_name.replace(':', '+'), self.candidate_type] + addition +
-                        [self.pdb_id_b.upper(),
-                         ':'.join(self.ab_chain_ids_b),
-                         ':'.join(self.ag_chain_ids_b),
-                         self.ab_pdb_id_u,
-                         ':'.join(self.ab_chain_ids_u),
-                         self.ag_pdb_id_u,
-                         ':'.join(self.ag_chain_ids_u),
-                         self.small_mols_msg if self.small_mols_msg
-                         else 'NA',
-                         str(self.in_between),
-                         str(self.one_side),
-                         str(self.long),
-                         str(self.total)])
+ABASE_DATA_PATH = 'abase'
 
 
 def check_perfect_candidate(candidate):
@@ -90,10 +47,41 @@ def finalize_complex(comp_name, candidate_infos, duplicates):
 
     all_candidates.sort(key=lambda x: 0 if x.small_mols_msg is None else (
         1 if x.small_mols_msg == Conformation.MOLS_WARNING else 2))
+    all_candidates.sort(key=lambda x: x.ab_mismatches + x.ag_mismatches)
     all_candidates.sort(key=lambda x: x.one_side)
     all_candidates.sort(key=lambda x: x.in_between)
 
     return all_candidates[0], True, all_candidates[1:]
+
+
+def move_candidate_to_dir(db_path, candidate_info, dir_path):
+    comp_path = os.path.join(db_path, candidate_info.comp_name)
+
+    def move_to_dir_path(folder_name):
+        path_to_folder = os.path.join(comp_path, folder_name,
+                                      candidate_info.candidate_id)
+
+        path_to_dst = os.path.join(dir_path, folder_name)
+
+        if not os.path.exists(path_to_dst):
+            os.makedirs(path_to_dst)
+
+        for file in os.listdir(path_to_folder):
+            shutil.copyfile(os.path.join(path_to_folder, file),
+                            os.path.join(path_to_dst, file))
+
+        file_in_folder = next(filter(lambda x: candidate_info.pdb_id_b in x,
+                                     os.listdir(os.path.join(comp_path,
+                                                             folder_name))))
+
+        shutil.copyfile(os.path.join(comp_path, folder_name, file_in_folder),
+                        os.path.join(path_to_dst, file_in_folder))
+
+    move_to_dir_path(ALIGNED)
+    move_to_dir_path(HETATMS_DELETED)
+    # move_to_dir_path(PREPPED + '_' + SCHROD)
+    move_to_dir_path(SEQUENCES)
+    # move_to_dir_path(ANNOTATION)
 
 
 if __name__ == '__main__':
@@ -106,6 +94,12 @@ if __name__ == '__main__':
     parser.add_option('--db-info', default=DB_INFO_PATH, dest='db_info',
                       metavar='DB_INFO_PATH',
                       help='Path to dev database info csv file [default: {}]'.
+                      format(DB_INFO_PATH))
+    parser.add_option('--abase-data', default=ABASE_DATA_PATH,
+                      dest='abase_data',
+                      metavar='ABASE_DATA_PATH',
+                      help='Path where ABase\'s data will be stored '
+                           '[default: {}]'.
                       format(DB_INFO_PATH))
     parser.add_option('--duplicates', default=DUPLICATES_PATH,
                       dest='duplicates',
@@ -157,12 +151,11 @@ if __name__ == '__main__':
             if x in complexes:
                 complexes.remove(x)
 
+    if not os.path.exists(options.abase_data):
+        os.makedirs(options.abase_data)
+
     with open(ABASE_SUMMARY_CSV, 'w') as abase_summary_csv:
-        abase_summary_csv.write(
-            'comp_name,candidate_type,pdb_id_b,'
-            'ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_'
-            'pdb_id_u,ag_chain_ids_u,small_molecules_message,'
-            'in_between_gaps,one_side_gaps,long_gaps,total_gaps\n')
+        abase_summary_csv.write(ABASE_SUMMARY_HEADER + '\n')
         abase_summary_csv.flush()
 
         for comp in complexes:
@@ -170,5 +163,10 @@ if __name__ == '__main__':
                 finalize_complex(comp, candidate_infos, duplicates)
 
             abase_summary_csv.write(
-                final_candidate.to_string(with_candidate_id=False) + '\n')
+                final_candidate.to_string(with_candidate_id=False) +
+                ','.join([str(is_perfect)]) + '\n')
             abase_summary_csv.flush()
+
+            move_candidate_to_dir(options.db, final_candidate,
+                                  os.path.join(options.abase_data,
+                                               final_candidate.comp_name))
