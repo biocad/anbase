@@ -9,7 +9,7 @@ from Bio.PDB.StructureBuilder import StructureBuilder
 
 from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
     get_while_true, comp_name_to_pdb_and_chains, CHAINS_SEPARATOR, \
-    is_subsequence_of
+    is_subsequence_of, get_real_seqs, fetch_struct
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
@@ -118,9 +118,14 @@ class AssemblyMatchInfo:
 
 def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
     is_ab = type == AB
+    pdb_parser = PDBParser()
 
+    struct = pdb_parser.get_structure(source_pdb_id,
+                                      fetch_struct(source_pdb_id))
     source_seqs = list(filter(lambda x: x[0] in source_chain_ids,
                               fetch_all_sequences(source_pdb_id).items()))
+    real_source_seqs = list(
+        zip([x[0] for x in source_seqs], get_real_seqs(struct, source_seqs)))
 
     target_seqs = fetch_all_sequences(target_pdb_id)
 
@@ -130,7 +135,6 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
     for assembly_path in fetch_all_assemblies(target_pdb_id):
         n += 1
 
-        pdb_parser = PDBParser()
         assembly_structure = pdb_parser.get_structure('ba', assembly_path)
 
         assembly = union_models(assembly_structure)
@@ -143,7 +147,7 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
 
         chain_matching = defaultdict(list)
 
-        for chain_id, chain_seq in source_seqs:
+        for chain_id, chain_seq in real_source_seqs:
             for target_chain_id, target_seq in assembly_ids_seqs:
                 if is_subsequence_of(chain_seq, target_seq, is_ab=is_ab):
                     chain_matching[chain_id].append(target_chain_id)

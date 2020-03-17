@@ -11,6 +11,6 @@ def subsequence_without_gaps(query_seq, target_seq):
 
 def align_possibly_gapped_sequence_on_its_complete_version(query_seq,
                                                            target_seq):
-    return pairwise2.align.localxs(query_seq, target_seq, -1, 0,
+    return pairwise2.align.localxd(query_seq, target_seq, -1, 0, -100, -100,
                                    penalize_end_gaps=False,
                                    one_alignment_only=True)

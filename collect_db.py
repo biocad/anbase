@@ -4,7 +4,8 @@ import operator
 
 import requests
 
-from Bio.PDB import PDBList, PDBParser, PDBIO, Selection, Polypeptide
+from Bio.PDB import PDBList, PDBParser, PDBIO, Selection, Polypeptide, \
+    PPBuilder
 from pandas import read_csv
 import os
 import shutil
@@ -41,9 +42,52 @@ AB = 'AB'
 
 CHAINS_SEPARATOR = '+'
 
+peptides_builder = PPBuilder()
+
 
 class HandlerError(RuntimeError):
     pass
+
+
+def extract_seq(chain):
+    seq = ''
+
+    for x in peptides_builder.build_peptides(chain):
+        seq += str(x.get_sequence())
+
+    return seq
+
+
+def pdb_seqs_for_structure(struct, chain_ids):
+    pdb_seqs = []
+
+    for chain_id in chain_ids:
+        for model in struct:
+            for chain in model:
+                if chain.get_id() == chain_id:
+                    pdb_seqs.append(extract_seq(chain))
+
+    return pdb_seqs
+
+
+def fetch_struct(pdb_id):
+    curl = 'https://files.rcsb.org/download/{}.pdb'. \
+        format(pdb_id)
+
+    path_to_tmp = os.path.join(DB_PATH, pdb_id + DOT_PDB)
+
+    if os.path.exists(path_to_tmp):
+        return path_to_tmp
+
+    r = get_while_true(curl)
+
+    if r is None:
+        return None
+
+    with open(path_to_tmp, 'w') as f:
+        f.write(r)
+
+    return path_to_tmp
 
 
 def with_timeout(timeout=None):
@@ -188,6 +232,35 @@ def comp_name_to_pdb_and_chains(comp_name):
     return pdb_id, ab_chains, ag_chains
 
 
+def get_real_seqs(struct, chain_ids_to_seqs):
+    chain_ids = []
+    fasta_seqs = []
+
+    for k, v in chain_ids_to_seqs:
+        chain_ids.append(k)
+        fasta_seqs.append(v)
+
+    pdb_seqs = pdb_seqs_for_structure(struct, chain_ids)
+
+    real_seqs = []
+
+    for fasta_seq, pdb_seq in zip(fasta_seqs, pdb_seqs):
+        alignment_n = alignments.align_possibly_gapped_sequence_on_its_complete_version(
+            pdb_seq, fasta_seq)
+
+        if not alignment_n:
+            real_seqs.append(None)
+
+        alignment = alignment_n[0]
+
+        _, _, real_seq = cut_alignments(alignment[0],
+                                        alignment[1])
+
+        real_seqs.append(real_seq)
+
+    return real_seqs
+
+
 class Complex:
     pdb_parser = PDBParser()
 
@@ -213,23 +286,34 @@ class Complex:
                                 self.antibody_l_chain] if not self.is_vhh else [
             self.antibody_h_chain]
 
+        self.struct = self.pdb_parser.get_structure(self.pdb_id,
+                                                    fetch_struct(self.pdb_id))
+
         self.comp_name = form_comp_name(self.pdb_id, self.antibody_chains,
                                         self.antigen_chains)
 
         self.complex_dir_path = os.path.join(DB_PATH, self.pdb_id)
 
-        self.antigen_seqs = [self._fetch_sequence(x) for x in
-                             self.antigen_chains]
+        self.antigen_seqs = get_real_seqs(self.struct,
+                                          [(x, self._fetch_sequence(x)) for x
+                                           in
+                                           self.antigen_chains])
 
         self.antibody_h_seq = None
 
         if self.antibody_h_chain:
-            self.antibody_h_seq = self._fetch_sequence(self.antibody_h_chain)
+            self.antibody_h_seq = \
+                get_real_seqs(self.struct, [
+                    (self.antibody_h_chain,
+                     self._fetch_sequence(self.antibody_h_chain))])[0]
 
         self.antibody_l_seq = None
 
         if self.antibody_l_chain:
-            self.antibody_l_seq = self._fetch_sequence(self.antibody_l_chain)
+            self.antibody_l_seq = \
+                get_real_seqs(self.struct, [(self.antibody_l_chain,
+                                             self._fetch_sequence(
+                                                 self.antibody_l_chain))])[0]
 
         self.antibody_seqs = [self.antibody_h_seq,
                               self.antibody_l_seq] if not self.is_vhh else [
@@ -385,6 +469,24 @@ class Candidate:
         return str((self.pdb_id, self.chain_ids))
 
 
+def cut_alignments(query_alignment, target_alignment):
+    match_ids = []
+
+    for i in range(len(query_alignment)):
+        if query_alignment[i] != '-' and query_alignment[i] == \
+                target_alignment[i]:
+            match_ids.append(i)
+
+    if not match_ids:
+        return [], [], []
+
+    first_match_id = match_ids[0]
+    last_match_id = match_ids[-1]
+
+    return match_ids, query_alignment[first_match_id: last_match_id + 1], \
+           target_alignment[first_match_id: last_match_id + 1]
+
+
 def calc_mismatches_stat(query_seq, target_seq):
     alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
 
@@ -398,21 +500,11 @@ def calc_mismatches_stat(query_seq, target_seq):
     query_alignment = alignment[0]
     target_alignment = alignment[1]
 
-    match_ids = []
-
-    for i in range(len(query_alignment)):
-        if query_alignment[i] != '-' and query_alignment[i] == \
-                target_alignment[i]:
-            match_ids.append(i)
+    match_ids, query_alignment, target_alignment = cut_alignments(
+        query_alignment, target_alignment)
 
     if not match_ids:
         return 0, len(query_seq), len(query_seq)
-
-    first_match_id = match_ids[0]
-    last_match_id = match_ids[-1]
-
-    query_alignment = query_alignment[first_match_id: last_match_id + 1]
-    target_alignment = target_alignment[first_match_id: last_match_id + 1]
 
     cur_miss_len = 0
     max_miss_len = 0
@@ -438,8 +530,8 @@ def is_subsequence_of(query_seq, target_seq, is_ab=True):
         target_seq)
 
     return matches_count + mismatches_count >= min_intersection_len and (
-                not is_ab or max_miss_len < 3) and mismatches_count <= \
-        max_miss_cutoff
+            not is_ab or max_miss_len < 3) and mismatches_count <= \
+           max_miss_cutoff
 
 
 def is_match(query_seq, hit_alignment,
@@ -485,9 +577,6 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
                         good_chain_ids = []
 
                         for hit_chain_id in hit_chain_ids:
-                            if hit_pdb_id == '2A91':
-                                print(seq, hsp_hseq)
-
                             if is_match(seq, hsp_hseq,
                                         is_ab=is_ab):
                                 good_chain_ids.append(hit_chain_id)
@@ -868,3 +957,5 @@ if __name__ == '__main__':
                                    to_accept=to_accept)
 
 # 1jps,1jps_H+L|T,AB,1JPT,H:L
+# BAD: '4I2X', '5NH3', '1S78', '4XT1', '6OGE' (clone), '5WT9'
+# GOOD: '6RCV', '6RCU',
