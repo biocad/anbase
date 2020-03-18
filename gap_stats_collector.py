@@ -6,7 +6,7 @@ from Bio.PDB import PDBParser
 
 from candidate_info import CandidateInfo
 from collect_db import comp_name_to_pdb_and_chains
-from collect_db_final import SEQUENCES, HETATMS_DELETED, comp_name_to_dir_name, \
+from collect_db_final import SEQUENCES, HETATMS_DELETED, \
     INTERFACE_CUTOFF, extract_seq
 import pandas as pd
 import numpy as np
@@ -231,8 +231,7 @@ def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_csv,
                       gap_stats_u_csv):
     pdb_id_b, _, _ = comp_name_to_pdb_and_chains(candidate.comp_name)
 
-    comp_path = os.path.join(db_path,
-                             comp_name_to_dir_name(candidate.comp_name))
+    comp_path = os.path.join(db_path, candidate.comp_name)
 
     epoch_path = os.path.join(comp_path, prev_epoch)
     seqs_path = os.path.join(comp_path, SEQUENCES)
