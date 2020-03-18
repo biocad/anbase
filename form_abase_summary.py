@@ -24,6 +24,8 @@ ABASE_SUMMARY_COLUMNS = ['comp_name', 'candidate_type', 'pdb_id_b',
                          'is_perfect']
 ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
 
+ALTERNATIVE_CANDIDATES = 'alternative_candidates'
+
 ABASE_DATA_PATH = 'abase'
 
 
@@ -159,7 +161,7 @@ if __name__ == '__main__':
         abase_summary_csv.flush()
 
         for comp in complexes:
-            final_candidate, is_perfect, second_choices = \
+            final_candidate, is_perfect, alternative_candidates = \
                 finalize_complex(comp, candidate_infos, duplicates)
 
             abase_summary_csv.write(
@@ -167,6 +169,31 @@ if __name__ == '__main__':
                 ','.join([str(is_perfect)]) + '\n')
             abase_summary_csv.flush()
 
-            move_candidate_to_dir(options.db, final_candidate,
-                                  os.path.join(options.abase_data,
-                                               final_candidate.comp_name))
+            comp_path = os.path.join(options.abase_data,
+                                     final_candidate.comp_name)
+
+            move_candidate_to_dir(options.db, final_candidate, comp_path)
+
+            with open(os.path.join(comp_path, ALTERNATIVE_CANDIDATES + '.csv'),
+                      'w') as alternative_candidates_csv:
+                alternative_candidates_csv.write(
+                    ','.join(ABASE_SUMMARY_COLUMNS[:-2]) + '\n')
+                for alternative_candidate in alternative_candidates:
+                    alternative_candidates_csv.write(
+                        alternative_candidate.to_string() + '\n')
+
+            alternative_candidates_path = os.path.join(comp_path,
+                                                       ALTERNATIVE_CANDIDATES)
+
+            if not os.path.exists(alternative_candidates_path):
+                os.mkdir(alternative_candidates_path)
+
+            for alternative_candidate in alternative_candidates:
+                path_to_alternative_candidate = os.path.join(
+                    alternative_candidates_path, alternative_candidate.comp_name)
+
+                if not os.path.exists(path_to_alternative_candidate):
+                    os.mkdir(path_to_alternative_candidate)
+
+                move_candidate_to_dir(options.db, alternative_candidate,
+                                      path_to_alternative_candidate)

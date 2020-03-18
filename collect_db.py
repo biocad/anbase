@@ -534,6 +534,8 @@ def is_subsequence_of(query_seq, target_seq, is_ab=True):
            max_miss_cutoff
 
 
+# IDEA: maybe, make query seq the subseq of query seq that contains
+#       all near-interface residues.
 def is_match(query_seq, hit_alignment,
              is_ab=True):
     if query_seq == hit_alignment:
