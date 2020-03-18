@@ -14,6 +14,10 @@ def convert_pdb_paths(dir_path, cur_epoch):
             if cur_epoch in root and file.endswith(DOT_PDB):
                 path_to_pdb = os.path.join(os.path.abspath(root), file)
                 path_to_mae = path_to_pdb[:-4] + DOT_MAE
+
+                if os.path.exists(path_to_mae):
+                    continue
+                    
                 command = '$SCHRODINGER/utilities/structconvert ' \
                           '-ipdb \'{}\' -omae \'{}\''.format(path_to_pdb, path_to_mae)
                 subprocess.call(command, stdout=subprocess.PIPE, shell=True)
