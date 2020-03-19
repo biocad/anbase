@@ -65,25 +65,30 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
 
         path_to_dst = os.path.join(dir_path, folder_name)
 
-        if not os.path.exists(path_to_dst):
-            os.makedirs(path_to_dst)
+        try:
+            if not os.path.exists(path_to_dst):
+                os.makedirs(path_to_dst)
 
-        for file in os.listdir(path_to_folder):
-            shutil.copyfile(os.path.join(path_to_folder, file),
-                            os.path.join(path_to_dst, file))
+            for file in os.listdir(path_to_folder):
+                shutil.copyfile(os.path.join(path_to_folder, file),
+                                os.path.join(path_to_dst, file))
 
-        file_in_folder = next(filter(lambda x: candidate_info.pdb_id_b in x,
-                                     os.listdir(os.path.join(comp_path,
-                                                             folder_name))))
+            file_in_folder = next(
+                filter(lambda x: candidate_info.pdb_id_b in x,
+                       os.listdir(os.path.join(comp_path,
+                                               folder_name))))
 
-        shutil.copyfile(os.path.join(comp_path, folder_name, file_in_folder),
-                        os.path.join(path_to_dst, file_in_folder))
+            shutil.copyfile(
+                os.path.join(comp_path, folder_name, file_in_folder),
+                os.path.join(path_to_dst, file_in_folder))
+        except Exception as e:
+            print('Unsuccessful move:', path_to_folder, e, flush=True)
 
     move_to_dir_path(ALIGNED)
     move_to_dir_path(HETATMS_DELETED)
-    # move_to_dir_path(PREPPED + '_' + SCHROD)
+    move_to_dir_path(PREPPED + '_' + SCHROD)
     move_to_dir_path(SEQUENCES)
-    # move_to_dir_path(ANNOTATION)
+    move_to_dir_path(ANNOTATION)
 
 
 if __name__ == '__main__':
@@ -178,9 +183,14 @@ if __name__ == '__main__':
                       'w') as alternative_candidates_csv:
                 alternative_candidates_csv.write(
                     ','.join(ABASE_SUMMARY_COLUMNS[:-2]) + '\n')
-                for alternative_candidate in alternative_candidates:
-                    alternative_candidates_csv.write(
-                        alternative_candidate.to_string() + '\n')
+
+                if alternative_candidates is not None:
+                    for alternative_candidate in alternative_candidates:
+                        alternative_candidates_csv.write(
+                            alternative_candidate.to_string() + '\n')
+
+            if alternative_candidates is None:
+                continue
 
             alternative_candidates_path = os.path.join(comp_path,
                                                        ALTERNATIVE_CANDIDATES)
@@ -190,7 +200,8 @@ if __name__ == '__main__':
 
             for alternative_candidate in alternative_candidates:
                 path_to_alternative_candidate = os.path.join(
-                    alternative_candidates_path, alternative_candidate.comp_name)
+                    alternative_candidates_path,
+                    alternative_candidate.comp_name)
 
                 if not os.path.exists(path_to_alternative_candidate):
                     os.mkdir(path_to_alternative_candidate)
