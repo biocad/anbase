@@ -45,7 +45,9 @@ def finalize_complex(comp_name, candidate_infos, duplicates):
         filter(lambda x: check_perfect_candidate(x), all_candidates))
 
     if len(ideal_candidates) > 0:
-        return ideal_candidates[0], True, None
+        alternative_candidates = list(
+            filter(lambda x: x != ideal_candidates[0], all_candidates))
+        return ideal_candidates[0], True, alternative_candidates
 
     all_candidates.sort(key=lambda x: 0 if x.small_mols_msg is None else (
         1 if x.small_mols_msg == Conformation.MOLS_WARNING else 2))
@@ -53,7 +55,7 @@ def finalize_complex(comp_name, candidate_infos, duplicates):
     all_candidates.sort(key=lambda x: x.one_side)
     all_candidates.sort(key=lambda x: x.in_between)
 
-    return all_candidates[0], True, all_candidates[1:]
+    return all_candidates[0], False, all_candidates[1:]
 
 
 def move_candidate_to_dir(db_path, candidate_info, dir_path):
@@ -171,7 +173,7 @@ if __name__ == '__main__':
 
             abase_summary_csv.write(
                 final_candidate.to_string(with_candidate_id=False) +
-                ','.join([str(is_perfect)]) + '\n')
+                ',' + str(is_perfect) + '\n')
             abase_summary_csv.flush()
 
             comp_path = os.path.join(options.abase_data,

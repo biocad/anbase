@@ -2,6 +2,7 @@ import pandas as pd
 
 import alignments
 from candidate_info import CandidateInfo
+from collect_db import calc_mismatches_stat
 
 DB_INFO_PATH = 'db_info.csv'
 DB_PATH = 'data'
@@ -16,32 +17,14 @@ DUPLICATES_CSV = 'duplicates.csv'
 CDRS = ['CDR1', 'CDR2', 'CDR3']
 
 
-def calc_matches_mismatches(seq1, seq2):
-    alignment_list = alignments.subsequence_without_gaps(seq1, seq2)[0]
-
-    if not alignment_list:
-        return False
-
-    alignment = alignment_list[0]
-
-    matches_count = 0
-
-    query_alignment = alignment[0]
-    target_alignment = alignment[1]
-
-    for i in range(len(query_alignment)):
-        if query_alignment[i] == target_alignment[i]:
-            matches_count += 1
-
-    return matches_count, len(query_alignment) - matches_count
-
-
 def similarity_of_two_seqs(seq1, seq2):
-    matches, mismatches = calc_matches_mismatches(seq1, seq2)
+    matches, mismatches, _ = calc_mismatches_stat(seq1, seq2)
 
     score = float(matches) / float(matches + mismatches)
 
-    return score >= 0.9
+    return matches + mismatches >= 0.9 * len(seq1) and \
+           matches + mismatches >= 0.9 * len(seq2) and \
+           score >= 0.9
 
 
 def similarity_of_abs(comp1, comp2):
@@ -50,10 +33,15 @@ def similarity_of_abs(comp1, comp2):
             seq1 = comp1.ab_cdrs_annotation_b[i][cdr]
             seq2 = comp2.ab_cdrs_annotation_b[i][cdr]
 
-            _, mismatches = calc_matches_mismatches(seq1, seq2)
+            matches, mismatches, _ = calc_mismatches_stat(seq1, seq2)
 
-            if mismatches >= 2:
-                print('Not equal:', seq1, 'and', seq2, ', mismatches:', mismatches,
+            mismatches += max(abs(len(seq1) - matches - mismatches),
+                              abs(len(seq2) - matches - mismatches))
+
+            if mismatches >= 2 or matches + mismatches < len(seq1) or \
+                    matches + mismatches < len(seq2):
+                print('Not equal:', seq1, 'and', seq2, ', mismatches:',
+                      mismatches,
                       flush=True)
                 return False
     return True
