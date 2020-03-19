@@ -24,6 +24,10 @@ ABASE_SUMMARY_COLUMNS = ['comp_name', 'candidate_type', 'pdb_id_b',
                          'is_perfect']
 ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
 
+ALTERNATIVE_CANDIDATES_COLUMNS = ABASE_SUMMARY_COLUMNS[:2] + ['candidate_id'] \
+                                 + ABASE_SUMMARY_COLUMNS[2:-1]
+ALTERNATIVE_CANDIDATES_HEADER = ','.join(ALTERNATIVE_CANDIDATES_COLUMNS)
+
 ALTERNATIVE_CANDIDATES = 'alternative_candidates'
 
 ABASE_DATA_PATH = 'abase'
@@ -183,8 +187,8 @@ if __name__ == '__main__':
 
             with open(os.path.join(comp_path, ALTERNATIVE_CANDIDATES + '.csv'),
                       'w') as alternative_candidates_csv:
-                alternative_candidates_csv.write(
-                    ','.join(ABASE_SUMMARY_COLUMNS[:-2]) + '\n')
+                alternative_candidates_csv.write(ALTERNATIVE_CANDIDATES_HEADER
+                                                 + '\n')
 
                 if alternative_candidates is not None:
                     for alternative_candidate in alternative_candidates:
