@@ -2,7 +2,7 @@ import pandas as pd
 
 import alignments
 from candidate_info import CandidateInfo
-from collect_db import calc_mismatches_stat
+from collect_db import calc_mismatches_stat, is_subsequence_of
 
 DB_INFO_PATH = 'db_info.csv'
 DB_PATH = 'data'
@@ -18,13 +18,7 @@ CDRS = ['CDR1', 'CDR2', 'CDR3']
 
 
 def similarity_of_two_seqs(seq1, seq2):
-    matches, mismatches, _ = calc_mismatches_stat(seq1, seq2)
-
-    score = float(matches) / float(matches + mismatches)
-
-    return matches + mismatches >= 0.9 * len(seq1) and \
-           matches + mismatches >= 0.9 * len(seq2) and \
-           score >= 0.9
+    return is_subsequence_of(seq1, seq2) or is_subsequence_of(seq2, seq1)
 
 
 def similarity_of_abs(comp1, comp2):
