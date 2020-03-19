@@ -1,0 +1,16 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+5jmo_C|A,U:U,1,5JMO,C,A,5JMR,B,5JXG,A,0,0,NA,0,1,0,2
+5jmo_C|A,U:U,4,5JMO,C,A,5JMR,A,5JXI,A,0,0,NA,0,1,0,4
+5jmo_C|A,U:U,5,5JMO,C,A,5JMR,B,5JXI,A,0,0,NA,0,1,0,4
+5jmo_D|B,U:U,2,5JMO,D,B,5JMR,A,5JXG,A,0,0,NA,0,1,0,4
+5jmo_D|B,U:U,3,5JMO,D,B,5JMR,B,5JXG,A,0,0,NA,0,1,0,4
+5jmo_D|B,U:U,6,5JMO,D,B,5JMR,A,5JXI,A,0,0,NA,0,1,0,4
+5jmo_D|B,U:U,7,5JMO,D,B,5JMR,B,5JXI,A,0,0,NA,0,1,0,4
+5jmo_C|A,U:U,2,5JMO,C,A,5JMR,A,5MIM,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,4
+5jmo_C|A,U:U,3,5JMO,C,A,5JMR,B,5MIM,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,4
+5jmo_D|B,U:U,0,5JMO,D,B,5JMR,A,5MIM,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,2
+5jmo_D|B,U:U,1,5JMO,D,B,5JMR,B,5MIM,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,2
+5jmo_C|A,U:U,6,5JMO,C,A,5JMR,A,4Z2A,A,0,2,NA,0,1,0,4
+5jmo_C|A,U:U,7,5JMO,C,A,5JMR,B,4Z2A,A,0,2,NA,0,1,0,4
+5jmo_D|B,U:U,4,5JMO,D,B,5JMR,A,4Z2A,A,0,2,NA,0,1,0,4
+5jmo_D|B,U:U,5,5JMO,D,B,5JMR,B,4Z2A,A,0,2,NA,0,1,0,4

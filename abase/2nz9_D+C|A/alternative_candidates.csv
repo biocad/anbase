@@ -1,0 +1,4 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+2nz9_D+C|A,U:U,0,2NZ9,D:C,A,2GCY,B:A,3V0C,A,7,5,NA,0,1,2,3
+2nz9_F+E|B,U:U,0,2NZ9,F:E,B,2GCY,B:A,3BTA,A,7,0,NA,0,0,1,1
+2nz9_F+E|B,U:U,1,2NZ9,F:E,B,2GCY,B:A,3V0C,A,7,5,NA,0,1,2,3

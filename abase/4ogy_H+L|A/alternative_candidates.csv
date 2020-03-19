@@ -1,0 +1,15 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+4ogx_H+L|A,U:U,3,4OGX,H:L,A,4PUB,H:L,2ANY,A,0,0,small molecules with n_atoms > 15 detected,3,1,0,7
+4ogy_M+N|B,U:U,0,4OGY,M:N,B,4PUB,H:L,2ANY,A,0,0,small molecules with n_atoms > 15 detected,3,1,0,7
+4ogy_H+L|A,U:U,2,4OGY,H:L,A,4PUB,H:L,2ANW,A,0,3,small molecules with n_atoms > 15 detected,3,1,0,7
+4ogx_H+L|A,U:U,2,4OGX,H:L,A,4PUB,H:L,2ANW,A,0,3,small molecules with n_atoms > 15 detected,3,1,0,7
+4ogy_M+N|B,U:U,4,4OGY,M:N,B,4PUB,H:L,2ANW,A,0,3,small molecules with n_atoms > 15 detected,3,1,0,7
+4ogy_H+L|A,U:U,1,4OGY,H:L,A,4PUB,H:L,6O1S,E,0,0,small molecules with n_atoms > 15 detected,3,2,1,8
+4ogy_H+L|A,U:U,4,4OGY,H:L,A,4PUB,H:L,5TJX,A,0,0,small molecules with n_atoms > 15 detected,3,2,1,9
+4ogx_H+L|A,U:U,1,4OGX,H:L,A,4PUB,H:L,6O1S,E,0,0,small molecules with n_atoms > 15 detected,3,2,1,8
+4ogx_H+L|A,U:U,4,4OGX,H:L,A,4PUB,H:L,5TJX,A,0,0,small molecules with n_atoms > 15 detected,3,2,1,9
+4ogy_M+N|B,U:U,2,4OGY,M:N,B,4PUB,H:L,5TJX,A,0,0,small molecules with n_atoms > 15 detected,3,2,1,9
+4ogy_M+N|B,U:U,3,4OGY,M:N,B,4PUB,H:L,6O1S,E,0,0,small molecules with n_atoms > 15 detected,3,2,1,8
+4ogy_H+L|A,U:U,0,4OGY,H:L,A,4PUB,H:L,6I44,A,0,7,small molecules with n_atoms > 15 detected,3,2,0,11
+4ogx_H+L|A,U:U,0,4OGX,H:L,A,4PUB,H:L,6I44,A,0,7,small molecules with n_atoms > 15 detected,3,2,0,11
+4ogy_M+N|B,U:U,1,4OGY,M:N,B,4PUB,H:L,6I44,A,0,7,small molecules with n_atoms > 15 detected,3,2,0,11

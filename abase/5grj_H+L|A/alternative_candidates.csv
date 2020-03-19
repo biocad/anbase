@@ -1,0 +1,12 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+5grj_H+L|A,U:U,0,5GRJ,H:L,A,4NKI,H:L,3BIS,A,0,0,NA,0,1,0,5
+5grj_H+L|A,U:U,1,5GRJ,H:L,A,4NKI,H:L,3BIS,A,0,0,NA,0,1,0,5
+5grj_H+L|A,U:U,2,5GRJ,H:L,A,4NKI,H:L,3BIS,A,0,0,NA,0,1,0,5
+5grj_H+L|A,U:U,4,5GRJ,H:L,A,4NKI,H:L,3BIS,B,0,0,NA,0,0,0,4
+5grj_H+L|A,U:U,5,5GRJ,H:L,A,4NKI,H:L,3BIS,B,0,0,NA,0,0,0,4
+5grj_H+L|A,U:U,6,5GRJ,H:L,A,4NKI,H:L,3BIS,A,0,0,NA,0,1,0,5
+5grj_H+L|A,U:U,7,5GRJ,H:L,A,4NKI,H:L,3BIS,A,0,0,NA,0,1,0,5
+5grj_H+L|A,U:U,8,5GRJ,H:L,A,4NKI,H:L,3BIS,A,0,0,NA,0,1,0,5
+5grj_H+L|A,U:U,9,5GRJ,H:L,A,4NKI,H:L,3BIS,B,0,0,NA,0,0,0,4
+5grj_H+L|A,U:U,10,5GRJ,H:L,A,4NKI,H:L,3BIS,B,0,0,NA,0,0,0,4
+5grj_H+L|A,U:U,11,5GRJ,H:L,A,4NKI,H:L,3BIS,B,0,0,NA,0,0,0,4

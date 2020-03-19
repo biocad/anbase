@@ -1,0 +1,15 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+6hhd_D|C,U:U,1,6HHD,D,C,6HEQ,A,2K5O,A,1,2,NA,0,0,0,0
+6hhd_D|C,U:U,2,6HHD,D,C,6HEQ,A,2L39,A,1,1,NA,0,0,0,0
+6hhd_D|C,U:U,3,6HHD,D,C,6HEQ,A,2L40,A,1,2,NA,0,0,0,0
+6hhd_D|C,U:U,4,6HHD,D,C,6HEQ,A,2KU5,A,1,1,NA,0,0,0,0
+6hhd_B|A,U:U,0,6HHD,B,A,6HEQ,A,2L1H,A,1,1,NA,0,0,0,0
+6hhd_B|A,U:U,1,6HHD,B,A,6HEQ,A,2K5O,A,1,2,NA,0,0,0,0
+6hhd_B|A,U:U,2,6HHD,B,A,6HEQ,A,2L39,A,1,1,NA,0,0,0,0
+6hhd_B|A,U:U,3,6HHD,B,A,6HEQ,A,2L40,A,1,2,NA,0,0,0,0
+6hhd_B|A,U:U,4,6HHD,B,A,6HEQ,A,2KU5,A,1,1,NA,0,0,0,0
+6her_B|A,U:U,0,6HER,B,A,6HEQ,A,2KU5,A,1,1,NA,0,0,0,0
+6her_B|A,U:U,1,6HER,B,A,6HEQ,A,2L39,A,1,1,NA,0,0,0,0
+6her_B|A,U:U,2,6HER,B,A,6HEQ,A,2K5O,A,1,2,NA,0,0,0,0
+6her_B|A,U:U,3,6HER,B,A,6HEQ,A,2L1H,A,1,1,NA,0,0,0,0
+6her_B|A,U:U,4,6HER,B,A,6HEQ,A,2L40,A,1,2,NA,0,0,0,0

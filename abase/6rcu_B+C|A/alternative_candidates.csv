@@ -1,0 +1,2 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+6rcu_B+C|A,U:U,1,6RCU,B:C,A,6RCO,C:D,4WAT,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,2,7

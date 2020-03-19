@@ -1,0 +1,20 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+1p2c_B+A|C,U:U,1,1P2C,B:A,C,2Q76,D:C,6F9Z,A,2,0,NA,0,0,0,1
+1p2c_B+A|C,U:U,2,1P2C,B:A,C,2Q76,B:A,6F9Y,A,2,0,NA,0,0,0,1
+1p2c_B+A|C,U:U,3,1P2C,B:A,C,2Q76,D:C,6F9Y,A,2,0,NA,0,0,0,1
+1p2c_B+A|C,U:U,4,1P2C,B:A,C,2Q76,B:A,6ABN,A,2,0,NA,0,0,0,1
+1p2c_B+A|C,U:U,5,1P2C,B:A,C,2Q76,D:C,6ABN,A,2,0,NA,0,0,0,1
+1p2c_B+A|C,U:U,6,1P2C,B:A,C,2Q76,B:A,6RT3,A,2,0,NA,1,0,0,2
+1p2c_B+A|C,U:U,7,1P2C,B:A,C,2Q76,D:C,6RT3,A,2,0,NA,1,0,0,2
+1p2c_B+A|C,U:U,8,1P2C,B:A,C,2Q76,B:A,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,1
+1p2c_B+A|C,U:U,9,1P2C,B:A,C,2Q76,D:C,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,1
+1p2c_E+D|F,U:U,0,1P2C,E:D,F,2Q76,B:A,6F9Z,A,2,0,NA,0,0,0,1
+1p2c_E+D|F,U:U,1,1P2C,E:D,F,2Q76,D:C,6F9Z,A,2,0,NA,0,0,0,1
+1p2c_E+D|F,U:U,2,1P2C,E:D,F,2Q76,B:A,6F9Y,A,2,0,NA,0,0,0,1
+1p2c_E+D|F,U:U,3,1P2C,E:D,F,2Q76,D:C,6F9Y,A,2,0,NA,0,0,0,1
+1p2c_E+D|F,U:U,4,1P2C,E:D,F,2Q76,B:A,6ABN,A,2,0,NA,0,0,0,1
+1p2c_E+D|F,U:U,5,1P2C,E:D,F,2Q76,D:C,6ABN,A,2,0,NA,0,0,0,1
+1p2c_E+D|F,U:U,6,1P2C,E:D,F,2Q76,B:A,6RT3,A,2,0,NA,1,0,0,2
+1p2c_E+D|F,U:U,7,1P2C,E:D,F,2Q76,D:C,6RT3,A,2,0,NA,1,0,0,2
+1p2c_E+D|F,U:U,8,1P2C,E:D,F,2Q76,B:A,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,1
+1p2c_E+D|F,U:U,9,1P2C,E:D,F,2Q76,D:C,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,1

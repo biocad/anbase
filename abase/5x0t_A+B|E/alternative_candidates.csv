@@ -1,0 +1,12 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+5x0t_A+B|E,U:U,3,5X0T,A:B,E,5X4G,A:B,3B5H,B,0,0,NA,0,1,2,6
+5x0t_A+B|E,U:U,4,5X0T,A:B,E,5X4G,A:B,3B5H,C,0,0,NA,0,1,2,6
+5x0t_A+B|E,U:U,5,5X0T,A:B,E,5X4G,A:B,3B5H,D,0,0,NA,0,1,2,6
+5x0t_C+D|F,U:U,0,5X0T,C:D,F,5X4G,A:B,3B5H,A,0,0,NA,0,1,2,6
+5x0t_C+D|F,U:U,1,5X0T,C:D,F,5X4G,A:B,3B5H,B,0,0,NA,0,1,2,6
+5x0t_C+D|F,U:U,2,5X0T,C:D,F,5X4G,A:B,3B5H,C,0,0,NA,0,1,2,6
+5x0t_C+D|F,U:U,3,5X0T,C:D,F,5X4G,A:B,3B5H,D,0,0,NA,0,1,2,6
+5x0t_A+B|E,U:U,0,5X0T,A:B,E,5X4G,A:B,3I85,A,0,4,NA,0,3,2,7
+5x0t_A+B|E,U:U,1,5X0T,A:B,E,5X4G,A:B,3I85,B,0,4,NA,0,3,2,7
+5x0t_C+D|F,U:U,4,5X0T,C:D,F,5X4G,A:B,3I85,A,0,4,NA,0,3,2,7
+5x0t_C+D|F,U:U,5,5X0T,C:D,F,5X4G,A:B,3I85,B,0,4,NA,1,2,2,7

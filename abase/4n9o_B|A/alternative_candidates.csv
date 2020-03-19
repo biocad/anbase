@@ -1,0 +1,7 @@
+comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+4n9o_B|A,U:U,0,4N9O,B,A,6HEQ,A,3HEQ,A,1,1,NA,0,2,1,3
+4n9o_B|A,U:U,1,4N9O,B,A,6HEQ,A,3HEQ,B,1,1,NA,0,1,1,3
+4n9o_B|A,U:U,2,4N9O,B,A,6HEQ,A,3HER,A,1,2,NA,0,1,1,3
+4n9o_B|A,U:U,3,4N9O,B,A,6HEQ,A,3HER,B,1,2,NA,0,1,1,3
+4n9o_B|A,U:U,5,4N9O,B,A,6HEQ,A,3HES,A,1,1,NA,0,1,1,3
+4n9o_B|A,U:U,6,4N9O,B,A,6HEQ,A,3HES,B,1,1,NA,0,2,1,3
