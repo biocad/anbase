@@ -4,5 +4,9 @@ comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_c
 5ggr_A+B|Y,U:U,3,5GGR,A:B,Y,5GGQ,H:L,6UMV,A,0,2,NA,0,1,1,4
 5ggr_H+L|Z,U:U,0,5GGR,H:L,Z,5GGQ,H:L,6UMU,A,0,3,NA,0,1,1,5
 5ggr_A+B|Y,U:U,1,5GGR,A:B,Y,5GGQ,H:L,6UMU,A,0,3,NA,0,1,1,5
+5wt9_H+L|G,U:U,1,5WT9,H:L,G,5GGQ,H:L,2M2D,A,9,1,NA,0,1,1,3
+5wt9_H+L|G,U:U,0,5WT9,H:L,G,5GGQ,H:L,6UMV,A,9,7,NA,0,1,1,4
+5wt9_H+L|G,U:U,3,5WT9,H:L,G,5GGQ,H:L,6UMU,A,9,8,NA,0,1,1,5
 5ggr_H+L|Z,U:U,3,5GGR,H:L,Z,5GGQ,H:L,3RRQ,A,0,2,NA,1,2,1,7
 5ggr_A+B|Y,U:U,2,5GGR,A:B,Y,5GGQ,H:L,3RRQ,A,0,2,NA,1,2,1,7
+5wt9_H+L|G,U:U,2,5WT9,H:L,G,5GGQ,H:L,3RRQ,A,9,1,NA,1,2,1,7
