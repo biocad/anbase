@@ -203,7 +203,8 @@ if __name__ == '__main__':
             for alternative_candidate in alternative_candidates:
                 path_to_alternative_candidate = os.path.join(
                     alternative_candidates_path,
-                    alternative_candidate.comp_name)
+                    alternative_candidate.comp_name + '_' +
+                    str(alternative_candidate.candidate_id))
 
                 if not os.path.exists(path_to_alternative_candidate):
                     os.mkdir(path_to_alternative_candidate)
