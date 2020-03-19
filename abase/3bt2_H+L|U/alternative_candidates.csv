@@ -1,2 +1,2 @@
-comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+comp_name,candidate_type,candidate_id,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
 2fd6_H+L|U,U:U,0,2FD6,H:L,U,2FAT,H:L,3U74,U,0,2,small molecules with 7 < n_atoms <= 15 detected,0,0,0,2

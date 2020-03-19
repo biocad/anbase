@@ -1,4 +1,4 @@
-comp_name,candidate_type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps
+comp_name,candidate_type,candidate_id,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
 5vnw_C|B,U:U,1,5VNW,C,B,5VNV,A,6HSC,B,0,0,small molecules with n_atoms > 15 detected,0,0,1,2
 5vnw_C|B,U:U,2,5VNW,C,B,5VNV,A,3SQJ,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2
 5vnw_C|B,U:U,3,5VNW,C,B,5VNV,A,3SQJ,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,0
