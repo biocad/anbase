@@ -15,7 +15,7 @@ DB_INFO_PATH = 'db_info.csv'
 DUPLICATES_PATH = 'duplicates.csv'
 GAPS_PATH = 'gap_stats_u.csv'
 
-ABASE_SUMMARY_COLUMNS = ['comp_name', 'candidate_type', 'pdb_id_b',
+ABASE_SUMMARY_COLUMNS = ['comp_name', 'type', 'pdb_id_b',
                          'ab_chain_ids_b', 'ag_chain_ids_b', 'ab_pdb_id_u',
                          'ab_chain_ids_u', 'ag_pdb_id_u', 'ag_chain_ids_u',
                          'ab_mismatches_cnt', 'ag_mismatches_cnt',
@@ -23,6 +23,10 @@ ABASE_SUMMARY_COLUMNS = ['comp_name', 'candidate_type', 'pdb_id_b',
                          'one_side_gaps', 'long_gaps', 'total_gaps',
                          'is_perfect']
 ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
+ALTERNATIVE_CANDIDATES_COLUMNS = ABASE_SUMMARY_COLUMNS[:1] + ['candidate_type,'
+                                                              'candidate_id'] \
+                                 + ABASE_SUMMARY_COLUMNS[2:-1]
+ALTERNATIVE_CANDIDATES_HEADER = ','.join(ALTERNATIVE_CANDIDATES_COLUMNS)
 
 ALTERNATIVE_CANDIDATES = 'alternative_candidates'
 
@@ -184,7 +188,7 @@ if __name__ == '__main__':
             with open(os.path.join(comp_path, ALTERNATIVE_CANDIDATES + '.csv'),
                       'w') as alternative_candidates_csv:
                 alternative_candidates_csv.write(
-                    ','.join(ABASE_SUMMARY_COLUMNS[:-2]) + '\n')
+                    ALTERNATIVE_CANDIDATES_HEADER + '\n')
 
                 if alternative_candidates is not None:
                     for alternative_candidate in alternative_candidates:
