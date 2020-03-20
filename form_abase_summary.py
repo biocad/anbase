@@ -24,10 +24,6 @@ ABASE_SUMMARY_COLUMNS = ['comp_name', 'candidate_type', 'pdb_id_b',
                          'is_perfect']
 ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
 
-ALTERNATIVE_CANDIDATES_COLUMNS = ABASE_SUMMARY_COLUMNS[:2] + ['candidate_id'] \
-                                 + ABASE_SUMMARY_COLUMNS[2:-1]
-ALTERNATIVE_CANDIDATES_HEADER = ','.join(ALTERNATIVE_CANDIDATES_COLUMNS)
-
 ALTERNATIVE_CANDIDATES = 'alternative_candidates'
 
 ABASE_DATA_PATH = 'abase'
@@ -79,14 +75,14 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
                 shutil.copyfile(os.path.join(path_to_folder, file),
                                 os.path.join(path_to_dst, file))
 
-            file_in_folder = next(
-                filter(lambda x: candidate_info.pdb_id_b in x,
-                       os.listdir(os.path.join(comp_path,
-                                               folder_name))))
+            files_in_folder = filter(lambda x: candidate_info.pdb_id_b in x,
+                                     os.listdir(os.path.join(comp_path,
+                                                             folder_name)))
 
-            shutil.copyfile(
-                os.path.join(comp_path, folder_name, file_in_folder),
-                os.path.join(path_to_dst, file_in_folder))
+            for file in files_in_folder:
+                shutil.copyfile(
+                    os.path.join(comp_path, folder_name, file),
+                    os.path.join(path_to_dst, file))
         except Exception as e:
             print('Unsuccessful move:', path_to_folder, e, flush=True)
 
@@ -187,8 +183,8 @@ if __name__ == '__main__':
 
             with open(os.path.join(comp_path, ALTERNATIVE_CANDIDATES + '.csv'),
                       'w') as alternative_candidates_csv:
-                alternative_candidates_csv.write(ALTERNATIVE_CANDIDATES_HEADER
-                                                 + '\n')
+                alternative_candidates_csv.write(
+                    ','.join(ABASE_SUMMARY_COLUMNS[:-2]) + '\n')
 
                 if alternative_candidates is not None:
                     for alternative_candidate in alternative_candidates:
