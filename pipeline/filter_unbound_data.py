@@ -7,7 +7,7 @@ import pandas as pd
 from Bio.PDB import PDBParser
 from Bio.PDB.StructureBuilder import StructureBuilder
 
-from collect_db import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
+from fetch_unbound_data import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
     get_while_true, comp_name_to_pdb_and_chains, CHAINS_SEPARATOR, \
     is_subsequence_of, get_real_seqs, fetch_struct
 

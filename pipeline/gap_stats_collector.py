@@ -5,8 +5,8 @@ from Bio import pairwise2
 from Bio.PDB import PDBParser
 
 from candidate_info import CandidateInfo
-from collect_db import comp_name_to_pdb_and_chains
-from collect_db_final import SEQUENCES, HETATMS_DELETED, \
+from fetch_unbound_data import comp_name_to_pdb_and_chains
+from process_unbound_data import SEQUENCES, HETATMS_DELETED, \
     INTERFACE_CUTOFF, extract_seq
 import pandas as pd
 import numpy as np

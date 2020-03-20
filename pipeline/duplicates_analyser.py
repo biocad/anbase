@@ -2,7 +2,7 @@ import pandas as pd
 
 import alignments
 from candidate_info import CandidateInfo
-from collect_db import calc_mismatches_stat, is_subsequence_of
+from fetch_unbound_data import calc_mismatches_stat, is_subsequence_of
 
 DB_INFO_PATH = 'db_info.csv'
 DB_PATH = 'data'

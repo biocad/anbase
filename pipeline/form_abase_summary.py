@@ -5,7 +5,7 @@ import pandas as pd
 from collections import defaultdict
 
 from candidate_info import CandidateInfo, ANNOTATION
-from collect_db_final import Conformation, ALIGNED, HETATMS_DELETED, SEQUENCES
+from process_unbound_data import Conformation, ALIGNED, HETATMS_DELETED, SEQUENCES
 from prepper import PREPPED, SCHROD
 
 ABASE_SUMMARY_CSV = 'abase_summary.csv'
@@ -13,7 +13,8 @@ ABASE_SUMMARY_CSV = 'abase_summary.csv'
 DB_PATH = 'data'
 DB_INFO_PATH = 'db_info.csv'
 DUPLICATES_PATH = 'duplicates.csv'
-GAPS_PATH = 'gap_stats_u.csv'
+GAPS_B_PATH = 'gap_stats_b.csv'
+GAPS_U_PATH = 'gap_stats_u.csv'
 
 ABASE_SUMMARY_COLUMNS = ['comp_name', 'type', 'pdb_id_b',
                          'ab_chain_ids_b', 'ag_chain_ids_b', 'ab_pdb_id_u',
@@ -23,9 +24,7 @@ ABASE_SUMMARY_COLUMNS = ['comp_name', 'type', 'pdb_id_b',
                          'one_side_gaps', 'long_gaps', 'total_gaps',
                          'is_perfect']
 ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
-ALTERNATIVE_CANDIDATES_COLUMNS = ABASE_SUMMARY_COLUMNS[:1] + ['candidate_type,'
-                                                              'candidate_id'] \
-                                 + ABASE_SUMMARY_COLUMNS[2:-1]
+ALTERNATIVE_CANDIDATES_COLUMNS = ['candidate_name'] + ABASE_SUMMARY_COLUMNS[1:-1]
 ALTERNATIVE_CANDIDATES_HEADER = ','.join(ALTERNATIVE_CANDIDATES_COLUMNS)
 
 ALTERNATIVE_CANDIDATES = 'alternative_candidates'
@@ -34,7 +33,7 @@ ABASE_DATA_PATH = 'abase'
 
 
 def check_perfect_candidate(candidate):
-    return candidate.in_between == 0 and candidate.one_side == 0 \
+    return candidate.in_between_u == 0 and candidate.one_side_u == 0 \
            and candidate.small_mols_msg is None
 
 
@@ -56,8 +55,8 @@ def finalize_complex(comp_name, candidate_infos, duplicates):
     all_candidates.sort(key=lambda x: 0 if x.small_mols_msg is None else (
         1 if x.small_mols_msg == Conformation.MOLS_WARNING else 2))
     all_candidates.sort(key=lambda x: x.ab_mismatches + x.ag_mismatches)
-    all_candidates.sort(key=lambda x: x.one_side)
-    all_candidates.sort(key=lambda x: x.in_between)
+    all_candidates.sort(key=lambda x: x.one_side_u)
+    all_candidates.sort(key=lambda x: x.in_between_u)
 
     return all_candidates[0], False, all_candidates[1:]
 
@@ -77,7 +76,9 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
 
             for file in os.listdir(path_to_folder):
                 shutil.copyfile(os.path.join(path_to_folder, file),
-                                os.path.join(path_to_dst, file))
+                                os.path.join(path_to_dst, file.replace('_l_',
+                                                                       '_ag_').
+                                             replace('_r_', '_ab_')))
 
             files_in_folder = filter(lambda x: candidate_info.pdb_id_b in x,
                                      os.listdir(os.path.join(comp_path,
@@ -119,11 +120,18 @@ if __name__ == '__main__':
                       metavar='DUPLICATES',
                       help='Path to csv with duplicates info [default: {}]'.
                       format(DUPLICATES_PATH))
-    parser.add_option('--gaps', default=DUPLICATES_PATH,
-                      dest='gaps',
-                      metavar='GAPS',
-                      help='Path to csv with gaps info [default: {}]'.
-                      format(GAPS_PATH))
+    parser.add_option('--gaps-b', default=DUPLICATES_PATH,
+                      dest='gaps_b',
+                      metavar='GAPS_B',
+                      help='Path to csv with gaps info on bounded complexes'
+                           ' [default: {}]'.
+                      format(GAPS_B_PATH))
+    parser.add_option('--gaps-u', default=DUPLICATES_PATH,
+                      dest='gaps_u',
+                      metavar='GAPS_B',
+                      help='Path to csv with gaps info on unbound complexes '
+                           '[default: {}]'.
+                      format(GAPS_U_PATH))
     parser.add_option('--only-uu', default=False,
                       dest='only_uu', metavar='ONLY_UU',
                       help='Flag to process only candidates of type UU. '
@@ -131,13 +139,14 @@ if __name__ == '__main__':
     options, _ = parser.parse_args()
 
     db_df = pd.read_csv(options.db_info, dtype=str)
-    gaps_df = pd.read_csv(options.gaps, dtype=str)
+    gaps_b_df = pd.read_csv(options.gaps_b, dtype=str)
+    gaps_u_df = pd.read_csv(options.gaps_u, dtype=str)
 
     complexes = set()
     candidate_infos = defaultdict(list)
 
     for i in range(len(db_df)):
-        candidate_info = CandidateInfo(db_df.iloc[i], gaps_df)
+        candidate_info = CandidateInfo(db_df.iloc[i], (gaps_b_df, gaps_u_df))
 
         if options.only_uu and candidate_info.candidate_type != 'U:U':
             continue

@@ -10,12 +10,12 @@ from Bio.PDB import PDBParser, Superimposer, PDBIO, Select
 from Bio.PDB.Polypeptide import PPBuilder, is_aa, d1_to_index, dindex_to_3
 
 import alignments
-from collect_db import AG, AB, DB_PATH, DOT_PDB, \
+from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
     fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat, extract_seq
-from post_unboundness_filtering import union_models, \
+from filter_unbound_data import union_models, \
     fetch_all_assemblies
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'

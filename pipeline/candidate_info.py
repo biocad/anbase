@@ -1,6 +1,6 @@
 import os
 
-from collect_db import CHAINS_SEPARATOR, sub_nan
+from fetch_unbound_data import CHAINS_SEPARATOR, sub_nan
 import numpy as np
 
 DB_INFO_PATH = 'db_info.csv'
@@ -40,30 +40,46 @@ class CandidateInfo:
 
         self.ab_cdrs_annotation_b = []
 
-        self.in_between = 0
-        self.one_side = 0
-        self.long = 0
-        self.total = 0
+        self.in_between_b = 0
+        self.one_side_b = 0
+        self.long_b = 0
+        self.total_b = 0
+
+        self.in_between_u = 0
+        self.one_side_u = 0
+        self.long_u = 0
+        self.total_u = 0
 
         if df_gaps is None:
             return
 
-        selection = np.logical_and(df_gaps['comp_name'] == self.comp_name,
-                                   df_gaps[
+        df_gaps_b, df_gaps_u = df_gaps
+
+        selection_b = df_gaps_b['comp_name'] == self.comp_name
+
+        selection_u = np.logical_and(df_gaps_u['comp_name'] == self.comp_name,
+                                   df_gaps_u[
                                        'candidate_id'] == self.candidate_id)
 
-        if any(selection):
-            df_gaps_row = df_gaps[selection].iloc[0]
-            self.in_between = int(df_gaps_row['in_between'])
-            self.one_side = int(df_gaps_row['one_side'])
-            self.long = int(df_gaps_row['long'])
-            self.total = int(df_gaps_row['total'])
+        if any(selection_b):
+            df_gaps_row = df_gaps_b[selection_b].iloc[0]
+            self.in_between_b = int(df_gaps_row['in_between'])
+            self.one_side_b = int(df_gaps_row['one_side'])
+            self.long_b = int(df_gaps_row['long'])
+            self.total_b = int(df_gaps_row['total'])
+
+        if any(selection_u):
+            df_gaps_row = df_gaps_u[selection_u].iloc[0]
+            self.in_between_u = int(df_gaps_row['in_between'])
+            self.one_side_u = int(df_gaps_row['one_side'])
+            self.long_u = int(df_gaps_row['long'])
+            self.total_u = int(df_gaps_row['total'])
 
     def to_string(self, with_candidate_id=True):
-        addition = [self.candidate_id] if with_candidate_id else []
-        return ','.join([self.comp_name.replace(':', '+'),
-                         self.candidate_type] + addition +
-                        [self.pdb_id_b.upper(),
+        return ','.join([self.comp_name + (('_' + self.candidate_id) if
+                         with_candidate_id else ''),
+                         self.candidate_type,
+                         self.pdb_id_b.upper(),
                          ':'.join(self.ab_chain_ids_b),
                          ':'.join(self.ag_chain_ids_b),
                          self.ab_pdb_id_u,
@@ -74,10 +90,14 @@ class CandidateInfo:
                          self.ag_mismatches,
                          self.small_mols_msg if self.small_mols_msg
                          else 'NA',
-                         str(self.in_between),
-                         str(self.one_side),
-                         str(self.long),
-                         str(self.total)])
+                         str(self.in_between_b),
+                         str(self.one_side_b),
+                         str(self.long_b),
+                         str(self.total_b),
+                         str(self.in_between_u),
+                         str(self.one_side_u),
+                         str(self.long_u),
+                         str(self.total_u)])
 
     def load_ab_annotation(self, db_path):
         comp_path = os.path.join(db_path, self.comp_name)
