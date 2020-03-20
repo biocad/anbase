@@ -57,16 +57,16 @@ the other end is not.
 * **long_gaps_b** — number of gaps in the bound structures
 with length more than 15 amino acids.
 * **total_gaps_b** — total number of gaps in the bound structures.
-* **in_between_gaps** — number of gaps in the 
+* **in_between_gaps_u** — number of gaps in the 
 unbound structures that are
 fully contained in the radius of 15 Å of the interaction interface.
-* **one_side_gaps** — number of gaps in the 
+* **one_side_gaps_u** — number of gaps in the 
 unbound structures one end
 of which is in the radius of 15 Å of the interaction interface and 
 the other end is not.
-* **long_gaps** — number of gaps in the unbound structures
+* **long_gaps_u** — number of gaps in the unbound structures
 with length more than 15 amino acids.
-* **total_gaps** — total number of gaps in the unbound structures.
+* **total_gaps_u** — total number of gaps in the unbound structures.
 * **is_perfect** — if **True**, then **small_molecules_message** is equal to
 **NA**, and both **in_between_gaps_u** and **one_side_gaps_u** are equal to
 **0**. Otherwise is set to **False**.

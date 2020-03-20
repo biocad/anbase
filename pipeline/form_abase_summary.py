@@ -20,8 +20,10 @@ ABASE_SUMMARY_COLUMNS = ['comp_name', 'type', 'pdb_id_b',
                          'ab_chain_ids_b', 'ag_chain_ids_b', 'ab_pdb_id_u',
                          'ab_chain_ids_u', 'ag_pdb_id_u', 'ag_chain_ids_u',
                          'ab_mismatches_cnt', 'ag_mismatches_cnt',
-                         'small_molecules_message', 'in_between_gaps',
-                         'one_side_gaps', 'long_gaps', 'total_gaps',
+                         'small_molecules_message', 'in_between_gaps_b',
+			 'one_side_gaps_b', 'long_gaps_b', 'total_gaps_b', 
+			 'in_between_gaps_u',
+                         'one_side_gaps_u', 'long_gaps_u', 'total_gaps_u',
                          'is_perfect']
 ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
 ALTERNATIVE_CANDIDATES_COLUMNS = ['candidate_name'] + ABASE_SUMMARY_COLUMNS[1:-1]

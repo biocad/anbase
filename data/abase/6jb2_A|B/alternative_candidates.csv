@@ -1,0 +1,20 @@
+candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+6jb2_A|B_1,U:U,6JB2,A,B,6JB9,A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+6jb2_A|B_2,U:U,6JB2,A,B,6JB9,A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+6jb2_A|B_3,U:U,6JB2,A,B,6JB9,A,6RT3,A,1,0,NA,0,0,0,0,1,0,0,1
+6jb2_A|B_4,U:U,6JB2,A,B,6JB9,A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1zvy_A|B_0,U:U,1ZVY,A,B,6JB9,A,6F9Y,A,0,0,NA,0,0,0,0,0,0,0,1
+1zvy_A|B_1,U:U,1ZVY,A,B,6JB9,A,6F9Z,A,0,0,NA,0,0,0,0,0,0,0,0
+1zvy_A|B_2,U:U,1ZVY,A,B,6JB9,A,6RO3,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1zvy_A|B_3,U:U,1ZVY,A,B,6JB9,A,6RT3,A,0,0,NA,0,0,0,0,0,0,0,0
+1zvy_A|B_4,U:U,1ZVY,A,B,6JB9,A,6ABN,A,0,0,NA,0,0,0,0,0,0,0,0
+6jb5_A|B_0,U:U,6JB5,A,B,6JB9,A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,1
+6jb5_A|B_1,U:U,6JB5,A,B,6JB9,A,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+6jb5_A|B_2,U:U,6JB5,A,B,6JB9,A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+6jb5_A|B_3,U:U,6JB5,A,B,6JB9,A,6RT3,A,1,0,NA,0,0,0,0,0,0,0,0
+6jb5_A|B_4,U:U,6JB5,A,B,6JB9,A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+6jb8_A|B_0,U:U,6JB8,A,B,6JB9,A,6F9Z,A,0,0,NA,0,0,0,0,0,0,0,1
+6jb8_A|B_1,U:U,6JB8,A,B,6JB9,A,6F9Y,A,0,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_2,U:U,6JB8,A,B,6JB9,A,6ABN,A,0,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_3,U:U,6JB8,A,B,6JB9,A,6RT3,A,0,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_4,U:U,6JB8,A,B,6JB9,A,6RO3,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0

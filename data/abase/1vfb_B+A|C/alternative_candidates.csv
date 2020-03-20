@@ -1,0 +1,245 @@
+candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+1vfb_B+A|C_0,U:U,1VFB,B:A,C,1A7N,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_1,U:U,1VFB,B:A,C,1A7Q,H:L,6RO3,A,10,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_2,U:U,1VFB,B:A,C,1A7P,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_3,U:U,1VFB,B:A,C,1A7R,H:L,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_4,U:U,1VFB,B:A,C,1VFA,B:A,6RO3,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_6,U:U,1VFB,B:A,C,1A7Q,H:L,6F9Y,A,10,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_7,U:U,1VFB,B:A,C,1A7P,H:L,6F9Y,A,3,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_8,U:U,1VFB,B:A,C,1A7R,H:L,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_9,U:U,1VFB,B:A,C,1VFA,B:A,6F9Y,A,0,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_10,U:U,1VFB,B:A,C,1A7N,H:L,6RT3,A,2,0,NA,0,0,0,0,0,0,0,1
+1vfb_B+A|C_11,U:U,1VFB,B:A,C,1A7Q,H:L,6RT3,A,10,0,NA,0,0,0,0,0,0,0,1
+1vfb_B+A|C_12,U:U,1VFB,B:A,C,1A7P,H:L,6RT3,A,3,0,NA,0,0,0,0,0,0,0,1
+1vfb_B+A|C_13,U:U,1VFB,B:A,C,1A7R,H:L,6RT3,A,1,0,NA,0,0,0,0,0,0,0,1
+1vfb_B+A|C_14,U:U,1VFB,B:A,C,1VFA,B:A,6RT3,A,0,0,NA,0,0,0,0,0,0,0,1
+1vfb_B+A|C_15,U:U,1VFB,B:A,C,1A7N,H:L,6F9Z,A,2,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_16,U:U,1VFB,B:A,C,1A7Q,H:L,6F9Z,A,10,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_17,U:U,1VFB,B:A,C,1A7P,H:L,6F9Z,A,3,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_18,U:U,1VFB,B:A,C,1A7R,H:L,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_19,U:U,1VFB,B:A,C,1VFA,B:A,6F9Z,A,0,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_20,U:U,1VFB,B:A,C,1A7N,H:L,6ABN,A,2,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_21,U:U,1VFB,B:A,C,1A7Q,H:L,6ABN,A,10,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_22,U:U,1VFB,B:A,C,1A7P,H:L,6ABN,A,3,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_23,U:U,1VFB,B:A,C,1A7R,H:L,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_24,U:U,1VFB,B:A,C,1VFA,B:A,6ABN,A,0,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_0,U:U,1G7I,B:A,C,1A7N,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_1,U:U,1G7I,B:A,C,1A7Q,H:L,6RO3,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_2,U:U,1G7I,B:A,C,1A7P,H:L,6RO3,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_3,U:U,1G7I,B:A,C,1A7R,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_4,U:U,1G7I,B:A,C,1VFA,B:A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_5,U:U,1G7I,B:A,C,1A7N,H:L,6F9Y,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_6,U:U,1G7I,B:A,C,1A7Q,H:L,6F9Y,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_7,U:U,1G7I,B:A,C,1A7P,H:L,6F9Y,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_8,U:U,1G7I,B:A,C,1A7R,H:L,6F9Y,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_9,U:U,1G7I,B:A,C,1VFA,B:A,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_10,U:U,1G7I,B:A,C,1A7N,H:L,6RT3,A,3,0,NA,0,0,0,0,0,0,0,1
+1g7i_B+A|C_11,U:U,1G7I,B:A,C,1A7Q,H:L,6RT3,A,11,0,NA,0,0,0,0,0,0,0,1
+1g7i_B+A|C_12,U:U,1G7I,B:A,C,1A7P,H:L,6RT3,A,4,0,NA,0,0,0,0,0,0,0,1
+1g7i_B+A|C_13,U:U,1G7I,B:A,C,1A7R,H:L,6RT3,A,2,0,NA,0,0,0,0,0,0,0,1
+1g7i_B+A|C_14,U:U,1G7I,B:A,C,1VFA,B:A,6RT3,A,1,0,NA,0,0,0,0,0,0,0,1
+1g7i_B+A|C_15,U:U,1G7I,B:A,C,1A7N,H:L,6F9Z,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_16,U:U,1G7I,B:A,C,1A7Q,H:L,6F9Z,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_17,U:U,1G7I,B:A,C,1A7P,H:L,6F9Z,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_18,U:U,1G7I,B:A,C,1A7R,H:L,6F9Z,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_19,U:U,1G7I,B:A,C,1VFA,B:A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_20,U:U,1G7I,B:A,C,1A7N,H:L,6ABN,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_21,U:U,1G7I,B:A,C,1A7Q,H:L,6ABN,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_22,U:U,1G7I,B:A,C,1A7P,H:L,6ABN,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_23,U:U,1G7I,B:A,C,1A7R,H:L,6ABN,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_24,U:U,1G7I,B:A,C,1VFA,B:A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7l_B+A|C_0,U:U,1G7L,B:A,C,1A7N,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_1,U:U,1G7L,B:A,C,1A7Q,H:L,6RO3,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_2,U:U,1G7L,B:A,C,1A7P,H:L,6RO3,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_3,U:U,1G7L,B:A,C,1A7R,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_4,U:U,1G7L,B:A,C,1VFA,B:A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_5,U:U,1G7L,B:A,C,1A7N,H:L,6F9Y,A,3,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_6,U:U,1G7L,B:A,C,1A7Q,H:L,6F9Y,A,11,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_7,U:U,1G7L,B:A,C,1A7P,H:L,6F9Y,A,4,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_8,U:U,1G7L,B:A,C,1A7R,H:L,6F9Y,A,2,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_9,U:U,1G7L,B:A,C,1VFA,B:A,6F9Y,A,1,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_10,U:U,1G7L,B:A,C,1A7N,H:L,6RT3,A,3,0,NA,0,0,0,1,0,0,0,1
+1g7l_B+A|C_11,U:U,1G7L,B:A,C,1A7Q,H:L,6RT3,A,11,0,NA,0,0,0,1,0,0,0,1
+1g7l_B+A|C_12,U:U,1G7L,B:A,C,1A7P,H:L,6RT3,A,4,0,NA,0,0,0,1,0,0,0,1
+1g7l_B+A|C_13,U:U,1G7L,B:A,C,1A7R,H:L,6RT3,A,2,0,NA,0,0,0,1,0,0,0,1
+1g7l_B+A|C_14,U:U,1G7L,B:A,C,1VFA,B:A,6RT3,A,1,0,NA,0,0,0,1,0,0,0,1
+1g7l_B+A|C_15,U:U,1G7L,B:A,C,1A7N,H:L,6F9Z,A,3,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_16,U:U,1G7L,B:A,C,1A7Q,H:L,6F9Z,A,11,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_17,U:U,1G7L,B:A,C,1A7P,H:L,6F9Z,A,4,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_18,U:U,1G7L,B:A,C,1A7R,H:L,6F9Z,A,2,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_19,U:U,1G7L,B:A,C,1VFA,B:A,6F9Z,A,1,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_20,U:U,1G7L,B:A,C,1A7N,H:L,6ABN,A,3,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_21,U:U,1G7L,B:A,C,1A7Q,H:L,6ABN,A,11,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_22,U:U,1G7L,B:A,C,1A7P,H:L,6ABN,A,4,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_23,U:U,1G7L,B:A,C,1A7R,H:L,6ABN,A,2,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_24,U:U,1G7L,B:A,C,1VFA,B:A,6ABN,A,1,0,NA,0,0,0,1,0,0,0,0
+1a2y_B+A|C_0,U:U,1A2Y,B:A,C,1A7N,H:L,6RO3,A,2,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_1,U:U,1A2Y,B:A,C,1A7Q,H:L,6RO3,A,10,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_2,U:U,1A2Y,B:A,C,1A7P,H:L,6RO3,A,3,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_3,U:U,1A2Y,B:A,C,1A7R,H:L,6RO3,A,1,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_4,U:U,1A2Y,B:A,C,1VFA,B:A,6RO3,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_5,U:U,1A2Y,B:A,C,1A7N,H:L,6F9Y,A,2,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_6,U:U,1A2Y,B:A,C,1A7Q,H:L,6F9Y,A,10,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_7,U:U,1A2Y,B:A,C,1A7P,H:L,6F9Y,A,3,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_8,U:U,1A2Y,B:A,C,1A7R,H:L,6F9Y,A,1,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_9,U:U,1A2Y,B:A,C,1VFA,B:A,6F9Y,A,0,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_10,U:U,1A2Y,B:A,C,1A7N,H:L,6RT3,A,2,1,NA,0,0,0,0,0,0,0,1
+1a2y_B+A|C_11,U:U,1A2Y,B:A,C,1A7Q,H:L,6RT3,A,10,1,NA,0,0,0,0,0,0,0,1
+1a2y_B+A|C_12,U:U,1A2Y,B:A,C,1A7P,H:L,6RT3,A,3,1,NA,0,0,0,0,0,0,0,1
+1a2y_B+A|C_13,U:U,1A2Y,B:A,C,1A7R,H:L,6RT3,A,1,1,NA,0,0,0,0,0,0,0,1
+1a2y_B+A|C_14,U:U,1A2Y,B:A,C,1VFA,B:A,6RT3,A,0,1,NA,0,0,0,0,0,0,0,1
+1a2y_B+A|C_15,U:U,1A2Y,B:A,C,1A7N,H:L,6F9Z,A,2,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_16,U:U,1A2Y,B:A,C,1A7Q,H:L,6F9Z,A,10,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_17,U:U,1A2Y,B:A,C,1A7P,H:L,6F9Z,A,3,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_18,U:U,1A2Y,B:A,C,1A7R,H:L,6F9Z,A,1,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_19,U:U,1A2Y,B:A,C,1VFA,B:A,6F9Z,A,0,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_20,U:U,1A2Y,B:A,C,1A7N,H:L,6ABN,A,2,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_21,U:U,1A2Y,B:A,C,1A7Q,H:L,6ABN,A,10,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_22,U:U,1A2Y,B:A,C,1A7P,H:L,6ABN,A,3,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_23,U:U,1A2Y,B:A,C,1A7R,H:L,6ABN,A,1,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_24,U:U,1A2Y,B:A,C,1VFA,B:A,6ABN,A,0,1,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_0,U:U,1G7M,B:A,C,1VFA,B:A,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_1,U:U,1G7M,B:A,C,1A7R,H:L,6F9Y,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_2,U:U,1G7M,B:A,C,1A7Q,H:L,6F9Y,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_3,U:U,1G7M,B:A,C,1A7N,H:L,6F9Y,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_4,U:U,1G7M,B:A,C,1A7P,H:L,6F9Y,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_5,U:U,1G7M,B:A,C,1VFA,B:A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_6,U:U,1G7M,B:A,C,1A7R,H:L,6F9Z,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_7,U:U,1G7M,B:A,C,1A7Q,H:L,6F9Z,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_8,U:U,1G7M,B:A,C,1A7N,H:L,6F9Z,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_9,U:U,1G7M,B:A,C,1A7P,H:L,6F9Z,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_10,U:U,1G7M,B:A,C,1VFA,B:A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_11,U:U,1G7M,B:A,C,1A7R,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_12,U:U,1G7M,B:A,C,1A7Q,H:L,6RO3,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_13,U:U,1G7M,B:A,C,1A7N,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_14,U:U,1G7M,B:A,C,1A7P,H:L,6RO3,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_15,U:U,1G7M,B:A,C,1VFA,B:A,6RT3,A,1,0,NA,0,0,0,0,0,0,0,1
+1g7m_B+A|C_16,U:U,1G7M,B:A,C,1A7R,H:L,6RT3,A,2,0,NA,0,0,0,0,0,0,0,1
+1g7m_B+A|C_17,U:U,1G7M,B:A,C,1A7Q,H:L,6RT3,A,11,0,NA,0,0,0,0,0,0,0,1
+1g7m_B+A|C_18,U:U,1G7M,B:A,C,1A7N,H:L,6RT3,A,3,0,NA,0,0,0,0,0,0,0,1
+1g7m_B+A|C_19,U:U,1G7M,B:A,C,1A7P,H:L,6RT3,A,4,0,NA,0,0,0,0,0,0,0,1
+1g7m_B+A|C_20,U:U,1G7M,B:A,C,1VFA,B:A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_21,U:U,1G7M,B:A,C,1A7R,H:L,6ABN,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_22,U:U,1G7M,B:A,C,1A7Q,H:L,6ABN,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_23,U:U,1G7M,B:A,C,1A7N,H:L,6ABN,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_24,U:U,1G7M,B:A,C,1A7P,H:L,6ABN,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_0,U:U,1G7H,B:A,C,1VFA,B:A,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_1,U:U,1G7H,B:A,C,1A7R,H:L,6F9Y,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_2,U:U,1G7H,B:A,C,1A7Q,H:L,6F9Y,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_3,U:U,1G7H,B:A,C,1A7N,H:L,6F9Y,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_4,U:U,1G7H,B:A,C,1A7P,H:L,6F9Y,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_5,U:U,1G7H,B:A,C,1VFA,B:A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_6,U:U,1G7H,B:A,C,1A7R,H:L,6F9Z,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_7,U:U,1G7H,B:A,C,1A7Q,H:L,6F9Z,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_8,U:U,1G7H,B:A,C,1A7N,H:L,6F9Z,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_9,U:U,1G7H,B:A,C,1A7P,H:L,6F9Z,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_10,U:U,1G7H,B:A,C,1VFA,B:A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_11,U:U,1G7H,B:A,C,1A7R,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_12,U:U,1G7H,B:A,C,1A7Q,H:L,6RO3,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_13,U:U,1G7H,B:A,C,1A7N,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_14,U:U,1G7H,B:A,C,1A7P,H:L,6RO3,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_15,U:U,1G7H,B:A,C,1VFA,B:A,6RT3,A,1,0,NA,0,0,0,0,0,0,0,1
+1g7h_B+A|C_16,U:U,1G7H,B:A,C,1A7R,H:L,6RT3,A,2,0,NA,0,0,0,0,0,0,0,1
+1g7h_B+A|C_17,U:U,1G7H,B:A,C,1A7Q,H:L,6RT3,A,11,0,NA,0,0,0,0,0,0,0,1
+1g7h_B+A|C_18,U:U,1G7H,B:A,C,1A7N,H:L,6RT3,A,3,0,NA,0,0,0,0,0,0,0,1
+1g7h_B+A|C_19,U:U,1G7H,B:A,C,1A7P,H:L,6RT3,A,4,0,NA,0,0,0,0,0,0,0,1
+1g7h_B+A|C_20,U:U,1G7H,B:A,C,1VFA,B:A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_21,U:U,1G7H,B:A,C,1A7R,H:L,6ABN,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_22,U:U,1G7H,B:A,C,1A7Q,H:L,6ABN,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_23,U:U,1G7H,B:A,C,1A7N,H:L,6ABN,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_24,U:U,1G7H,B:A,C,1A7P,H:L,6ABN,A,4,0,NA,0,0,0,0,0,0,0,0
+1bvk_B+A|C_0,U:U,1BVK,B:A,C,1BVL,A:B,6F9Z,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_1,U:U,1BVK,B:A,C,1BVL,C:D,6F9Z,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_2,U:U,1BVK,B:A,C,1BVL,A:B,6F9Y,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_3,U:U,1BVK,B:A,C,1BVL,C:D,6F9Y,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_4,U:U,1BVK,B:A,C,1BVL,A:B,6ABN,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_5,U:U,1BVK,B:A,C,1BVL,C:D,6ABN,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_6,U:U,1BVK,B:A,C,1BVL,A:B,6RT3,A,0,0,NA,0,0,0,1,0,0,0,2
+1bvk_B+A|C_7,U:U,1BVK,B:A,C,1BVL,C:D,6RT3,A,0,0,NA,0,0,0,1,0,0,0,2
+1bvk_B+A|C_8,U:U,1BVK,B:A,C,1BVL,A:B,6RO3,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1bvk_B+A|C_9,U:U,1BVK,B:A,C,1BVL,C:D,6RO3,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1g7j_B+A|C_0,U:U,1G7J,B:A,C,1A7R,H:L,6F9Z,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_1,U:U,1G7J,B:A,C,1A7Q,H:L,6F9Z,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_2,U:U,1G7J,B:A,C,1A7P,H:L,6F9Z,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_3,U:U,1G7J,B:A,C,1A7N,H:L,6F9Z,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_4,U:U,1G7J,B:A,C,1VFA,B:A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_5,U:U,1G7J,B:A,C,1A7R,H:L,6F9Y,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_6,U:U,1G7J,B:A,C,1A7Q,H:L,6F9Y,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_7,U:U,1G7J,B:A,C,1A7P,H:L,6F9Y,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_8,U:U,1G7J,B:A,C,1A7N,H:L,6F9Y,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_9,U:U,1G7J,B:A,C,1VFA,B:A,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_10,U:U,1G7J,B:A,C,1A7R,H:L,6ABN,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_11,U:U,1G7J,B:A,C,1A7Q,H:L,6ABN,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_12,U:U,1G7J,B:A,C,1A7P,H:L,6ABN,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_13,U:U,1G7J,B:A,C,1A7N,H:L,6ABN,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_14,U:U,1G7J,B:A,C,1VFA,B:A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_15,U:U,1G7J,B:A,C,1A7R,H:L,6RT3,A,2,0,NA,0,0,0,0,0,0,0,1
+1g7j_B+A|C_16,U:U,1G7J,B:A,C,1A7Q,H:L,6RT3,A,11,0,NA,0,0,0,0,0,0,0,1
+1g7j_B+A|C_17,U:U,1G7J,B:A,C,1A7P,H:L,6RT3,A,4,0,NA,0,0,0,0,0,0,0,1
+1g7j_B+A|C_18,U:U,1G7J,B:A,C,1A7N,H:L,6RT3,A,3,0,NA,0,0,0,0,0,0,0,1
+1g7j_B+A|C_19,U:U,1G7J,B:A,C,1VFA,B:A,6RT3,A,1,0,NA,0,0,0,0,0,0,0,1
+1g7j_B+A|C_20,U:U,1G7J,B:A,C,1A7R,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_21,U:U,1G7J,B:A,C,1A7Q,H:L,6RO3,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_22,U:U,1G7J,B:A,C,1A7P,H:L,6RO3,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_23,U:U,1G7J,B:A,C,1A7N,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_24,U:U,1G7J,B:A,C,1VFA,B:A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_0,U:U,1KIR,B:A,C,1A7R,H:L,6F9Z,A,2,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_1,U:U,1KIR,B:A,C,1A7Q,H:L,6F9Z,A,11,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_2,U:U,1KIR,B:A,C,1A7P,H:L,6F9Z,A,4,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_3,U:U,1KIR,B:A,C,1A7N,H:L,6F9Z,A,3,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_4,U:U,1KIR,B:A,C,1VFA,B:A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_5,U:U,1KIR,B:A,C,1A7R,H:L,6F9Y,A,2,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_6,U:U,1KIR,B:A,C,1A7Q,H:L,6F9Y,A,11,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_7,U:U,1KIR,B:A,C,1A7P,H:L,6F9Y,A,4,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_8,U:U,1KIR,B:A,C,1A7N,H:L,6F9Y,A,3,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_9,U:U,1KIR,B:A,C,1VFA,B:A,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_10,U:U,1KIR,B:A,C,1A7R,H:L,6ABN,A,2,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_11,U:U,1KIR,B:A,C,1A7Q,H:L,6ABN,A,11,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_12,U:U,1KIR,B:A,C,1A7P,H:L,6ABN,A,4,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_13,U:U,1KIR,B:A,C,1A7N,H:L,6ABN,A,3,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_14,U:U,1KIR,B:A,C,1VFA,B:A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_15,U:U,1KIR,B:A,C,1A7R,H:L,6RT3,A,2,0,NA,0,0,0,0,0,0,0,1
+1kir_B+A|C_16,U:U,1KIR,B:A,C,1A7Q,H:L,6RT3,A,11,0,NA,0,0,0,0,0,0,0,1
+1kir_B+A|C_17,U:U,1KIR,B:A,C,1A7P,H:L,6RT3,A,4,0,NA,0,0,0,0,0,0,0,1
+1kir_B+A|C_18,U:U,1KIR,B:A,C,1A7N,H:L,6RT3,A,3,0,NA,0,0,0,0,0,0,0,1
+1kir_B+A|C_19,U:U,1KIR,B:A,C,1VFA,B:A,6RT3,A,1,0,NA,0,0,0,0,0,0,0,1
+1kir_B+A|C_20,U:U,1KIR,B:A,C,1A7R,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_21,U:U,1KIR,B:A,C,1A7Q,H:L,6RO3,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_22,U:U,1KIR,B:A,C,1A7P,H:L,6RO3,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_23,U:U,1KIR,B:A,C,1A7N,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_24,U:U,1KIR,B:A,C,1VFA,B:A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1bvk_E+D|F_0,U:U,1BVK,E:D,F,1BVL,A:B,6F9Z,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_1,U:U,1BVK,E:D,F,1BVL,C:D,6F9Z,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_2,U:U,1BVK,E:D,F,1BVL,A:B,6F9Y,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_3,U:U,1BVK,E:D,F,1BVL,C:D,6F9Y,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_4,U:U,1BVK,E:D,F,1BVL,A:B,6ABN,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_5,U:U,1BVK,E:D,F,1BVL,C:D,6ABN,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_6,U:U,1BVK,E:D,F,1BVL,A:B,6RT3,A,0,0,NA,0,0,0,1,0,0,0,2
+1bvk_E+D|F_7,U:U,1BVK,E:D,F,1BVL,C:D,6RT3,A,0,0,NA,0,0,0,1,0,0,0,2
+1bvk_E+D|F_8,U:U,1BVK,E:D,F,1BVL,A:B,6RO3,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1bvk_E+D|F_9,U:U,1BVK,E:D,F,1BVL,C:D,6RO3,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1kip_B+A|C_0,U:U,1KIP,B:A,C,1A7R,H:L,6F9Z,A,2,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_1,U:U,1KIP,B:A,C,1A7Q,H:L,6F9Z,A,11,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_2,U:U,1KIP,B:A,C,1A7P,H:L,6F9Z,A,4,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_3,U:U,1KIP,B:A,C,1A7N,H:L,6F9Z,A,3,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_4,U:U,1KIP,B:A,C,1VFA,B:A,6F9Z,A,1,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_5,U:U,1KIP,B:A,C,1A7R,H:L,6F9Y,A,2,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_6,U:U,1KIP,B:A,C,1A7Q,H:L,6F9Y,A,11,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_7,U:U,1KIP,B:A,C,1A7P,H:L,6F9Y,A,4,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_8,U:U,1KIP,B:A,C,1A7N,H:L,6F9Y,A,3,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_9,U:U,1KIP,B:A,C,1VFA,B:A,6F9Y,A,1,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_10,U:U,1KIP,B:A,C,1A7R,H:L,6ABN,A,2,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_11,U:U,1KIP,B:A,C,1A7Q,H:L,6ABN,A,11,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_12,U:U,1KIP,B:A,C,1A7P,H:L,6ABN,A,4,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_13,U:U,1KIP,B:A,C,1A7N,H:L,6ABN,A,3,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_14,U:U,1KIP,B:A,C,1VFA,B:A,6ABN,A,1,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_15,U:U,1KIP,B:A,C,1A7R,H:L,6RT3,A,2,0,NA,0,0,0,0,0,0,0,1
+1kip_B+A|C_16,U:U,1KIP,B:A,C,1A7Q,H:L,6RT3,A,11,0,NA,0,0,0,0,0,0,0,1
+1kip_B+A|C_17,U:U,1KIP,B:A,C,1A7P,H:L,6RT3,A,4,0,NA,0,0,0,0,0,0,0,1
+1kip_B+A|C_18,U:U,1KIP,B:A,C,1A7N,H:L,6RT3,A,3,0,NA,0,0,0,0,0,0,0,1
+1kip_B+A|C_19,U:U,1KIP,B:A,C,1VFA,B:A,6RT3,A,1,0,NA,0,0,0,0,0,0,0,1
+1kip_B+A|C_20,U:U,1KIP,B:A,C,1A7R,H:L,6RO3,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_21,U:U,1KIP,B:A,C,1A7Q,H:L,6RO3,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_22,U:U,1KIP,B:A,C,1A7P,H:L,6RO3,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_23,U:U,1KIP,B:A,C,1A7N,H:L,6RO3,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_24,U:U,1KIP,B:A,C,1VFA,B:A,6RO3,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
