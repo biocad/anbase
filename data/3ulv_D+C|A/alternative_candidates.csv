@@ -1,16 +1,16 @@
-comp_name,candidate_type,candidate_id,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
-3ulv_D+C|A,U:U,3,3ULV,D:C,A,3ULS,B:A,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,1,7
-3ulu_D+C|A,U:U,0,3ULU,D:C,A,3ULS,H:L,2A0Z,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5
-3ulu_D+C|A,U:U,1,3ULU,D:C,A,3ULS,B:A,2A0Z,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,6
-3ulv_D+C|A,U:U,0,3ULV,D:C,A,3ULS,H:L,2A0Z,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5
-3ulu_D+C|A,U:U,2,3ULU,D:C,A,3ULS,H:L,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,1,1,6
-3ulu_D+C|A,U:U,3,3ULU,D:C,A,3ULS,B:A,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,1,1,7
-3ulv_D+C|A,U:U,2,3ULV,D:C,A,3ULS,H:L,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,1,1,6
-5gs0_D+C|A,U:U,0,5GS0,D:C,A,3ULS,H:L,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5
-5gs0_D+C|A,U:U,1,5GS0,D:C,A,3ULS,B:A,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,6
-5gs0_D+C|A,U:U,2,5GS0,D:C,A,3ULS,H:L,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,6
-5gs0_D+C|A,U:U,3,5GS0,D:C,A,3ULS,B:A,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,7
-5gs0_F+E|B,U:U,0,5GS0,F:E,B,3ULS,H:L,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5
-5gs0_F+E|B,U:U,1,5GS0,F:E,B,3ULS,B:A,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,6
-5gs0_F+E|B,U:U,2,5GS0,F:E,B,3ULS,H:L,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,6
-5gs0_F+E|B,U:U,3,5GS0,F:E,B,3ULS,B:A,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,7
+candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
+3ulv_D+C|A_3,U:U,3ULV,D:C,A,3ULS,B:A,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,1,0,5,0,0,1,7
+3ulu_D+C|A_0,U:U,3ULU,D:C,A,3ULS,H:L,2A0Z,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5,0,1,1,5
+3ulu_D+C|A_1,U:U,3ULU,D:C,A,3ULS,B:A,2A0Z,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5,0,1,1,6
+3ulv_D+C|A_0,U:U,3ULV,D:C,A,3ULS,H:L,2A0Z,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,0,5,0,1,1,5
+3ulu_D+C|A_2,U:U,3ULU,D:C,A,3ULS,H:L,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5,0,1,1,6
+3ulu_D+C|A_3,U:U,3ULU,D:C,A,3ULS,B:A,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,1,1,5,0,1,1,7
+3ulv_D+C|A_2,U:U,3ULV,D:C,A,3ULS,H:L,1ZIW,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,1,0,5,0,1,1,6
+5gs0_D+C|A_0,U:U,5GS0,D:C,A,3ULS,H:L,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,5
+5gs0_D+C|A_1,U:U,5GS0,D:C,A,3ULS,B:A,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,6
+5gs0_D+C|A_2,U:U,5GS0,D:C,A,3ULS,H:L,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,6
+5gs0_D+C|A_3,U:U,5GS0,D:C,A,3ULS,B:A,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,7
+5gs0_F+E|B_0,U:U,5GS0,F:E,B,3ULS,H:L,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,5
+5gs0_F+E|B_1,U:U,5GS0,F:E,B,3ULS,B:A,2A0Z,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,6
+5gs0_F+E|B_2,U:U,5GS0,F:E,B,3ULS,H:L,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,6
+5gs0_F+E|B_3,U:U,5GS0,F:E,B,3ULS,B:A,1ZIW,A,3,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,1,1,7

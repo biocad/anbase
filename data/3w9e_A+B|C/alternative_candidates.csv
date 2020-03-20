@@ -1,4 +1,4 @@
-comp_name,candidate_type,candidate_id,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
-3w9e_A+B|C,U:U,3,3W9E,A:B,C,3W9D,C:D,4MYV,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,3,2,6
-3w9e_A+B|C,U:U,0,3W9E,A:B,C,3W9D,A:B,4MYV,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,4,2,8
-3w9e_A+B|C,U:U,2,3W9E,A:B,C,3W9D,A:B,4MYV,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,4,2,8
+candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
+3w9e_A+B|C_3,U:U,3W9E,A:B,C,3W9D,C:D,4MYV,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,2,3,0,3,2,6
+3w9e_A+B|C_0,U:U,3W9E,A:B,C,3W9D,A:B,4MYV,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,2,3,0,4,2,8
+3w9e_A+B|C_2,U:U,3W9E,A:B,C,3W9D,A:B,4MYV,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,1,2,3,0,4,2,8

@@ -1,48 +1,48 @@
-comp_name,candidate_type,candidate_id,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
-6s3t_N+M|A,U:U,1,6S3T,N:M,A,6RNN,D:C,6RQG,A,0,0,NA,0,1,3,9
-6s3t_N+M|A,U:U,2,6S3T,N:M,A,6RNN,H:L,6RQG,B,0,0,NA,0,1,3,8
-6s3t_N+M|A,U:U,3,6S3T,N:M,A,6RNN,D:C,6RQG,B,0,0,NA,0,1,3,9
-6s3t_N+M|A,U:U,4,6S3T,N:M,A,6RNN,H:L,6RQG,C,0,0,NA,0,1,3,12
-6s3t_N+M|A,U:U,5,6S3T,N:M,A,6RNN,D:C,6RQG,C,0,0,NA,0,1,3,13
-6s3t_R+Q|B,U:U,0,6S3T,R:Q,B,6RNN,H:L,6RQG,A,0,0,NA,0,1,3,8
-6s3t_R+Q|B,U:U,1,6S3T,R:Q,B,6RNN,D:C,6RQG,A,0,0,NA,0,1,3,9
-6s3t_R+Q|B,U:U,2,6S3T,R:Q,B,6RNN,H:L,6RQG,B,0,0,NA,0,1,3,8
-6s3t_R+Q|B,U:U,3,6S3T,R:Q,B,6RNN,D:C,6RQG,B,0,0,NA,0,1,3,9
-6s3t_R+Q|B,U:U,4,6S3T,R:Q,B,6RNN,H:L,6RQG,C,0,0,NA,0,1,3,12
-6s3t_R+Q|B,U:U,5,6S3T,R:Q,B,6RNN,D:C,6RQG,C,0,0,NA,0,1,3,13
-6s3t_D+C|S,U:U,0,6S3T,D:C,S,6RNN,H:L,6RQG,A,0,0,NA,0,1,3,8
-6s3t_D+C|S,U:U,1,6S3T,D:C,S,6RNN,D:C,6RQG,A,0,0,NA,0,1,3,9
-6s3t_D+C|S,U:U,2,6S3T,D:C,S,6RNN,H:L,6RQG,B,0,0,NA,0,1,3,8
-6s3t_D+C|S,U:U,3,6S3T,D:C,S,6RNN,D:C,6RQG,B,0,0,NA,0,1,3,9
-6s3t_D+C|S,U:U,4,6S3T,D:C,S,6RNN,H:L,6RQG,C,0,0,NA,0,1,3,12
-6s3t_D+C|S,U:U,5,6S3T,D:C,S,6RNN,D:C,6RQG,C,0,0,NA,0,1,3,13
-6s3t_E+I|T,U:U,6,6S3T,E:I,T,6RNN,H:L,6RQG,A,0,0,NA,0,1,3,8
-6s3t_E+I|T,U:U,7,6S3T,E:I,T,6RNN,D:C,6RQG,A,0,0,NA,0,1,3,9
-6s3t_E+I|T,U:U,8,6S3T,E:I,T,6RNN,H:L,6RQG,B,0,0,NA,0,1,3,8
-6s3t_E+I|T,U:U,9,6S3T,E:I,T,6RNN,D:C,6RQG,B,0,0,NA,0,1,3,9
-6s3t_E+I|T,U:U,10,6S3T,E:I,T,6RNN,H:L,6RQG,C,0,0,NA,0,1,3,12
-6s3t_E+I|T,U:U,11,6S3T,E:I,T,6RNN,D:C,6RQG,C,0,0,NA,0,1,3,13
-6s3t_N+M|A,U:U,6,6S3T,N:M,A,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_N+M|A,U:U,7,6S3T,N:M,A,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_N+M|A,U:U,8,6S3T,N:M,A,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_N+M|A,U:U,9,6S3T,N:M,A,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_N+M|A,U:U,10,6S3T,N:M,A,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,11
-6s3t_N+M|A,U:U,11,6S3T,N:M,A,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,12
-6s3t_R+Q|B,U:U,6,6S3T,R:Q,B,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_R+Q|B,U:U,7,6S3T,R:Q,B,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_R+Q|B,U:U,8,6S3T,R:Q,B,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_R+Q|B,U:U,9,6S3T,R:Q,B,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_R+Q|B,U:U,10,6S3T,R:Q,B,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,11
-6s3t_R+Q|B,U:U,11,6S3T,R:Q,B,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,12
-6s3t_D+C|S,U:U,6,6S3T,D:C,S,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_D+C|S,U:U,7,6S3T,D:C,S,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_D+C|S,U:U,8,6S3T,D:C,S,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_D+C|S,U:U,9,6S3T,D:C,S,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_D+C|S,U:U,10,6S3T,D:C,S,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,11
-6s3t_D+C|S,U:U,11,6S3T,D:C,S,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,12
-6s3t_E+I|T,U:U,0,6S3T,E:I,T,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_E+I|T,U:U,1,6S3T,E:I,T,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_E+I|T,U:U,2,6S3T,E:I,T,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,8
-6s3t_E+I|T,U:U,3,6S3T,E:I,T,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,9
-6s3t_E+I|T,U:U,4,6S3T,E:I,T,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,11
-6s3t_E+I|T,U:U,5,6S3T,E:I,T,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,12
+candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
+6s3t_N+M|A_1,U:U,6S3T,N:M,A,6RNN,D:C,6RQG,A,0,0,NA,0,2,3,6,0,1,3,9
+6s3t_N+M|A_2,U:U,6S3T,N:M,A,6RNN,H:L,6RQG,B,0,0,NA,0,2,3,6,0,1,3,8
+6s3t_N+M|A_3,U:U,6S3T,N:M,A,6RNN,D:C,6RQG,B,0,0,NA,0,2,3,6,0,1,3,9
+6s3t_N+M|A_4,U:U,6S3T,N:M,A,6RNN,H:L,6RQG,C,0,0,NA,0,2,3,6,0,1,3,12
+6s3t_N+M|A_5,U:U,6S3T,N:M,A,6RNN,D:C,6RQG,C,0,0,NA,0,2,3,6,0,1,3,13
+6s3t_R+Q|B_0,U:U,6S3T,R:Q,B,6RNN,H:L,6RQG,A,0,0,NA,0,2,3,6,0,1,3,8
+6s3t_R+Q|B_1,U:U,6S3T,R:Q,B,6RNN,D:C,6RQG,A,0,0,NA,0,2,3,6,0,1,3,9
+6s3t_R+Q|B_2,U:U,6S3T,R:Q,B,6RNN,H:L,6RQG,B,0,0,NA,0,2,3,6,0,1,3,8
+6s3t_R+Q|B_3,U:U,6S3T,R:Q,B,6RNN,D:C,6RQG,B,0,0,NA,0,2,3,6,0,1,3,9
+6s3t_R+Q|B_4,U:U,6S3T,R:Q,B,6RNN,H:L,6RQG,C,0,0,NA,0,2,3,6,0,1,3,12
+6s3t_R+Q|B_5,U:U,6S3T,R:Q,B,6RNN,D:C,6RQG,C,0,0,NA,0,2,3,6,0,1,3,13
+6s3t_D+C|S_0,U:U,6S3T,D:C,S,6RNN,H:L,6RQG,A,0,0,NA,0,1,3,6,0,1,3,8
+6s3t_D+C|S_1,U:U,6S3T,D:C,S,6RNN,D:C,6RQG,A,0,0,NA,0,1,3,6,0,1,3,9
+6s3t_D+C|S_2,U:U,6S3T,D:C,S,6RNN,H:L,6RQG,B,0,0,NA,0,1,3,6,0,1,3,8
+6s3t_D+C|S_3,U:U,6S3T,D:C,S,6RNN,D:C,6RQG,B,0,0,NA,0,1,3,6,0,1,3,9
+6s3t_D+C|S_4,U:U,6S3T,D:C,S,6RNN,H:L,6RQG,C,0,0,NA,0,1,3,6,0,1,3,12
+6s3t_D+C|S_5,U:U,6S3T,D:C,S,6RNN,D:C,6RQG,C,0,0,NA,0,1,3,6,0,1,3,13
+6s3t_E+I|T_6,U:U,6S3T,E:I,T,6RNN,H:L,6RQG,A,0,0,NA,0,1,3,6,0,1,3,8
+6s3t_E+I|T_7,U:U,6S3T,E:I,T,6RNN,D:C,6RQG,A,0,0,NA,0,1,3,6,0,1,3,9
+6s3t_E+I|T_8,U:U,6S3T,E:I,T,6RNN,H:L,6RQG,B,0,0,NA,0,1,3,6,0,1,3,8
+6s3t_E+I|T_9,U:U,6S3T,E:I,T,6RNN,D:C,6RQG,B,0,0,NA,0,1,3,6,0,1,3,9
+6s3t_E+I|T_10,U:U,6S3T,E:I,T,6RNN,H:L,6RQG,C,0,0,NA,0,1,3,6,0,1,3,12
+6s3t_E+I|T_11,U:U,6S3T,E:I,T,6RNN,D:C,6RQG,C,0,0,NA,0,1,3,6,0,1,3,13
+6s3t_N+M|A_6,U:U,6S3T,N:M,A,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,8
+6s3t_N+M|A_7,U:U,6S3T,N:M,A,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,9
+6s3t_N+M|A_8,U:U,6S3T,N:M,A,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,8
+6s3t_N+M|A_9,U:U,6S3T,N:M,A,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,9
+6s3t_N+M|A_10,U:U,6S3T,N:M,A,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,11
+6s3t_N+M|A_11,U:U,6S3T,N:M,A,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,12
+6s3t_R+Q|B_6,U:U,6S3T,R:Q,B,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,8
+6s3t_R+Q|B_7,U:U,6S3T,R:Q,B,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,9
+6s3t_R+Q|B_8,U:U,6S3T,R:Q,B,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,8
+6s3t_R+Q|B_9,U:U,6S3T,R:Q,B,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,9
+6s3t_R+Q|B_10,U:U,6S3T,R:Q,B,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,11
+6s3t_R+Q|B_11,U:U,6S3T,R:Q,B,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,2,3,6,0,1,3,12
+6s3t_D+C|S_6,U:U,6S3T,D:C,S,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,8
+6s3t_D+C|S_7,U:U,6S3T,D:C,S,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,9
+6s3t_D+C|S_8,U:U,6S3T,D:C,S,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,8
+6s3t_D+C|S_9,U:U,6S3T,D:C,S,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,9
+6s3t_D+C|S_10,U:U,6S3T,D:C,S,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,11
+6s3t_D+C|S_11,U:U,6S3T,D:C,S,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,12
+6s3t_E+I|T_0,U:U,6S3T,E:I,T,6RNN,H:L,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,8
+6s3t_E+I|T_1,U:U,6S3T,E:I,T,6RNN,D:C,6RUX,A,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,9
+6s3t_E+I|T_2,U:U,6S3T,E:I,T,6RNN,H:L,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,8
+6s3t_E+I|T_3,U:U,6S3T,E:I,T,6RNN,D:C,6RUX,B,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,9
+6s3t_E+I|T_4,U:U,6S3T,E:I,T,6RNN,H:L,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,11
+6s3t_E+I|T_5,U:U,6S3T,E:I,T,6RNN,D:C,6RUX,C,0,0,small molecules with n_atoms > 15 detected,0,1,3,6,0,1,3,12

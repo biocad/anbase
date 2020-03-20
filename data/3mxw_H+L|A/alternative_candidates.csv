@@ -1,6 +1,6 @@
-comp_name,candidate_type,candidate_id,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
-3mxw_H+L|A,U:U,1,3MXW,H:L,A,3MXV,H:L,3M1N,B,0,0,NA,0,0,0,3
-3mxw_H+L|A,U:U,2,3MXW,H:L,A,3MXV,H:L,6PJV,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,4
-3mxw_H+L|A,U:U,3,3MXW,H:L,A,3MXV,H:L,3N1R,A,0,1,NA,0,0,0,4
-3mxw_H+L|A,U:U,4,3MXW,H:L,A,3MXV,H:L,1VHH,A,0,1,NA,0,0,0,3
-3mxw_H+L|A,U:U,5,3MXW,H:L,A,3MXV,H:L,4C4M,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,4
+candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps,one_side_gaps,long_gaps,total_gaps
+3mxw_H+L|A_1,U:U,3MXW,H:L,A,3MXV,H:L,3M1N,B,0,0,NA,0,0,0,3,0,0,0,3
+3mxw_H+L|A_2,U:U,3MXW,H:L,A,3MXV,H:L,6PJV,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,0,4
+3mxw_H+L|A_3,U:U,3MXW,H:L,A,3MXV,H:L,3N1R,A,0,1,NA,0,0,0,3,0,0,0,4
+3mxw_H+L|A_4,U:U,3MXW,H:L,A,3MXV,H:L,1VHH,A,0,1,NA,0,0,0,3,0,0,0,3
+3mxw_H+L|A_5,U:U,3MXW,H:L,A,3MXV,H:L,4C4M,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,3,0,0,0,4
