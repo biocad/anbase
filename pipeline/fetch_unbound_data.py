@@ -272,13 +272,6 @@ class Complex:
 
         self.is_vhh = self.antibody_l_chain is None
 
-        # if chain ids of antibody's chains are equal up to case,
-        # it means that antibody has only one chain
-        if self.antibody_h_chain and self.antibody_l_chain and \
-                self.antibody_h_chain.upper() == self.antibody_l_chain.upper():
-            self.antibody_h_chain = self.antibody_h_chain.upper()
-            self.antibody_l_chain = None
-
         self.antigen_chains = antigen_chain
         self.antigen_het_name = antigen_het_name
 

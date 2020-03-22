@@ -18,7 +18,8 @@ CDRS = ['CDR1', 'CDR2', 'CDR3']
 
 
 def similarity_of_two_seqs(seq1, seq2):
-    return is_subsequence_of(seq1, seq2) or is_subsequence_of(seq2, seq1)
+    return is_subsequence_of(seq1, seq2, is_ab=False) or \
+           is_subsequence_of(seq2, seq1, is_ab=False)
 
 
 def similarity_of_abs(comp1, comp2):
@@ -35,8 +36,7 @@ def similarity_of_abs(comp1, comp2):
             if mismatches >= 2 or matches + mismatches < len(seq1) or \
                     matches + mismatches < len(seq2):
                 print('Not equal:', seq1, 'and', seq2, ', mismatches:',
-                      mismatches,
-                      flush=True)
+                      mismatches)
                 return False
     return True
 
@@ -97,6 +97,8 @@ if __name__ == '__main__':
         duplicates_csv.flush()
 
         for comp in complexes_with_chains:
+            print('Searching for duplicates of:', comp.comp_name, flush=True)
+
             similar_comps = []
             for other_comp in complexes_with_chains:
                 if other_comp.comp_name == comp.comp_name:
