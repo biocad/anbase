@@ -24,11 +24,11 @@ complexes — **U:U**, what means that database contains both
 unbound antibody and unbound antigen for the 
 complex. In the future there will
 be two more types of complexes: **U:B** and **B:U**.
-* **pdb_id_b** — PDB id of the *bounded* complex.
+* **pdb_id_b** — PDB id of the *bound* complex.
 * **ab_chain_ids_b** — ids of the 
-antibody's chains in bounded complex's structure.
+antibody's chains in bound complex's structure.
 * **ag_chain_ids_b** — ids of the 
-antigen's chains in bounded complex's structure.
+antigen's chains in bound complex's structure.
 * **ab_pdb_id_u** — PDB id of the unbound antigen.
 * **ab_chain_ids_u** — ids of the 
 unbound antibody's chains in its structure.
@@ -36,9 +36,9 @@ unbound antibody's chains in its structure.
 * **ag_chain_ids_u** — ids of the 
 unbound antigen's chains in its structure.
 * **ab_mismatches_cnt** — number of mismatches between unbound antibody's sequence and sequence of the antibody
-from the bounded complex.
+from the bound complex.
 * **ag_mismatches_cnt** — number of mismatches between unbound antigen's sequence and sequence of the antigen
-from the bounded complex.
+from the bound complex.
 * **small_molecules_message** — information about small molecules present in both
 unbound antibody and unbound antigen. If equal to **NA**, 
 all small molecules have no more than 7 heavy atoms. 
@@ -79,9 +79,9 @@ the corresponding **comp_name**.
 
 Each **comp_name** folder contains following subfolders:
 
-* `aligned` — folder that contains bounded complex's structure and
+* `aligned` — folder that contains bound complex's structure and
 the structures of its unbound components
-structurally aligned to themselves in the bounded complex.
+structurally aligned to themselves in the bound complex.
 * `hetatms_deleted` – folder that contains the same structures
 as `aligned` folder with the HETATMs being removed
 from the pdbs.
@@ -89,9 +89,9 @@ from the pdbs.
 `hetatms_deleted` folder prepared with the use of Schrödinger's
 *prepwizard*.
 * `seqs` — folder that contains fasta-files with sequences of
-the bounded complex and its unbound structures.
+the bound complex and its unbound structures.
 * `annotation` — folder that contains annotation for the 
-antibody in the bounded complex and the antibody in its unbound
+antibody in the bound complex and the antibody in its unbound
 form.
 
 Also, each **comp_name** folder contains file 

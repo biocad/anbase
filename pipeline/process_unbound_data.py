@@ -637,6 +637,14 @@ class Conformation:
         Conformation.pdb_io.save(path)
         Conformation.prepend_sequence_info_to_pdb(path, pdb_id, mapping)
 
+    @staticmethod
+    def filter_chains(struct, chain_ids):
+        for model in struct:
+            chains = list(model.get_chains())
+            for chain in chains:
+                if chain.get_id() not in chain_ids:
+                    model.detach_child(chain.get_id())
+
     def write_candidate(self, epoch_name):
         pre_path = os.path.join(DB_PATH, self.dir_name, epoch_name)
 
@@ -645,9 +653,30 @@ class Conformation:
 
         complex_b_path = os.path.join(pre_path, self.pdb_id_b + DOT_PDB)
 
+        complex_ab_b_path = os.path.join(pre_path,
+                                         self.pdb_id_b + '_ab_b' + DOT_PDB)
+        complex_ag_b_path = os.path.join(pre_path,
+                                         self.pdb_id_b + '_ag_b' + DOT_PDB)
+
         if not os.path.exists(complex_b_path):
             self.write_structure(self.complex_structure_b, complex_b_path,
                                  self.pdb_id_b, self.complex_mapping_b)
+
+        if not os.path.exists(complex_ab_b_path):
+            ab_struct_b = self.complex_structure_b.copy()
+            self.filter_chains(ab_struct_b, self.ab_chain_ids_b)
+
+            self.write_structure(ab_struct_b, complex_ab_b_path,
+                                 self.pdb_id_b,
+                                 {x: x for x in self.ab_chain_ids_b})
+
+        if not os.path.exists(complex_ag_b_path):
+            ag_struct_b = self.complex_structure_b.copy()
+            self.filter_chains(ag_struct_b, self.ag_chain_ids_b)
+
+            self.write_structure(ag_struct_b, complex_ag_b_path,
+                                 self.pdb_id_b,
+                                 {x: x for x in self.ag_chain_ids_b})
 
         path = os.path.join(pre_path, str(self.candidate_id))
 
@@ -656,12 +685,10 @@ class Conformation:
 
         name_prefix = os.path.join(path, self.pdb_id_b)
 
-        self.write_structure(self.ab_structure_u, name_prefix + '_r' + (
-            '_u' if self.is_ab_u else '_b')
+        self.write_structure(self.ab_structure_u, name_prefix + '_ab_u'
                              + DOT_PDB, self.ab_pdb_id_u, self.ab_mapping_u)
 
-        self.write_structure(self.ag_structure_u, name_prefix + '_l' + (
-            '_u' if self.is_ag_u else '_b')
+        self.write_structure(self.ag_structure_u, name_prefix + '_ag_u'
                              + DOT_PDB, self.ag_pdb_id_u, self.ag_mapping_u)
 
     MOLS_WARNING = 'small molecules with ' + \
