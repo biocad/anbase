@@ -5,7 +5,8 @@ import pandas as pd
 from collections import defaultdict
 
 from candidate_info import CandidateInfo, ANNOTATION
-from process_unbound_data import Conformation, ALIGNED, HETATMS_DELETED, SEQUENCES
+from process_unbound_data import Conformation, ALIGNED, HETATMS_DELETED, \
+    SEQUENCES
 from prepper import PREPPED, SCHROD
 
 ABASE_SUMMARY_CSV = 'abase_summary.csv'
@@ -16,17 +17,27 @@ DUPLICATES_PATH = 'duplicates.csv'
 GAPS_B_PATH = 'gap_stats_b.csv'
 GAPS_U_PATH = 'gap_stats_u.csv'
 
-ABASE_SUMMARY_COLUMNS = ['comp_name', 'type', 'pdb_id_b',
-                         'ab_chain_ids_b', 'ag_chain_ids_b', 'ab_pdb_id_u',
-                         'ab_chain_ids_u', 'ag_pdb_id_u', 'ag_chain_ids_u',
+ABASE_SUMMARY_COLUMNS = ['comp_name', 'type',
+
+                         'pdb_id_b', 'resolution_b', 'resolution_method_b',
+                         'ab_chain_ids_b', 'ag_chain_ids_b',
+
+                         'ab_pdb_id_u', 'ab_resolution_u',
+                         'ab_resolution_method_u', 'ab_chain_ids_u',
+
+                         'ag_pdb_id_u', 'ag_resolution_u',
+                         'ag_resolution_method_u', 'ag_chain_ids_u',
+
                          'ab_mismatches_cnt', 'ag_mismatches_cnt',
                          'small_molecules_message', 'in_between_gaps_b',
-			 'one_side_gaps_b', 'long_gaps_b', 'total_gaps_b', 
-			 'in_between_gaps_u',
+                         'one_side_gaps_b', 'long_gaps_b', 'total_gaps_b',
+                         'in_between_gaps_u',
                          'one_side_gaps_u', 'long_gaps_u', 'total_gaps_u',
                          'is_perfect']
+
 ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
-ALTERNATIVE_CANDIDATES_COLUMNS = ['candidate_name'] + ABASE_SUMMARY_COLUMNS[1:-1]
+ALTERNATIVE_CANDIDATES_COLUMNS = ['candidate_name'] + ABASE_SUMMARY_COLUMNS[
+                                                      1:-1]
 ALTERNATIVE_CANDIDATES_HEADER = ','.join(ALTERNATIVE_CANDIDATES_COLUMNS)
 
 ALTERNATIVE_CANDIDATES = 'alternative_candidates'
@@ -182,7 +193,10 @@ if __name__ == '__main__':
         abase_summary_csv.write(ABASE_SUMMARY_HEADER + '\n')
         abase_summary_csv.flush()
 
-        for comp in complexes:
+        complexes_l = list(complexes)
+        complexes_l.sort()
+
+        for comp in complexes_l:
             final_candidate, is_perfect, alternative_candidates = \
                 finalize_complex(comp, candidate_infos, duplicates)
 

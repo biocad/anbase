@@ -14,7 +14,8 @@ from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
-    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat, extract_seq
+    fetch_all_sequences, CHAINS_SEPARATOR, \
+    calc_mismatches_stat, extract_seq, retrieve_resolution
 from filter_unbound_data import union_models, \
     fetch_all_assemblies
 
@@ -31,9 +32,13 @@ SEQUENCES = 'seqs'
 
 INTERFACE_CUTOFF = 10
 
-DB_INFO_COLUMNS = ['comp_name', 'candidate_type', 'candidate_id', 'pdb_id_b',
-                   'ab_chain_ids_b', 'ag_chain_ids_b', 'ab_pdb_id_u',
-                   'ab_chain_ids_u', 'ag_pdb_id_u', 'ag_chain_ids_u',
+DB_INFO_COLUMNS = ['comp_name', 'candidate_type', 'candidate_id',
+                   'pdb_id_b', 'ab_chain_ids_b', 'ag_chain_ids_b',
+                   'resolution_b', 'resolution_method_b',
+                   'ab_pdb_id_u', 'ab_chain_ids_u', 'ab_resolution_u',
+                   'ab_resolution_method_u',
+                   'ag_pdb_id_u', 'ag_chain_ids_u', 'ag_resolution_u',
+                   'ag_resolution_method_u',
                    'ab_mismatches_cnt', 'ag_mismatches_cnt',
                    'small_molecules_message']
 DB_INFO_HEADER = ','.join(DB_INFO_COLUMNS)
@@ -541,8 +546,8 @@ class Conformation:
         self.delete_hetatms(self.complex_structure_b)
         self.write_candidate(epoch_name)
 
-    @staticmethod
-    def _load_sequences_for_pdb_and_chain_ids(prefix, pdb_id, name, chain_ids,
+    def _load_sequences_for_pdb_and_chain_ids(self, prefix, pdb_id, name,
+                                              chain_ids,
                                               mapping):
         path = os.path.join(prefix, '{}.fasta'.format(name))
 
@@ -572,7 +577,8 @@ class Conformation:
 
         for new_chain_name, old_chain_name in mapping.items():
             with open(path, 'a') as f:
-                f.write('>{}:{}\n'.format(name, new_chain_name))
+                f.write(
+                    '>{}:{}\n'.format(self.pdb_id_b.upper(), new_chain_name))
                 f.write(all_seqs[old_chain_name] + '\n')
 
         for chain_id in chain_ids:
@@ -613,8 +619,7 @@ class Conformation:
 
         ab_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
                                                                self.ab_pdb_id_u,
-                                                               name + '_r' + (
-                                                                   '_u' if self.is_ab_u else '_b'),
+                                                               name + '_ab_u',
                                                                self.ab_chain_ids_u,
                                                                self.ab_mapping_u)
 
@@ -623,8 +628,7 @@ class Conformation:
 
         ag_seqs_u = self._load_sequences_for_pdb_and_chain_ids(candidate_path,
                                                                self.ag_pdb_id_u,
-                                                               name + '_l' + (
-                                                                   '_u' if self.is_ag_u else '_b'),
+                                                               name + '_ag_u',
                                                                self.ag_chain_ids_u,
                                                                self.ag_mapping_u)
 
@@ -726,16 +730,25 @@ class Conformation:
         else:
             mols_message = self.MOLS_ERROR
 
+        resolution_b, resolution_method_b = retrieve_resolution(self.pdb_id_b)
+        ab_resolution_u, ab_resolution_method_u = retrieve_resolution(
+            self.ab_pdb_id_u)
+        ag_resolution_u, ag_resolution_method_u = retrieve_resolution(
+            self.ag_pdb_id_u)
+
         ab_mismatches = self.calc_mismatches(self.ab_seqs_u, self.ab_seqs_b)
         ag_mismatches = self.calc_mismatches(self.ag_seqs_u, self.ag_seqs_b)
 
-        db_info_csv.write(','.join(['{}'] * 13).format(
+        db_info_csv.write(','.join(['{}'] * len(DB_INFO_COLUMNS)).format(
             self.comp_name, self.candidate_type, self.candidate_id,
             self.pdb_id_b, CHAINS_SEPARATOR.join(self.ab_chain_ids_b),
-            CHAINS_SEPARATOR.join(self.ag_chain_ids_b), self.ab_pdb_id_u,
-            CHAINS_SEPARATOR.join(self.ab_chain_ids_u), self.ag_pdb_id_u,
-            CHAINS_SEPARATOR.join(self.ag_chain_ids_u), ab_mismatches,
-            ag_mismatches, mols_message) + '\n')
+            CHAINS_SEPARATOR.join(self.ag_chain_ids_b), resolution_b,
+            resolution_method_b,
+            self.ab_pdb_id_u, CHAINS_SEPARATOR.join(self.ab_chain_ids_u),
+            ab_resolution_u, ab_resolution_method_u,
+            self.ag_pdb_id_u, CHAINS_SEPARATOR.join(self.ag_chain_ids_u),
+            ag_resolution_u, ag_resolution_method_u,
+            ab_mismatches, ag_mismatches, mols_message) + '\n')
         db_info_csv.flush()
 
 

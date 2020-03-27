@@ -623,17 +623,26 @@ def retrieve_resolution(pdb_id):
     r = get_while_true(curl)
     xml = ElementTree.fromstring(r)
 
-    res = []
+    unknown_method = 'UNKNOWN'
 
     for pdb in xml:
         try:
-            res.append(pdb.attrib['resolution'])
-        except Exception:
-            # if there's no info about resolution,
-            # then we consider it to be bad
-            res.append(100)
+            resolution = pdb.attrib['resolution']
 
-    return float(res[0])
+            method = unknown_method
+
+            for x in pdb:
+                if x.tag == 'Method':
+                    method = x.attrib['name']
+                    break
+
+            return resolution, method
+        except Exception:
+            break
+
+    # if there's no info about resolution,
+    # then we consider it to be bad
+    return 100, unknown_method
 
 
 def check_names(names):
@@ -749,7 +758,7 @@ def find_unbound_structure(pdb_id, chain_ids, seqs, is_ab):
 
 
 def sort_and_take_ress(unbound_ress):
-    unbound_ress.sort(key=lambda x: retrieve_resolution(x.pdb_id))
+    unbound_ress.sort(key=lambda x: retrieve_resolution(x.pdb_id)[0])
 
     taken_ids = set()
     res = []
@@ -899,9 +908,6 @@ def collect_unbound_structures(overwrite=True, p=None, to_accept=None):
                 unbound_antigen_candidates, unbound_antibody_candidates = \
                     find_unbound_conformations(comp)
 
-                remove_if_contains(comp.complex_dir_path, AG)
-                remove_if_contains(comp.complex_dir_path, AB)
-
                 def helper_writer(candidates, suf):
                     counter = 0
                     for candidate in candidates:
@@ -948,9 +954,12 @@ if __name__ == '__main__':
                 to_accept = list(map(lambda x: x[:4].upper(), f.readlines()))
 
         collect_unbound_structures(overwrite=len(
-            list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p,
-                                   to_accept=to_accept)
+            list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p)
+                                   # to_accept=['1BVK', '4FQI', '3V6Z', '2FD6',
+                                   #            '1E6J', '3RVW', '4GXU', '3EOA',
+                                   #            '2VIS', '1DQJ', '3EO1'])
 
-# 1jps,1jps_H+L|T,AB,1JPT,H:L
-# BAD: '4I2X', '5NH3', '1S78', '4XT1', '6OGE' (clone), '5WT9'
-# GOOD: '6RCV', '6RCU',
+# ZLAB COMPS: '1E6J', '3RVW', '2VIS', '1WEJ', '4G6M', '3HMX', '3V6Z', '2FD6',
+#             '1JPS', '4GXU', '3EOA', '4DN4', '2VXT', '1BVK', '1MLC', '1VFB',
+#             '3MXW', '3G6D', '2W9E', '4FQI', '3L5W', '1AHW', '4G6J', '3HI6',
+#             '1DQJ', '3EO1'

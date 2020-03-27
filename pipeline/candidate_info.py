@@ -23,12 +23,19 @@ class CandidateInfo:
         self.candidate_id = df_row['candidate_id']
 
         self.pdb_id_b = df_row['pdb_id_b']
+        self.resolution_b = df_row['resolution_b']
+        self.resolution_method_b = df_row['resolution_method_b']
         self.ab_chain_ids_b = df_row['ab_chain_ids_b'].split(CHAINS_SEPARATOR)
         self.ag_chain_ids_b = df_row['ag_chain_ids_b'].split(CHAINS_SEPARATOR)
 
         self.ab_pdb_id_u = df_row['ab_pdb_id_u']
+        self.ab_resolution_u = df_row['ab_resolution_u']
+        self.ab_resolution_method_u = df_row['ab_resolution_method_u']
         self.ab_chain_ids_u = df_row['ab_chain_ids_u'].split(CHAINS_SEPARATOR)
+
         self.ag_pdb_id_u = df_row['ag_pdb_id_u']
+        self.ag_resolution_u = df_row['ag_resolution_u']
+        self.ag_resolution_method_u = df_row['ag_resolution_method_u']
         self.ag_chain_ids_u = df_row['ag_chain_ids_u'].split(CHAINS_SEPARATOR)
 
         self.ab_mismatches = df_row['ab_mismatches_cnt']
@@ -82,9 +89,15 @@ class CandidateInfo:
                          self.pdb_id_b.upper(),
                          ':'.join(self.ab_chain_ids_b),
                          ':'.join(self.ag_chain_ids_b),
+                         self.resolution_b,
+                         self.resolution_method_b,
                          self.ab_pdb_id_u,
+                         self.ab_resolution_u,
+                         self.ab_resolution_method_u,
                          ':'.join(self.ab_chain_ids_u),
                          self.ag_pdb_id_u,
+                         self.ag_resolution_u,
+                         self.ag_resolution_method_u,
                          ':'.join(self.ag_chain_ids_u),
                          self.ab_mismatches,
                          self.ag_mismatches,

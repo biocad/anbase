@@ -290,4 +290,5 @@ def filter_for_unboundness(processed_csv):
 
 
 if __name__ == '__main__':
-    filter_for_unboundness(process_csv(pd.read_csv('unbound_data.csv')))
+    filter_for_unboundness(
+        process_csv(pd.read_csv('unbound_data.csv').drop_duplicates()))
