@@ -245,19 +245,18 @@ def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_csv,
 
     candidate_path = os.path.join(epoch_path, str(candidate.candidate_id))
 
-    [ab_suf, ag_suf] = list(map(lambda x: '_u' if x == 'U' else '_b',
-                                candidate.candidate_type.split(':')))
+    [ab_suf, ag_suf] = ['_u', '_u']
 
-    ab_name_u = pdb_id_b + '_r' + ab_suf
+    ab_name_u = pdb_id_b + '_ab' + ab_suf
     ab_path_u = os.path.join(candidate_path, ab_name_u + DOT_PDB)
-    ab_structure_u = pdb_parser.get_structure('r', ab_path_u)
+    ab_structure_u = pdb_parser.get_structure('ab', ab_path_u)
     ab_fasta_u = read_fasta(
         os.path.join(seqs_path, str(candidate.candidate_id),
                      ab_name_u + DOT_FASTA))
 
-    ag_name_u = pdb_id_b + '_l' + ag_suf
+    ag_name_u = pdb_id_b + '_ag' + ag_suf
     ag_path_u = os.path.join(candidate_path, ag_name_u + DOT_PDB)
-    ag_structure_u = pdb_parser.get_structure('l', ag_path_u)
+    ag_structure_u = pdb_parser.get_structure('ag', ag_path_u)
     ag_fasta_u = read_fasta(
         os.path.join(seqs_path, str(candidate.candidate_id),
                      ag_name_u + DOT_FASTA))

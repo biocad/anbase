@@ -1,4 +1,4 @@
 candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-5nh3_H+L|A_0,U:U,5NH3,H:L,A,2.35,xray,5NHW,1.78,xray,H:L,1BTE,1.50,xray,A,0,2,small molecules with 7 < n_atoms <= 15 detected,0,2,1,6,0,1,1,4
-5nh3_I+M|B_1,U:U,5NH3,I:M,B,2.35,xray,5NHW,1.78,xray,H:L,1BTE,1.50,xray,B,0,2,small molecules with 7 < n_atoms <= 15 detected,0,2,1,6,0,2,1,5
-5nh3_H+L|A_1,U:U,5NH3,H:L,A,2.35,xray,5NHW,1.78,xray,H:L,1BTE,1.50,xray,B,0,2,small molecules with 7 < n_atoms <= 15 detected,0,2,1,6,0,2,1,5
+5nh3_H+L|A_0,U:U,5NH3,2.35,xray,H:L,A,5NHW,1.78,xray,H:L,1BTE,1.50,xray,A,0,2,small molecules with 7 < n_atoms <= 15 detected,0,2,1,6,0,1,1,4
+5nh3_I+M|B_1,U:U,5NH3,2.35,xray,I:M,B,5NHW,1.78,xray,H:L,1BTE,1.50,xray,B,0,2,small molecules with 7 < n_atoms <= 15 detected,0,2,1,6,0,2,1,5
+5nh3_H+L|A_1,U:U,5NH3,2.35,xray,H:L,A,5NHW,1.78,xray,H:L,1BTE,1.50,xray,B,0,2,small molecules with 7 < n_atoms <= 15 detected,0,2,1,6,0,2,1,5

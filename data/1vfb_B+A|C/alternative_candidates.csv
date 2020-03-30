@@ -1,269 +1,269 @@
 candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-1vfb_B+A|C_1,U:U,1VFB,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,10,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_2,U:U,1VFB,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,0,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_3,U:U,1VFB,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_4,U:U,1VFB,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_5,U:U,1VFB,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_6,U:U,1VFB,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,10,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_7,U:U,1VFB,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,0,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_8,U:U,1VFB,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_9,U:U,1VFB,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_10,U:U,1VFB,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1vfb_B+A|C_11,U:U,1VFB,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,10,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1vfb_B+A|C_12,U:U,1VFB,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1vfb_B+A|C_13,U:U,1VFB,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1vfb_B+A|C_14,U:U,1VFB,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1vfb_B+A|C_15,U:U,1VFB,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_16,U:U,1VFB,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,10,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_17,U:U,1VFB,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,0,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_18,U:U,1VFB,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_19,U:U,1VFB,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_20,U:U,1VFB,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_21,U:U,1VFB,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,10,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_22,U:U,1VFB,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,0,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_23,U:U,1VFB,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1vfb_B+A|C_24,U:U,1VFB,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_0,U:U,1G7I,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_1,U:U,1G7I,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_2,U:U,1G7I,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_3,U:U,1G7I,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_4,U:U,1G7I,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_5,U:U,1G7I,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_6,U:U,1G7I,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_7,U:U,1G7I,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_8,U:U,1G7I,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_9,U:U,1G7I,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_10,U:U,1G7I,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7i_B+A|C_11,U:U,1G7I,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7i_B+A|C_12,U:U,1G7I,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7i_B+A|C_13,U:U,1G7I,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7i_B+A|C_14,U:U,1G7I,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7i_B+A|C_15,U:U,1G7I,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_16,U:U,1G7I,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_17,U:U,1G7I,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_18,U:U,1G7I,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_19,U:U,1G7I,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_20,U:U,1G7I,B:A,C,1.80,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_21,U:U,1G7I,B:A,C,1.80,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_22,U:U,1G7I,B:A,C,1.80,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_23,U:U,1G7I,B:A,C,1.80,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7i_B+A|C_24,U:U,1G7I,B:A,C,1.80,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7l_B+A|C_0,U:U,1G7L,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_1,U:U,1G7L,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_2,U:U,1G7L,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_3,U:U,1G7L,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_4,U:U,1G7L,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_5,U:U,1G7L,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_6,U:U,1G7L,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_7,U:U,1G7L,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_8,U:U,1G7L,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_9,U:U,1G7L,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_10,U:U,1G7L,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
-1g7l_B+A|C_11,U:U,1G7L,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
-1g7l_B+A|C_12,U:U,1G7L,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
-1g7l_B+A|C_13,U:U,1G7L,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
-1g7l_B+A|C_14,U:U,1G7L,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
-1g7l_B+A|C_15,U:U,1G7L,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_16,U:U,1G7L,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_17,U:U,1G7L,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_18,U:U,1G7L,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_19,U:U,1G7L,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_20,U:U,1G7L,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_21,U:U,1G7L,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_22,U:U,1G7L,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_23,U:U,1G7L,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,1,0,0,0,0
-1g7l_B+A|C_24,U:U,1G7L,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,1,0,0,0,0
-1a2y_B+A|C_0,U:U,1A2Y,B:A,C,1.50,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,2,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_1,U:U,1A2Y,B:A,C,1.50,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,10,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_2,U:U,1A2Y,B:A,C,1.50,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,0,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_3,U:U,1A2Y,B:A,C,1.50,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,3,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_4,U:U,1A2Y,B:A,C,1.50,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,1,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_5,U:U,1A2Y,B:A,C,1.50,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,2,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_6,U:U,1A2Y,B:A,C,1.50,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,10,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_7,U:U,1A2Y,B:A,C,1.50,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,0,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_8,U:U,1A2Y,B:A,C,1.50,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,3,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_9,U:U,1A2Y,B:A,C,1.50,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,1,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_10,U:U,1A2Y,B:A,C,1.50,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,2,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1a2y_B+A|C_11,U:U,1A2Y,B:A,C,1.50,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,10,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1a2y_B+A|C_12,U:U,1A2Y,B:A,C,1.50,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1a2y_B+A|C_13,U:U,1A2Y,B:A,C,1.50,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,3,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1a2y_B+A|C_14,U:U,1A2Y,B:A,C,1.50,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,1,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1a2y_B+A|C_15,U:U,1A2Y,B:A,C,1.50,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,2,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_16,U:U,1A2Y,B:A,C,1.50,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,10,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_17,U:U,1A2Y,B:A,C,1.50,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,0,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_18,U:U,1A2Y,B:A,C,1.50,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,3,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_19,U:U,1A2Y,B:A,C,1.50,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,1,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_20,U:U,1A2Y,B:A,C,1.50,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,2,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_21,U:U,1A2Y,B:A,C,1.50,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,10,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_22,U:U,1A2Y,B:A,C,1.50,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,0,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_23,U:U,1A2Y,B:A,C,1.50,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,3,1,NA,0,0,0,0,0,0,0,0
-1a2y_B+A|C_24,U:U,1A2Y,B:A,C,1.50,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,1,1,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_0,U:U,1G7M,B:A,C,1.90,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_1,U:U,1G7M,B:A,C,1.90,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_2,U:U,1G7M,B:A,C,1.90,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_3,U:U,1G7M,B:A,C,1.90,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_4,U:U,1G7M,B:A,C,1.90,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_5,U:U,1G7M,B:A,C,1.90,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_6,U:U,1G7M,B:A,C,1.90,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_7,U:U,1G7M,B:A,C,1.90,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_8,U:U,1G7M,B:A,C,1.90,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_9,U:U,1G7M,B:A,C,1.90,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_10,U:U,1G7M,B:A,C,1.90,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7m_B+A|C_11,U:U,1G7M,B:A,C,1.90,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7m_B+A|C_12,U:U,1G7M,B:A,C,1.90,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7m_B+A|C_13,U:U,1G7M,B:A,C,1.90,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7m_B+A|C_14,U:U,1G7M,B:A,C,1.90,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7m_B+A|C_15,U:U,1G7M,B:A,C,1.90,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_16,U:U,1G7M,B:A,C,1.90,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_17,U:U,1G7M,B:A,C,1.90,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_18,U:U,1G7M,B:A,C,1.90,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_19,U:U,1G7M,B:A,C,1.90,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_20,U:U,1G7M,B:A,C,1.90,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_21,U:U,1G7M,B:A,C,1.90,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_22,U:U,1G7M,B:A,C,1.90,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_23,U:U,1G7M,B:A,C,1.90,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7m_B+A|C_24,U:U,1G7M,B:A,C,1.90,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_0,U:U,1G7H,B:A,C,1.85,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_1,U:U,1G7H,B:A,C,1.85,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_2,U:U,1G7H,B:A,C,1.85,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_3,U:U,1G7H,B:A,C,1.85,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_4,U:U,1G7H,B:A,C,1.85,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_5,U:U,1G7H,B:A,C,1.85,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_6,U:U,1G7H,B:A,C,1.85,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_7,U:U,1G7H,B:A,C,1.85,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_8,U:U,1G7H,B:A,C,1.85,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_9,U:U,1G7H,B:A,C,1.85,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_10,U:U,1G7H,B:A,C,1.85,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7h_B+A|C_11,U:U,1G7H,B:A,C,1.85,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7h_B+A|C_12,U:U,1G7H,B:A,C,1.85,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7h_B+A|C_13,U:U,1G7H,B:A,C,1.85,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7h_B+A|C_14,U:U,1G7H,B:A,C,1.85,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7h_B+A|C_15,U:U,1G7H,B:A,C,1.85,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_16,U:U,1G7H,B:A,C,1.85,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_17,U:U,1G7H,B:A,C,1.85,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_18,U:U,1G7H,B:A,C,1.85,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_19,U:U,1G7H,B:A,C,1.85,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_20,U:U,1G7H,B:A,C,1.85,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_21,U:U,1G7H,B:A,C,1.85,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_22,U:U,1G7H,B:A,C,1.85,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_23,U:U,1G7H,B:A,C,1.85,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7h_B+A|C_24,U:U,1G7H,B:A,C,1.85,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1bvk_B+A|C_0,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_1,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_2,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_3,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_4,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_B+A|C_5,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_B+A|C_6,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_7,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_8,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
-1bvk_B+A|C_9,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
-1bvk_B+A|C_10,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_11,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_12,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_13,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_14,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_15,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_16,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_17,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_18,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_B+A|C_19,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_B+A|C_20,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,A:B,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_B+A|C_21,U:U,1BVK,B:A,C,2.70,xray,1BVL,2.87,xray,C:D,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1g7j_B+A|C_0,U:U,1G7J,B:A,C,1.75,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_1,U:U,1G7J,B:A,C,1.75,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_2,U:U,1G7J,B:A,C,1.75,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_3,U:U,1G7J,B:A,C,1.75,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_4,U:U,1G7J,B:A,C,1.75,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_5,U:U,1G7J,B:A,C,1.75,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_6,U:U,1G7J,B:A,C,1.75,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_7,U:U,1G7J,B:A,C,1.75,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_8,U:U,1G7J,B:A,C,1.75,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_9,U:U,1G7J,B:A,C,1.75,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_10,U:U,1G7J,B:A,C,1.75,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7j_B+A|C_11,U:U,1G7J,B:A,C,1.75,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7j_B+A|C_12,U:U,1G7J,B:A,C,1.75,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7j_B+A|C_13,U:U,1G7J,B:A,C,1.75,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7j_B+A|C_14,U:U,1G7J,B:A,C,1.75,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1g7j_B+A|C_15,U:U,1G7J,B:A,C,1.75,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_16,U:U,1G7J,B:A,C,1.75,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_17,U:U,1G7J,B:A,C,1.75,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_18,U:U,1G7J,B:A,C,1.75,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_19,U:U,1G7J,B:A,C,1.75,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_20,U:U,1G7J,B:A,C,1.75,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_21,U:U,1G7J,B:A,C,1.75,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_22,U:U,1G7J,B:A,C,1.75,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_23,U:U,1G7J,B:A,C,1.75,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1g7j_B+A|C_24,U:U,1G7J,B:A,C,1.75,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_0,U:U,1KIR,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_1,U:U,1KIR,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_2,U:U,1KIR,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_3,U:U,1KIR,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_4,U:U,1KIR,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_5,U:U,1KIR,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_6,U:U,1KIR,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_7,U:U,1KIR,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_8,U:U,1KIR,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_9,U:U,1KIR,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_10,U:U,1KIR,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kir_B+A|C_11,U:U,1KIR,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kir_B+A|C_12,U:U,1KIR,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kir_B+A|C_13,U:U,1KIR,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kir_B+A|C_14,U:U,1KIR,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kir_B+A|C_15,U:U,1KIR,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_16,U:U,1KIR,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_17,U:U,1KIR,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_18,U:U,1KIR,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_19,U:U,1KIR,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_20,U:U,1KIR,B:A,C,2.00,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_21,U:U,1KIR,B:A,C,2.00,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_22,U:U,1KIR,B:A,C,2.00,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_23,U:U,1KIR,B:A,C,2.00,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kir_B+A|C_24,U:U,1KIR,B:A,C,2.00,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1bvk_E+D|F_0,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_1,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_2,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_3,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_4,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_E+D|F_5,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_E+D|F_6,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_7,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_8,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
-1bvk_E+D|F_9,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
-1bvk_E+D|F_10,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_11,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_12,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_13,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_14,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_15,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_16,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_17,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_18,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_E+D|F_19,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
-1bvk_E+D|F_20,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,A:B,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1bvk_E+D|F_21,U:U,1BVK,E:D,F,2.70,xray,1BVL,2.87,xray,C:D,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
-1kip_B+A|C_0,U:U,1KIP,B:A,C,2.10,xray,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_1,U:U,1KIP,B:A,C,2.10,xray,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_2,U:U,1KIP,B:A,C,2.10,xray,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_3,U:U,1KIP,B:A,C,2.10,xray,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_4,U:U,1KIP,B:A,C,2.10,xray,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_5,U:U,1KIP,B:A,C,2.10,xray,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_6,U:U,1KIP,B:A,C,2.10,xray,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_7,U:U,1KIP,B:A,C,2.10,xray,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_8,U:U,1KIP,B:A,C,2.10,xray,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_9,U:U,1KIP,B:A,C,2.10,xray,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_10,U:U,1KIP,B:A,C,2.10,xray,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kip_B+A|C_11,U:U,1KIP,B:A,C,2.10,xray,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kip_B+A|C_12,U:U,1KIP,B:A,C,2.10,xray,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kip_B+A|C_13,U:U,1KIP,B:A,C,2.10,xray,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kip_B+A|C_14,U:U,1KIP,B:A,C,2.10,xray,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-1kip_B+A|C_15,U:U,1KIP,B:A,C,2.10,xray,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_16,U:U,1KIP,B:A,C,2.10,xray,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_17,U:U,1KIP,B:A,C,2.10,xray,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_18,U:U,1KIP,B:A,C,2.10,xray,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_19,U:U,1KIP,B:A,C,2.10,xray,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_20,U:U,1KIP,B:A,C,2.10,xray,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_21,U:U,1KIP,B:A,C,2.10,xray,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_22,U:U,1KIP,B:A,C,2.10,xray,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_23,U:U,1KIP,B:A,C,2.10,xray,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
-1kip_B+A|C_24,U:U,1KIP,B:A,C,2.10,xray,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_1,U:U,1VFB,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,10,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_2,U:U,1VFB,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_3,U:U,1VFB,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_4,U:U,1VFB,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_5,U:U,1VFB,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_6,U:U,1VFB,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,10,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_7,U:U,1VFB,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_8,U:U,1VFB,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_9,U:U,1VFB,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_10,U:U,1VFB,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_11,U:U,1VFB,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,10,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_12,U:U,1VFB,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_13,U:U,1VFB,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_14,U:U,1VFB,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1vfb_B+A|C_15,U:U,1VFB,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_16,U:U,1VFB,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,10,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_17,U:U,1VFB,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_18,U:U,1VFB,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_19,U:U,1VFB,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_20,U:U,1VFB,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_21,U:U,1VFB,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,10,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_22,U:U,1VFB,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_23,U:U,1VFB,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1vfb_B+A|C_24,U:U,1VFB,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_0,U:U,1G7I,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_1,U:U,1G7I,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_2,U:U,1G7I,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_3,U:U,1G7I,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_4,U:U,1G7I,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_5,U:U,1G7I,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_6,U:U,1G7I,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_7,U:U,1G7I,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_8,U:U,1G7I,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_9,U:U,1G7I,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_10,U:U,1G7I,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_11,U:U,1G7I,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_12,U:U,1G7I,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_13,U:U,1G7I,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_14,U:U,1G7I,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7i_B+A|C_15,U:U,1G7I,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_16,U:U,1G7I,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_17,U:U,1G7I,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_18,U:U,1G7I,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_19,U:U,1G7I,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_20,U:U,1G7I,1.80,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_21,U:U,1G7I,1.80,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_22,U:U,1G7I,1.80,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_23,U:U,1G7I,1.80,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7i_B+A|C_24,U:U,1G7I,1.80,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7l_B+A|C_0,U:U,1G7L,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_1,U:U,1G7L,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_2,U:U,1G7L,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_3,U:U,1G7L,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_4,U:U,1G7L,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_5,U:U,1G7L,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_6,U:U,1G7L,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_7,U:U,1G7L,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_8,U:U,1G7L,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_9,U:U,1G7L,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_10,U:U,1G7L,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_11,U:U,1G7L,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_12,U:U,1G7L,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_13,U:U,1G7L,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_14,U:U,1G7L,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0
+1g7l_B+A|C_15,U:U,1G7L,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_16,U:U,1G7L,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_17,U:U,1G7L,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_18,U:U,1G7L,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_19,U:U,1G7L,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_20,U:U,1G7L,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_21,U:U,1G7L,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_22,U:U,1G7L,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_23,U:U,1G7L,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,1,0,0,0,0
+1g7l_B+A|C_24,U:U,1G7L,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,1,0,0,0,0
+1a2y_B+A|C_0,U:U,1A2Y,1.50,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,2,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_1,U:U,1A2Y,1.50,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,10,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_2,U:U,1A2Y,1.50,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_3,U:U,1A2Y,1.50,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,3,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_4,U:U,1A2Y,1.50,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,1,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_5,U:U,1A2Y,1.50,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,2,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_6,U:U,1A2Y,1.50,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,10,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_7,U:U,1A2Y,1.50,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_8,U:U,1A2Y,1.50,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,3,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_9,U:U,1A2Y,1.50,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,1,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_10,U:U,1A2Y,1.50,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,2,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_11,U:U,1A2Y,1.50,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,10,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_12,U:U,1A2Y,1.50,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_13,U:U,1A2Y,1.50,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,3,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_14,U:U,1A2Y,1.50,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,1,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1a2y_B+A|C_15,U:U,1A2Y,1.50,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,2,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_16,U:U,1A2Y,1.50,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,10,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_17,U:U,1A2Y,1.50,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_18,U:U,1A2Y,1.50,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,3,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_19,U:U,1A2Y,1.50,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,1,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_20,U:U,1A2Y,1.50,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,2,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_21,U:U,1A2Y,1.50,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,10,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_22,U:U,1A2Y,1.50,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_23,U:U,1A2Y,1.50,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,3,1,NA,0,0,0,0,0,0,0,0
+1a2y_B+A|C_24,U:U,1A2Y,1.50,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,1,1,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_0,U:U,1G7M,1.90,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_1,U:U,1G7M,1.90,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_2,U:U,1G7M,1.90,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_3,U:U,1G7M,1.90,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_4,U:U,1G7M,1.90,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_5,U:U,1G7M,1.90,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_6,U:U,1G7M,1.90,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_7,U:U,1G7M,1.90,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_8,U:U,1G7M,1.90,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_9,U:U,1G7M,1.90,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_10,U:U,1G7M,1.90,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_11,U:U,1G7M,1.90,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_12,U:U,1G7M,1.90,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_13,U:U,1G7M,1.90,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_14,U:U,1G7M,1.90,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7m_B+A|C_15,U:U,1G7M,1.90,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_16,U:U,1G7M,1.90,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_17,U:U,1G7M,1.90,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_18,U:U,1G7M,1.90,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_19,U:U,1G7M,1.90,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_20,U:U,1G7M,1.90,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_21,U:U,1G7M,1.90,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_22,U:U,1G7M,1.90,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_23,U:U,1G7M,1.90,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7m_B+A|C_24,U:U,1G7M,1.90,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_0,U:U,1G7H,1.85,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_1,U:U,1G7H,1.85,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_2,U:U,1G7H,1.85,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_3,U:U,1G7H,1.85,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_4,U:U,1G7H,1.85,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_5,U:U,1G7H,1.85,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_6,U:U,1G7H,1.85,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_7,U:U,1G7H,1.85,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_8,U:U,1G7H,1.85,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_9,U:U,1G7H,1.85,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_10,U:U,1G7H,1.85,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_11,U:U,1G7H,1.85,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_12,U:U,1G7H,1.85,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_13,U:U,1G7H,1.85,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_14,U:U,1G7H,1.85,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7h_B+A|C_15,U:U,1G7H,1.85,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_16,U:U,1G7H,1.85,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_17,U:U,1G7H,1.85,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_18,U:U,1G7H,1.85,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_19,U:U,1G7H,1.85,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_20,U:U,1G7H,1.85,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_21,U:U,1G7H,1.85,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_22,U:U,1G7H,1.85,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_23,U:U,1G7H,1.85,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7h_B+A|C_24,U:U,1G7H,1.85,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1bvk_B+A|C_0,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_1,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_2,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_3,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_4,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_B+A|C_5,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_B+A|C_6,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_7,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_8,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1bvk_B+A|C_9,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1bvk_B+A|C_10,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_11,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_12,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_13,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_14,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_15,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_16,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_17,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_18,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_B+A|C_19,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_B+A|C_20,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,A:B,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_B+A|C_21,U:U,1BVK,2.70,xray,B:A,C,1BVL,2.87,xray,C:D,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1g7j_B+A|C_0,U:U,1G7J,1.75,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_1,U:U,1G7J,1.75,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_2,U:U,1G7J,1.75,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_3,U:U,1G7J,1.75,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_4,U:U,1G7J,1.75,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_5,U:U,1G7J,1.75,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_6,U:U,1G7J,1.75,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_7,U:U,1G7J,1.75,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_8,U:U,1G7J,1.75,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_9,U:U,1G7J,1.75,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_10,U:U,1G7J,1.75,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_11,U:U,1G7J,1.75,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_12,U:U,1G7J,1.75,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_13,U:U,1G7J,1.75,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_14,U:U,1G7J,1.75,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1g7j_B+A|C_15,U:U,1G7J,1.75,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_16,U:U,1G7J,1.75,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_17,U:U,1G7J,1.75,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_18,U:U,1G7J,1.75,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_19,U:U,1G7J,1.75,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_20,U:U,1G7J,1.75,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_21,U:U,1G7J,1.75,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_22,U:U,1G7J,1.75,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_23,U:U,1G7J,1.75,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1g7j_B+A|C_24,U:U,1G7J,1.75,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_0,U:U,1KIR,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_1,U:U,1KIR,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_2,U:U,1KIR,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_3,U:U,1KIR,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_4,U:U,1KIR,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_5,U:U,1KIR,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_6,U:U,1KIR,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_7,U:U,1KIR,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_8,U:U,1KIR,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_9,U:U,1KIR,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_10,U:U,1KIR,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_11,U:U,1KIR,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_12,U:U,1KIR,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_13,U:U,1KIR,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_14,U:U,1KIR,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kir_B+A|C_15,U:U,1KIR,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_16,U:U,1KIR,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_17,U:U,1KIR,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_18,U:U,1KIR,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_19,U:U,1KIR,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_20,U:U,1KIR,2.00,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_21,U:U,1KIR,2.00,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_22,U:U,1KIR,2.00,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_23,U:U,1KIR,2.00,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kir_B+A|C_24,U:U,1KIR,2.00,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1bvk_E+D|F_0,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_1,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6F1P,1.12,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_2,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_3,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6F9Z,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_4,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_E+D|F_5,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_E+D|F_6,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_7,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_8,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1bvk_E+D|F_9,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,1
+1bvk_E+D|F_10,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_11,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6F9Y,1.20,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_12,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_13,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6A10,1.13,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_14,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_15,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6A10,1.13,xray,B,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_16,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_17,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6A10,1.13,xray,C,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_18,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_E+D|F_19,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,1
+1bvk_E+D|F_20,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,A:B,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1bvk_E+D|F_21,U:U,1BVK,2.70,xray,E:D,F,1BVL,2.87,xray,C:D,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,1
+1kip_B+A|C_0,U:U,1KIP,2.10,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Z,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_1,U:U,1KIP,2.10,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Z,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_2,U:U,1KIP,2.10,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Z,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_3,U:U,1KIP,2.10,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Z,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_4,U:U,1KIP,2.10,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Z,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_5,U:U,1KIP,2.10,xray,B:A,C,1A7N,2.01,xray,H:L,6RT3,1.05,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_6,U:U,1KIP,2.10,xray,B:A,C,1A7Q,2.00,xray,H:L,6RT3,1.05,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_7,U:U,1KIP,2.10,xray,B:A,C,1VFA,1.80,xray,B:A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_8,U:U,1KIP,2.10,xray,B:A,C,1A7P,2.01,xray,H:L,6RT3,1.05,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_9,U:U,1KIP,2.10,xray,B:A,C,1A7R,2.01,xray,H:L,6RT3,1.05,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_10,U:U,1KIP,2.10,xray,B:A,C,1A7N,2.01,xray,H:L,6RO3,1.03,xray,A,3,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_11,U:U,1KIP,2.10,xray,B:A,C,1A7Q,2.00,xray,H:L,6RO3,1.03,xray,A,11,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_12,U:U,1KIP,2.10,xray,B:A,C,1VFA,1.80,xray,B:A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_13,U:U,1KIP,2.10,xray,B:A,C,1A7P,2.01,xray,H:L,6RO3,1.03,xray,A,4,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_14,U:U,1KIP,2.10,xray,B:A,C,1A7R,2.01,xray,H:L,6RO3,1.03,xray,A,2,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+1kip_B+A|C_15,U:U,1KIP,2.10,xray,B:A,C,1A7N,2.01,xray,H:L,6F9Y,1.20,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_16,U:U,1KIP,2.10,xray,B:A,C,1A7Q,2.00,xray,H:L,6F9Y,1.20,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_17,U:U,1KIP,2.10,xray,B:A,C,1VFA,1.80,xray,B:A,6F9Y,1.20,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_18,U:U,1KIP,2.10,xray,B:A,C,1A7P,2.01,xray,H:L,6F9Y,1.20,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_19,U:U,1KIP,2.10,xray,B:A,C,1A7R,2.01,xray,H:L,6F9Y,1.20,xray,A,2,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_20,U:U,1KIP,2.10,xray,B:A,C,1A7N,2.01,xray,H:L,6ABN,1.17,xray,A,3,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_21,U:U,1KIP,2.10,xray,B:A,C,1A7Q,2.00,xray,H:L,6ABN,1.17,xray,A,11,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_22,U:U,1KIP,2.10,xray,B:A,C,1VFA,1.80,xray,B:A,6ABN,1.17,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_23,U:U,1KIP,2.10,xray,B:A,C,1A7P,2.01,xray,H:L,6ABN,1.17,xray,A,4,0,NA,0,0,0,0,0,0,0,0
+1kip_B+A|C_24,U:U,1KIP,2.10,xray,B:A,C,1A7R,2.01,xray,H:L,6ABN,1.17,xray,A,2,0,NA,0,0,0,0,0,0,0,0

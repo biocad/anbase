@@ -1,5 +1,5 @@
 candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-1s78_D+C|A_0,U:U,1S78,D:C,A,3.25,xray,5VSH,2.55,xray,A:B,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,1
-1s78_D+C|A_1,U:U,1S78,D:C,A,3.25,xray,5VSH,2.55,xray,C:D,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,2
-1s78_D+C|A_2,U:U,1S78,D:C,A,3.25,xray,5VSH,2.55,xray,E:F,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,2
-1s78_D+C|A_3,U:U,1S78,D:C,A,3.25,xray,5VSH,2.55,xray,H:L,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,1
+1s78_D+C|A_0,U:U,1S78,3.25,xray,D:C,A,5VSH,2.55,xray,A:B,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,1
+1s78_D+C|A_1,U:U,1S78,3.25,xray,D:C,A,5VSH,2.55,xray,C:D,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,2
+1s78_D+C|A_2,U:U,1S78,3.25,xray,D:C,A,5VSH,2.55,xray,E:F,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,2
+1s78_D+C|A_3,U:U,1S78,3.25,xray,D:C,A,5VSH,2.55,xray,H:L,2A91,2.50,xray,A,6,2,small molecules with 7 < n_atoms <= 15 detected,0,0,1,2,0,0,0,1
