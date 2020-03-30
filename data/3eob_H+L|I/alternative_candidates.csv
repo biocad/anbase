@@ -1,36 +1,36 @@
-candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-3eob_H+L|I_1,U:U,3EOB,H:L,I,3EO9,H:L,3F74,B,0,1,NA,0,0,0,1,0,0,0,3
-3eob_H+L|I_2,U:U,3EOB,H:L,I,3EO9,H:L,3F74,C,0,1,NA,0,0,0,1,0,0,0,3
-3eob_H+L|I_3,U:U,3EOB,H:L,I,3EO9,H:L,1MJN,A,0,2,NA,0,0,0,1,0,0,0,2
-3eob_H+L|I_4,U:U,3EOB,H:L,I,3EO9,H:L,2O7N,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
-3eob_H+L|I_5,U:U,3EOB,H:L,I,3EO9,H:L,3F78,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eob_H+L|I_6,U:U,3EOB,H:L,I,3EO9,H:L,3F78,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eob_H+L|I_7,U:U,3EOB,H:L,I,3EO9,H:L,3F78,C,0,1,NA,0,0,0,1,0,0,0,3
-3eob_H+L|I_8,U:U,3EOB,H:L,I,3EO9,H:L,2ICA,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,4
-3eoa_H+L|I_0,U:U,3EOA,H:L,I,3EO9,H:L,3F74,A,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_H+L|I_1,U:U,3EOA,H:L,I,3EO9,H:L,3F74,B,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_H+L|I_2,U:U,3EOA,H:L,I,3EO9,H:L,3F74,C,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_H+L|I_3,U:U,3EOA,H:L,I,3EO9,H:L,1MJN,A,0,2,NA,0,0,0,1,0,0,0,2
-3eoa_H+L|I_4,U:U,3EOA,H:L,I,3EO9,H:L,2O7N,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
-3eoa_H+L|I_5,U:U,3EOA,H:L,I,3EO9,H:L,3F78,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eoa_H+L|I_6,U:U,3EOA,H:L,I,3EO9,H:L,3F78,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eoa_H+L|I_7,U:U,3EOA,H:L,I,3EO9,H:L,3F78,C,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_H+L|I_8,U:U,3EOA,H:L,I,3EO9,H:L,2ICA,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,4
-3eoa_B+A|J_0,U:U,3EOA,B:A,J,3EO9,H:L,2O7N,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
-3eoa_B+A|J_1,U:U,3EOA,B:A,J,3EO9,H:L,2ICA,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,4
-3eoa_B+A|J_2,U:U,3EOA,B:A,J,3EO9,H:L,3F74,A,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_B+A|J_3,U:U,3EOA,B:A,J,3EO9,H:L,3F74,B,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_B+A|J_4,U:U,3EOA,B:A,J,3EO9,H:L,3F74,C,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_B+A|J_5,U:U,3EOA,B:A,J,3EO9,H:L,3F78,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eoa_B+A|J_6,U:U,3EOA,B:A,J,3EO9,H:L,3F78,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eoa_B+A|J_7,U:U,3EOA,B:A,J,3EO9,H:L,3F78,C,0,1,NA,0,0,0,1,0,0,0,3
-3eoa_B+A|J_8,U:U,3EOA,B:A,J,3EO9,H:L,1MJN,A,0,2,NA,0,0,0,1,0,0,0,2
-3eob_B+A|J_0,U:U,3EOB,B:A,J,3EO9,H:L,2O7N,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
-3eob_B+A|J_1,U:U,3EOB,B:A,J,3EO9,H:L,2ICA,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,4
-3eob_B+A|J_2,U:U,3EOB,B:A,J,3EO9,H:L,3F74,A,0,1,NA,0,0,0,1,0,0,0,3
-3eob_B+A|J_3,U:U,3EOB,B:A,J,3EO9,H:L,3F74,B,0,1,NA,0,0,0,1,0,0,0,3
-3eob_B+A|J_4,U:U,3EOB,B:A,J,3EO9,H:L,3F74,C,0,1,NA,0,0,0,1,0,0,0,3
-3eob_B+A|J_5,U:U,3EOB,B:A,J,3EO9,H:L,3F78,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eob_B+A|J_6,U:U,3EOB,B:A,J,3EO9,H:L,3F78,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,3
-3eob_B+A|J_7,U:U,3EOB,B:A,J,3EO9,H:L,3F78,C,0,1,NA,0,0,0,1,0,0,0,3
-3eob_B+A|J_8,U:U,3EOB,B:A,J,3EO9,H:L,1MJN,A,0,2,NA,0,0,0,1,0,0,0,2
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+3eob_H+L|I_1,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,B,0,1,NA,0,0,0,1,0,0,0,2
+3eob_H+L|I_2,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eob_H+L|I_3,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,1MJN,1.30,xray,A,0,2,NA,0,0,0,1,0,0,0,1
+3eob_H+L|I_4,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,2ICA,1.56,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
+3eob_H+L|I_5,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eob_H+L|I_6,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eob_H+L|I_7,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eob_H+L|I_8,U:U,3EOB,H:L,I,3.60,xray,3EO9,1.80,xray,H:L,2O7N,1.75,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,2
+3eoa_H+L|I_0,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,A,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_H+L|I_1,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,B,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_H+L|I_2,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_H+L|I_3,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,1MJN,1.30,xray,A,0,2,NA,0,0,0,1,0,0,0,1
+3eoa_H+L|I_4,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,2ICA,1.56,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
+3eoa_H+L|I_5,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eoa_H+L|I_6,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eoa_H+L|I_7,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_H+L|I_8,U:U,3EOA,H:L,I,2.80,xray,3EO9,1.80,xray,H:L,2O7N,1.75,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,2
+3eoa_B+A|J_0,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,A,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_B+A|J_1,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,B,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_B+A|J_2,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_B+A|J_3,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,1MJN,1.30,xray,A,0,2,NA,0,0,0,1,0,0,0,1
+3eoa_B+A|J_4,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,2ICA,1.56,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
+3eoa_B+A|J_5,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eoa_B+A|J_6,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eoa_B+A|J_7,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eoa_B+A|J_8,U:U,3EOA,B:A,J,2.80,xray,3EO9,1.80,xray,H:L,2O7N,1.75,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,2
+3eob_B+A|J_0,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,A,0,1,NA,0,0,0,1,0,0,0,2
+3eob_B+A|J_1,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,B,0,1,NA,0,0,0,1,0,0,0,2
+3eob_B+A|J_2,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,3F74,1.70,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eob_B+A|J_3,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,1MJN,1.30,xray,A,0,2,NA,0,0,0,1,0,0,0,1
+3eob_B+A|J_4,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,2ICA,1.56,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,3
+3eob_B+A|J_5,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,A,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eob_B+A|J_6,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,B,0,1,small molecules with 7 < n_atoms <= 15 detected,0,0,0,1,0,0,0,2
+3eob_B+A|J_7,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,3F78,1.60,xray,C,0,1,NA,0,0,0,1,0,0,0,2
+3eob_B+A|J_8,U:U,3EOB,B:A,J,3.60,xray,3EO9,1.80,xray,H:L,2O7N,1.75,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,2

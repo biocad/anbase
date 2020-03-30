@@ -14,8 +14,8 @@ from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
-    fetch_all_sequences, CHAINS_SEPARATOR, \
-    calc_mismatches_stat, extract_seq, retrieve_resolution
+    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat, extract_seq, \
+    retrieve_resolution
 from filter_unbound_data import union_models, \
     fetch_all_assemblies
 
@@ -595,6 +595,25 @@ class Conformation:
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
 
+        self._load_sequences_for_pdb_and_chain_ids(dir_path,
+                                                   self.pdb_id_b,
+                                                   self.pdb_id_b + '_ab_b',
+                                                   self.ab_chain_ids_b,
+                                                   {k: v for k, v in
+                                                    self.complex_mapping_b.items()
+                                                    if
+                                                    k in self.ab_chain_ids_b})
+
+        self._load_sequences_for_pdb_and_chain_ids(dir_path,
+                                                   self.pdb_id_b,
+                                                   self.pdb_id_b + '_ag_b',
+                                                   self.ag_chain_ids_b,
+                                                   {k: v for k, v in
+                                                    self.complex_mapping_b.items()
+                                                    if
+                                                    k in self.ag_chain_ids_b}
+                                                   )
+
         seqs_b = self. \
             _load_sequences_for_pdb_and_chain_ids(dir_path,
                                                   self.pdb_id_b,
@@ -924,7 +943,7 @@ def process_filtered_csv(path_to_filtered_structures_csv,
 
         with_candidates = {}
 
-        for comp_name, structures in list(by_complex.items()):
+        for comp_name, structures in by_complex.items():
             if to_accept and comp_name not in to_accept:
                 continue
 

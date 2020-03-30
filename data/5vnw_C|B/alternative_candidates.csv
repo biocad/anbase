@@ -1,14 +1,14 @@
-candidate_name,type,pdb_id_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_chain_ids_u,ag_pdb_id_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-5vnw_C|B_1,U:U,5VNW,C,B,5VNV,A,6HSC,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
-5vnw_C|B_2,U:U,5VNW,C,B,5VNV,A,3SQJ,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
-5vnw_C|B_3,U:U,5VNW,C,B,5VNV,A,3SQJ,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,0
-5vnw_C|B_4,U:U,5VNW,C,B,5VNV,A,4Z69,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,0
-5vnw_C|B_5,U:U,5VNW,C,B,5VNV,A,4Z69,I,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
-5vnw_C|B_6,U:U,5VNW,C,B,5VNV,A,4L8U,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
-5vnw_D|A_0,U:U,5VNW,D,A,5VNV,A,3SQJ,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
-5vnw_D|A_1,U:U,5VNW,D,A,5VNV,A,3SQJ,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
-5vnw_D|A_2,U:U,5VNW,D,A,5VNV,A,4Z69,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
-5vnw_D|A_3,U:U,5VNW,D,A,5VNV,A,4Z69,I,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,0
-5vnw_D|A_4,U:U,5VNW,D,A,5VNV,A,6HSC,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,0
-5vnw_D|A_5,U:U,5VNW,D,A,5VNV,A,6HSC,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
-5vnw_D|A_6,U:U,5VNW,D,A,5VNV,A,4L8U,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+5vnw_C|B_1,U:U,5VNW,C,B,2.60,xray,5VNV,1.40,xray,A,3SQJ,2.05,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,0
+5vnw_C|B_2,U:U,5VNW,C,B,2.60,xray,5VNV,1.40,xray,A,6HSC,1.90,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
+5vnw_C|B_3,U:U,5VNW,C,B,2.60,xray,5VNV,1.40,xray,A,6HSC,1.90,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
+5vnw_C|B_4,U:U,5VNW,C,B,2.60,xray,5VNV,1.40,xray,A,4Z69,2.19,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
+5vnw_C|B_5,U:U,5VNW,C,B,2.60,xray,5VNV,1.40,xray,A,4Z69,2.19,xray,I,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
+5vnw_C|B_6,U:U,5VNW,C,B,2.60,xray,5VNV,1.40,xray,A,4L8U,2.01,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
+5vnw_D|A_0,U:U,5VNW,D,A,2.60,xray,5VNV,1.40,xray,A,3SQJ,2.05,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,0
+5vnw_D|A_1,U:U,5VNW,D,A,2.60,xray,5VNV,1.40,xray,A,3SQJ,2.05,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,0
+5vnw_D|A_2,U:U,5VNW,D,A,2.60,xray,5VNV,1.40,xray,A,6HSC,1.90,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
+5vnw_D|A_3,U:U,5VNW,D,A,2.60,xray,5VNV,1.40,xray,A,6HSC,1.90,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,1,2
+5vnw_D|A_4,U:U,5VNW,D,A,2.60,xray,5VNV,1.40,xray,A,4Z69,2.19,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
+5vnw_D|A_5,U:U,5VNW,D,A,2.60,xray,5VNV,1.40,xray,A,4Z69,2.19,xray,I,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
+5vnw_D|A_6,U:U,5VNW,D,A,2.60,xray,5VNV,1.40,xray,A,4L8U,2.01,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,2,0,0,0,2
