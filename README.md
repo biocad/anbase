@@ -4,7 +4,7 @@ abase is a database of antibody-antigen complexes designed especially for
 validation of algorithms of prediction of mutual conformation of
 antibody and antigen.
 
-Database consists of a **87** antibody-antigen complexs, for every one of which there
+Database consists of a **86** antibody-antigen complexs, for every one of which there
 are both antibody and  antigen present in their *unbound* forms.
 
 Information about complexes of the database and their unbound parts
@@ -99,9 +99,12 @@ Also, each **comp_name** folder contains file
 candidates that can act as a pair of unbound antibody and 
 unbound antigen for the given complex. 
 This file has all the same fields
-as `abase_summary.csv` with two changes:
+as `abase_summary.csv` with some changes:
 * Field **candidate_name** is replaced with field **comp_name**.
 * Field **is_perfect** is removed.
+* Added fields **ca_rmsds**, **ncac_rmsds** and **all_atoms_rmsds** 
+that contain corresponding rmsds from alternative candidate's 
+interface to the main candidate's interface.
 
 Subfolder of **comp_name** that is called `alternative_candidates`
 contains candidates described in the `alternative_candidates.csv`.

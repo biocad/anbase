@@ -287,15 +287,15 @@ class Conformation:
 
     @staticmethod
     def _matching_atoms_for_chains(chain1, pdb_id1, chain_id1, chain2, pdb_id2,
-                                   chain_id2):
+                                   chain_id2, only_cas=True):
         seq1 = fetch_sequence(pdb_id1, chain_id1)
         seq2 = fetch_sequence(pdb_id2, chain_id2)
 
         return Conformation._matching_atoms_for_chains_seqs(chain1, seq1,
-                                                            chain2, seq2)
+                                                            chain2, seq2, only_cas=only_cas)
 
     @staticmethod
-    def _matching_atoms_for_chains_seqs(chain1, seq1, chain2, seq2):
+    def _matching_atoms_for_chains_seqs(chain1, seq1, chain2, seq2, only_cas=True):
         def extract_peps(chain):
             peps = []
 
@@ -376,17 +376,49 @@ class Conformation:
                                frozenset(map(lambda x: seq2_to_universal[x],
                                              seq2_to_local.keys()))
 
-        ca_common_universal_ids = list(
-            filter(
-                lambda x: 'CA' in peps1[
-                    seq1_to_local[universal_to_seq1[x]]] and 'CA' in
-                          peps2[seq2_to_local[universal_to_seq2[x]]],
-                common_universal_ids))
+        if only_cas:
+            ca_common_universal_ids = list(
+                filter(
+                    lambda x: 'CA' in peps1[
+                        seq1_to_local[universal_to_seq1[x]]] and 'CA' in
+                              peps2[seq2_to_local[universal_to_seq2[x]]],
+                    common_universal_ids))
 
-        atoms1 = [peps1[seq1_to_local[universal_to_seq1[i]]]['CA'] for i in
-                  ca_common_universal_ids]
-        atoms2 = [peps2[seq2_to_local[universal_to_seq2[i]]]['CA'] for i in
-                  ca_common_universal_ids]
+            atoms1 = [peps1[seq1_to_local[universal_to_seq1[i]]]['CA'] for i in
+                      ca_common_universal_ids]
+            atoms2 = [peps2[seq2_to_local[universal_to_seq2[i]]]['CA'] for i in
+                      ca_common_universal_ids]
+        else:
+            atoms1_tmp = []
+
+            for i in common_universal_ids:
+                atoms1_tmp.append(list(peps1[seq1_to_local[universal_to_seq1[i]]]))
+
+            atoms2_tmp = []
+
+            for i in common_universal_ids:
+                atoms2_tmp.append(list(peps2[seq2_to_local[universal_to_seq2[i]]]))
+
+            atoms1 = []
+            atoms2 = []
+
+            for i in range(len(atoms1_tmp)):
+                ids1 = set(map(lambda x: x.get_id(), atoms1_tmp[i]))
+                ids2 = set(map(lambda x: x.get_id(), atoms2_tmp[i]))
+
+                common_ids = ids1 & ids2
+
+                atoms1_tmp[i].sort(key=lambda x: x.get_id())
+
+                for x in atoms1_tmp[i]:
+                    if x.get_id() in common_ids:
+                        atoms1.append(x)
+
+                atoms2_tmp[i].sort(key=lambda x: x.get_id())
+
+                for x in atoms2_tmp[i]:
+                    if x.get_id() in common_ids:
+                        atoms2.append(x)
 
         return atoms1, atoms2
 

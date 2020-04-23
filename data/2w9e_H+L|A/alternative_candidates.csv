@@ -1,5 +1,5 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-2w9e_H+L|A_1,U:U,2W9E,2.90,xray,H:L,A,2W9D,1.57,xray,H:L,3HEQ,1.80,xray,B,5,1,NA,0,0,0,2,0,1,1,4
-2w9e_H+L|A_2,U:U,2W9E,2.90,xray,H:L,A,2W9D,1.57,xray,H:L,3HES,2.00,xray,A,5,1,NA,0,0,0,2,0,1,1,4
-2w9e_H+L|A_3,U:U,2W9E,2.90,xray,H:L,A,2W9D,1.57,xray,H:L,3HES,2.00,xray,B,5,1,NA,0,0,0,2,0,1,1,4
-2w9e_H+L|A_4,U:U,2W9E,2.90,xray,H:L,A,2W9D,1.57,xray,H:L,3HAK,1.80,xray,A,5,1,NA,0,0,0,2,0,1,0,2
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+2w9e_H+L|A_1,U:U,2W9E,2.9,xray,H:L,A,2W9D,1.57,xray,H:L,3HEQ,1.8,xray,B,5,1,NA,0,0,0,2,0,1,1,4,0.404,0.417,0.863
+2w9e_H+L|A_2,U:U,2W9E,2.9,xray,H:L,A,2W9D,1.57,xray,H:L,3HES,2.0,xray,A,5,1,NA,0,0,0,2,0,1,1,4,0.568,0.552,0.829
+2w9e_H+L|A_3,U:U,2W9E,2.9,xray,H:L,A,2W9D,1.57,xray,H:L,3HES,2.0,xray,B,5,1,NA,0,0,0,2,0,1,1,4,0.697,0.699,0.893
+2w9e_H+L|A_4,U:U,2W9E,2.9,xray,H:L,A,2W9D,1.57,xray,H:L,3HAK,1.8,xray,A,5,1,NA,0,0,0,2,0,1,0,2,0.654,0.644,1.134

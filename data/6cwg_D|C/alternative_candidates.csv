@@ -1,6 +1,6 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-6cwg_B|A_1,U:U,6CWG,2.60,xray,B,A,6CWK,1.26,xray,A,3PX8,1.29,xray,X,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,0,1
-6cwg_D|C_2,U:U,6CWG,2.60,xray,D,C,6CWK,1.26,xray,A,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,4,0,0,0,2
-6cwg_B|A_2,U:U,6CWG,2.60,xray,B,A,6CWK,1.26,xray,A,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,0,0,2
-6cwg_D|C_0,U:U,6CWG,2.60,xray,D,C,6CWK,1.26,xray,A,1J1M,1.50,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,4,0,0,0,2
-6cwg_B|A_0,U:U,6CWG,2.60,xray,B,A,6CWK,1.26,xray,A,1J1M,1.50,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,3,0,0,0,2
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+6cwg_B|A_1,U:U,6CWG,2.6,xray,B,A,6CWK,1.26,xray,A,3PX8,1.29,xray,X,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,0,1,0.001,0.001,0.001
+6cwg_D|C_2,U:U,6CWG,2.6,xray,D,C,6CWK,1.26,xray,A,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,4,0,0,0,2,0.137,0.128,0.669
+6cwg_B|A_2,U:U,6CWG,2.6,xray,B,A,6CWK,1.26,xray,A,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,0,0,2,0.137,0.128,0.669
+6cwg_D|C_0,U:U,6CWG,2.6,xray,D,C,6CWK,1.26,xray,A,1J1M,1.5,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,4,0,0,0,2,0.164,0.157,1.075
+6cwg_B|A_0,U:U,6CWG,2.6,xray,B,A,6CWK,1.26,xray,A,1J1M,1.5,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,3,0,0,0,2,0.164,0.157,1.075

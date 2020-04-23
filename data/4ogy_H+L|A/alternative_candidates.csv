@@ -1,15 +1,15 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-4ogx_H+L|A_1,U:U,4OGX,2.40,xray,H:L,A,4PUB,1.75,xray,H:L,2ANY,1.40,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,4
-4ogy_M+N|B_1,U:U,4OGY,2.10,xray,M:N,B,4PUB,1.75,xray,H:L,2ANY,1.40,xray,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,4,0,1,0,4
-4ogy_H+L|A_2,U:U,4OGY,2.10,xray,H:L,A,4PUB,1.75,xray,H:L,2ANW,1.85,xray,A,0,3,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,4
-4ogx_H+L|A_2,U:U,4OGX,2.40,xray,H:L,A,4PUB,1.75,xray,H:L,2ANW,1.85,xray,A,0,3,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,4
-4ogy_M+N|B_2,U:U,4OGY,2.10,xray,M:N,B,4PUB,1.75,xray,H:L,2ANW,1.85,xray,A,0,3,small molecules with n_atoms > 15 detected,0,1,0,4,0,1,0,4
-4ogy_H+L|A_3,U:U,4OGY,2.10,xray,H:L,A,4PUB,1.75,xray,H:L,6I44,1.36,xray,A,0,7,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,5
-4ogx_H+L|A_3,U:U,4OGX,2.40,xray,H:L,A,4PUB,1.75,xray,H:L,6I44,1.36,xray,A,0,7,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,5
-4ogy_M+N|B_3,U:U,4OGY,2.10,xray,M:N,B,4PUB,1.75,xray,H:L,6I44,1.36,xray,A,0,7,small molecules with n_atoms > 15 detected,0,1,0,4,0,1,0,5
-4ogy_H+L|A_0,U:U,4OGY,2.10,xray,H:L,A,4PUB,1.75,xray,H:L,6O1S,1.70,xray,E,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5
-4ogy_H+L|A_4,U:U,4OGY,2.10,xray,H:L,A,4PUB,1.75,xray,H:L,5TJX,1.41,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5
-4ogx_H+L|A_0,U:U,4OGX,2.40,xray,H:L,A,4PUB,1.75,xray,H:L,6O1S,1.70,xray,E,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5
-4ogx_H+L|A_4,U:U,4OGX,2.40,xray,H:L,A,4PUB,1.75,xray,H:L,5TJX,1.41,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5
-4ogy_M+N|B_0,U:U,4OGY,2.10,xray,M:N,B,4PUB,1.75,xray,H:L,6O1S,1.70,xray,E,0,0,small molecules with n_atoms > 15 detected,0,1,0,4,0,2,1,5
-4ogy_M+N|B_4,U:U,4OGY,2.10,xray,M:N,B,4PUB,1.75,xray,H:L,5TJX,1.41,xray,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,4,0,2,1,5
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+4ogx_H+L|A_1,U:U,4OGX,2.4,xray,H:L,A,4PUB,1.75,xray,H:L,2ANY,1.4,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,4,0.807,0.808,1.215
+4ogy_M+N|B_1,U:U,4OGY,2.1,xray,M:N,B,4PUB,1.75,xray,H:L,2ANY,1.4,xray,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,4,0,1,0,4,0.827,0.831,1.609
+4ogy_H+L|A_2,U:U,4OGY,2.1,xray,H:L,A,4PUB,1.75,xray,H:L,2ANW,1.85,xray,A,0,3,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,4,1.097,1.054,1.708
+4ogx_H+L|A_2,U:U,4OGX,2.4,xray,H:L,A,4PUB,1.75,xray,H:L,2ANW,1.85,xray,A,0,3,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,4,1.088,1.051,1.9
+4ogy_M+N|B_2,U:U,4OGY,2.1,xray,M:N,B,4PUB,1.75,xray,H:L,2ANW,1.85,xray,A,0,3,small molecules with n_atoms > 15 detected,0,1,0,4,0,1,0,4,1.115,1.073,2.064
+4ogy_H+L|A_3,U:U,4OGY,2.1,xray,H:L,A,4PUB,1.75,xray,H:L,6I44,1.36,xray,A,0,7,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,5,1.914,1.85,2.333
+4ogx_H+L|A_3,U:U,4OGX,2.4,xray,H:L,A,4PUB,1.75,xray,H:L,6I44,1.36,xray,A,0,7,small molecules with n_atoms > 15 detected,0,0,0,3,0,1,0,5,1.982,1.914,2.514
+4ogy_M+N|B_3,U:U,4OGY,2.1,xray,M:N,B,4PUB,1.75,xray,H:L,6I44,1.36,xray,A,0,7,small molecules with n_atoms > 15 detected,0,1,0,4,0,1,0,5,2.117,2.053,2.921
+4ogy_H+L|A_0,U:U,4OGY,2.1,xray,H:L,A,4PUB,1.75,xray,H:L,6O1S,1.7,xray,E,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5,1.027,1.014,1.64
+4ogy_H+L|A_4,U:U,4OGY,2.1,xray,H:L,A,4PUB,1.75,xray,H:L,5TJX,1.41,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5,1.06,1.047,1.656
+4ogx_H+L|A_0,U:U,4OGX,2.4,xray,H:L,A,4PUB,1.75,xray,H:L,6O1S,1.7,xray,E,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5,1.039,1.03,1.838
+4ogx_H+L|A_4,U:U,4OGX,2.4,xray,H:L,A,4PUB,1.75,xray,H:L,5TJX,1.41,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,3,0,2,1,5,1.072,1.063,1.845
+4ogy_M+N|B_0,U:U,4OGY,2.1,xray,M:N,B,4PUB,1.75,xray,H:L,6O1S,1.7,xray,E,0,0,small molecules with n_atoms > 15 detected,0,1,0,4,0,2,1,5,1.069,1.055,2.161
+4ogy_M+N|B_4,U:U,4OGY,2.1,xray,M:N,B,4PUB,1.75,xray,H:L,5TJX,1.41,xray,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,4,0,2,1,5,1.097,1.083,2.168
