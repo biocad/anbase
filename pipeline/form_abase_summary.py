@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from candidate_info import CandidateInfo, ANNOTATION
 from process_unbound_data import Conformation, ALIGNED, HETATMS_DELETED, \
-    SEQUENCES
+    SEQUENCES, CONSTRAINTS
 from prepper import PREPPED, SCHROD
 
 ABASE_SUMMARY_CSV = 'abase_summary.csv'
@@ -109,6 +109,7 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
     move_to_dir_path(PREPPED + '_' + SCHROD)
     move_to_dir_path(SEQUENCES)
     move_to_dir_path(ANNOTATION)
+    move_to_dir_path(CONSTRAINTS)
 
 
 if __name__ == '__main__':
@@ -125,7 +126,7 @@ if __name__ == '__main__':
     parser.add_option('--abase-data', default=ABASE_DATA_PATH,
                       dest='abase_data',
                       metavar='ABASE_DATA_PATH',
-                      help='Path where ABase\'s data will be stored '
+                      help='Path where abase\'s data will be stored '
                            '[default: {}]'.
                       format(DB_INFO_PATH))
     parser.add_option('--duplicates', default=DUPLICATES_PATH,

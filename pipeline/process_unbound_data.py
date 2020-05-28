@@ -2,7 +2,6 @@ import os
 import pickle
 import string
 from collections import defaultdict
-from xml.etree import ElementTree
 
 import numpy as np
 import pandas as pd
@@ -27,10 +26,11 @@ REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
 
 ALIGNED = 'aligned'
 HETATMS_DELETED = 'hetatms_deleted'
+CONSTRAINTS = 'constraints'
 
 SEQUENCES = 'seqs'
 
-INTERFACE_CUTOFF = 10
+INTERFACE_CUTOFF = 10.0
 
 DB_INFO_COLUMNS = ['comp_name', 'candidate_type', 'candidate_id',
                    'pdb_id_b', 'ab_chain_ids_b', 'ag_chain_ids_b',
@@ -146,7 +146,8 @@ class Conformation:
         for chain in self.ag_chains_b:
             self.ag_atoms_b += self.extract_cas(chain)
 
-        self.ab_interface_cas, self.ag_interface_cas = self.get_interface_cas()
+        self.ab_interface_cas, self.ag_interface_cas = self.get_interface_atoms(
+            self.ab_chains_b, self.ag_chains_b)
         self.interface_atoms = list(self.ab_interface_cas) + list(
             self.ag_interface_cas)
 
@@ -249,18 +250,31 @@ class Conformation:
 
         return cas
 
-    def get_interface_cas(self):
-        ab_interface_cas = []
-        ag_interface_cas = []
+    @staticmethod
+    @memoize
+    def get_interface_atoms(ab_chains, ag_chains, dist=INTERFACE_CUTOFF,
+                            only_ca=True):
+        ab_interface = []
+        ag_interface = []
 
-        for ab_at in self.ab_atoms_b:
-            for ag_at in self.ag_atoms_b:
-                if np.linalg.norm(
-                        ab_at.coord - ag_at.coord) < INTERFACE_CUTOFF:
-                    ab_interface_cas.append(ab_at)
-                    ag_interface_cas.append(ag_at)
+        for ab_chain in ab_chains:
+            for ag_chain in ag_chains:
+                for ab_res in ab_chain:
+                    for ag_res in ag_chain:
+                        for ab_at in ab_res:
+                            if only_ca and ab_at.get_id() != 'CA':
+                                continue
 
-        return frozenset(ab_interface_cas), frozenset(ag_interface_cas)
+                            for ag_at in ag_res:
+                                if only_ca and ag_at.get_id() != 'CA':
+                                    continue
+
+                                if np.linalg.norm(
+                                        ab_at.coord - ag_at.coord) < dist:
+                                    ab_interface.append(ab_at)
+                                    ag_interface.append(ag_at)
+
+        return frozenset(ab_interface), frozenset(ag_interface)
 
     @staticmethod
     def _load_structure(pdb_id, assembly_id):
@@ -292,10 +306,12 @@ class Conformation:
         seq2 = fetch_sequence(pdb_id2, chain_id2)
 
         return Conformation._matching_atoms_for_chains_seqs(chain1, seq1,
-                                                            chain2, seq2, only_cas=only_cas)
+                                                            chain2, seq2,
+                                                            only_cas=only_cas)
 
     @staticmethod
-    def _matching_atoms_for_chains_seqs(chain1, seq1, chain2, seq2, only_cas=True):
+    def _matching_atoms_for_chains_seqs(chain1, seq1, chain2, seq2,
+                                        only_cas=True):
         def extract_peps(chain):
             peps = []
 
@@ -392,12 +408,14 @@ class Conformation:
             atoms1_tmp = []
 
             for i in common_universal_ids:
-                atoms1_tmp.append(list(peps1[seq1_to_local[universal_to_seq1[i]]]))
+                atoms1_tmp.append(
+                    list(peps1[seq1_to_local[universal_to_seq1[i]]]))
 
             atoms2_tmp = []
 
             for i in common_universal_ids:
-                atoms2_tmp.append(list(peps2[seq2_to_local[universal_to_seq2[i]]]))
+                atoms2_tmp.append(
+                    list(peps2[seq2_to_local[universal_to_seq2[i]]]))
 
             atoms1 = []
             atoms2 = []
@@ -423,8 +441,8 @@ class Conformation:
         return atoms1, atoms2
 
     @staticmethod
-    def _inner_align(chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
-                     pdb_id_u, atoms):
+    def _get_corresponding_atoms(chain_ids_b, chains_b, pdb_id_b, structure_u,
+                                 chain_ids_u, pdb_id_u, atoms, only_cas=True):
         chains_u = Conformation.extract_chains(structure_u, chain_ids_u)
 
         atoms1 = []
@@ -437,21 +455,31 @@ class Conformation:
                 chain_ids_b[i],
                 chains_u[i],
                 pdb_id_u,
-                chain_ids_u[i])
+                chain_ids_u[i], only_cas=only_cas)
 
             atoms1 += tmp_atoms1
             atoms2 += tmp_atoms2
 
-        interface_atoms1 = []
-        interface_atoms2 = []
+        interface_atoms_b = []
+        interface_atoms_u = []
 
         for atom1, atom2 in zip(atoms1, atoms2):
             if atom1 in atoms:
-                interface_atoms1.append(atom1)
-                interface_atoms2.append(atom2)
+                interface_atoms_b.append(atom1)
+                interface_atoms_u.append(atom2)
 
-        Conformation.super_imposer.set_atoms(interface_atoms1,
-                                             interface_atoms2)
+        return interface_atoms_b, interface_atoms_u
+
+    @staticmethod
+    def _inner_align(chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
+                     pdb_id_u, atoms):
+        interface_atoms_b, interface_atoms_u = \
+            Conformation._get_corresponding_atoms(
+                chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
+                pdb_id_u, atoms)
+
+        Conformation.super_imposer.set_atoms(interface_atoms_b,
+                                             interface_atoms_u)
         Conformation.super_imposer.apply(structure_u.get_atoms())
 
         print(Conformation.super_imposer.rms)
@@ -478,6 +506,92 @@ class Conformation:
         self.write_candidate(epoch_name)
 
         self.is_aligned = True
+
+    def constraints_generation_epoch(self, epoch_name):
+        def group(l):
+            res = []
+
+            for x in l:
+                if len(res) == 0:
+                    res.append((x, x))
+                elif x.isnumeric() and res[-1][1].isnumeric() \
+                        and int(x) == int(res[-1][1]) + 1:
+                    res[-1] = (res[-1][0], x)
+                else:
+                    res.append((x, x))
+
+            return res
+
+        def form_constraints(atoms_set, chain_ids):
+            chains_to_constraints = {x: [] for x in chain_ids}
+
+            atoms = list(atoms_set)
+
+            atoms.sort(key=lambda x: x.get_full_id())
+
+            for atom in atoms:
+                _, residue_id, residue_suf = atom.get_parent().get_id()
+
+                chain_id = atom.get_parent().get_parent().get_id()
+                res_name = str(residue_id) + residue_suf.strip()
+
+                if len(chains_to_constraints[chain_id]) == 0:
+                    chains_to_constraints[chain_id].append(res_name)
+                elif chains_to_constraints[chain_id][-1] != res_name:
+                    chains_to_constraints[chain_id].append(res_name)
+
+            for key in chains_to_constraints:
+                chains_to_constraints[key] = group(
+                    chains_to_constraints[key])
+
+            return chains_to_constraints
+
+        def write_constraints(path, constraints):
+            with open(path, 'w') as f:
+                for chain_id, ranges in constraints.items():
+                    f.write('>{}:{}\n'.format(chain_id, 'attraction'))
+                    f.write(','.join(map(lambda x: x[0] if x[0] == x[1] else
+                    '{}-{}'.format(x[0], x[1]), ranges)))
+
+        chains_b = list(self.complex_structure_b.get_chains())
+        ab_chains_b = list(filter(
+            lambda x: self.complex_mapping_b[x.get_id()] in self.ab_chain_ids_b,
+            chains_b))
+        ag_chains_b = list(filter(
+            lambda x: self.complex_mapping_b[x.get_id()] in self.ag_chain_ids_b,
+            chains_b))
+
+        _, ag_interface_atoms_b = self.get_interface_atoms(ab_chains_b,
+                                                           ag_chains_b,
+                                                           dist=6.5,
+                                                           only_ca=False)
+        _, ag_interface_atoms_u = self._get_corresponding_atoms(
+            self.ag_chain_ids_b, self.ag_chains_b, self.pdb_id_b,
+            self.ag_structure_u, self.ag_chain_ids_u,
+            self.ag_pdb_id_u, ag_interface_atoms_b, only_cas=False)
+
+        pre_path = os.path.join(DB_PATH, self.dir_name, epoch_name)
+
+        chains_to_constraints_b = form_constraints(ag_interface_atoms_b,
+                                                   self.ag_chain_ids_b)
+        chains_to_constraints_u = form_constraints(ag_interface_atoms_u,
+                                                   self.ag_chain_ids_u)
+
+        path_to_constraints_b = os.path.join(pre_path,
+                                             self.pdb_id_b + '_ag_b.fasta')
+
+        if not os.path.exists(os.path.dirname(path_to_constraints_b)):
+            os.makedirs(os.path.dirname(path_to_constraints_b))
+
+        write_constraints(path_to_constraints_b, chains_to_constraints_b)
+
+        path_to_candidate = os.path.join(pre_path, str(self.candidate_id),
+                                         self.pdb_id_b + '_ag_u.fasta')
+
+        if not os.path.exists(os.path.dirname(path_to_candidate)):
+            os.makedirs(os.path.dirname(path_to_candidate))
+
+        write_constraints(path_to_candidate, chains_to_constraints_u)
 
     class SmallMoleculeStat:
         def __init__(self, name, n_atoms, dist):
@@ -993,6 +1107,7 @@ def process_filtered_csv(path_to_filtered_structures_csv,
                     candidate.alignment_epoch(ALIGNED)
                     candidate.write_info(db_info_csv)
                     candidate.hetatms_deletion_epoch(HETATMS_DELETED)
+                    candidate.constraints_generation_epoch(CONSTRAINTS)
 
                 except Exception as e:
                     rejected_complexes_csv.write('{},{},{},{}\n'.format(

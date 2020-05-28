@@ -93,6 +93,9 @@ the bound complex and its unbound structures.
 * `annotation` — folder that contains annotation for the 
 antibody in the bound complex and the antibody in its unbound
 form.
+* `constraints` — folder that contains constraints for the 
+antigen in the bound complex and the antigen in its unbound
+form.
 
 Also, each **comp_name** folder contains file 
 `alternative_candidates.csv`, that lists all the potential

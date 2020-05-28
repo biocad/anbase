@@ -359,9 +359,6 @@ def process(dir_path):
     data_path = os.path.join(dir_path, 'data')
 
     for comp_name in os.listdir(data_path):
-        if comp_name.startswith('1vfb'):
-            continue
-
         pre_path = os.path.join(data_path, comp_name)
 
         if not os.path.isdir(pre_path):
