@@ -147,7 +147,7 @@ class Conformation:
             self.ag_atoms_b += self.extract_cas(chain)
 
         self.ab_interface_cas, self.ag_interface_cas = self.get_interface_atoms(
-            self.ab_chains_b, self.ag_chains_b)
+            self.comp_name, self.ab_chains_b, self.ag_chains_b)
         self.interface_atoms = list(self.ab_interface_cas) + list(
             self.ag_interface_cas)
 
@@ -252,8 +252,12 @@ class Conformation:
 
     @staticmethod
     @memoize
-    def get_interface_atoms(ab_chains, ag_chains, dist=INTERFACE_CUTOFF,
+    def get_interface_atoms(comp_name, ab_chains,
+                            ag_chains, dist=INTERFACE_CUTOFF,
                             only_ca=True):
+
+        print(comp_name)  # needed for memoization, do not delete
+
         ab_interface = []
         ag_interface = []
 
@@ -561,7 +565,8 @@ class Conformation:
             lambda x: self.complex_mapping_b[x.get_id()] in self.ag_chain_ids_b,
             chains_b))
 
-        _, ag_interface_atoms_b = self.get_interface_atoms(ab_chains_b,
+        _, ag_interface_atoms_b = self.get_interface_atoms(self.comp_name,
+                                                           ab_chains_b,
                                                            ag_chains_b,
                                                            dist=6.5,
                                                            only_ca=False)
@@ -1139,4 +1144,5 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV)
+                         REJECTED_COMPLEXES_CSV, to_accept=['6al0_H+L|A',
+                                                            '3g6d_H+L|A'])
