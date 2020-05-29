@@ -275,6 +275,7 @@ class Conformation:
 
                                 if np.linalg.norm(
                                         ab_at.coord - ag_at.coord) < dist:
+                                    print(ag_at.get_full_id())
                                     ab_interface.append(ab_at)
                                     ag_interface.append(ag_at)
 
@@ -555,14 +556,14 @@ class Conformation:
                 for chain_id, ranges in constraints.items():
                     f.write('>{}:{}\n'.format(chain_id, 'attraction'))
                     f.write(','.join(map(lambda x: x[0] if x[0] == x[1] else
-                    '{}-{}'.format(x[0], x[1]), ranges)))
+                    '{}-{}'.format(x[0], x[1]), ranges)) + '\n')
 
         chains_b = list(self.complex_structure_b.get_chains())
         ab_chains_b = list(filter(
-            lambda x: self.complex_mapping_b[x.get_id()] in self.ab_chain_ids_b,
+            lambda x: x.get_id() in self.ab_chain_ids_b,
             chains_b))
         ag_chains_b = list(filter(
-            lambda x: self.complex_mapping_b[x.get_id()] in self.ag_chain_ids_b,
+            lambda x: x.get_id() in self.ag_chain_ids_b,
             chains_b))
 
         _, ag_interface_atoms_b = self.get_interface_atoms(self.comp_name,
@@ -1144,5 +1145,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV, to_accept=['6al0_H+L|A',
-                                                            '3g6d_H+L|A'])
+                         REJECTED_COMPLEXES_CSV)
