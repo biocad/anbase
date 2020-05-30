@@ -11,6 +11,8 @@ from process_unbound_data import SEQUENCES, HETATMS_DELETED, \
 import pandas as pd
 import numpy as np
 
+from candidate_info import read_fasta
+
 DB_PATH = 'data'
 DOT_PDB = '.pdb'
 DOT_FASTA = '.fasta'
@@ -210,20 +212,6 @@ def interface_residue_ids(ab_chains, ag_chains):
         ag_res[ag_chain.id] = ag_chain_to_interface_residues[ag_chain]
 
     return ab_res, ag_res
-
-
-def read_fasta(path):
-    res = {}
-
-    with open(path, 'r') as f:
-        lines = f.readlines()
-
-        i = 0
-        while i < len(lines):
-            res[lines[i].split(':')[1].strip()] = lines[i + 1].strip()
-            i += 2
-
-    return res
 
 
 def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_csv,

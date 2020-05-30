@@ -42,13 +42,13 @@ def similarity_of_abs(comp1, comp2):
 
 
 def similarity_of_two_complexes(comp1, comp2):
-    if len(comp1.ab_seqs) != len(comp2.ab_seqs) or \
+    if len(comp1.ab_seqs_b) != len(comp2.ab_seqs_b) or \
             len(comp1.ag_seqs) != len(comp2.ag_seqs):
         return False
 
     ab_chains_similar = similarity_of_abs(comp1, comp2)
     ag_chains_similar = all(map(lambda p: similarity_of_two_seqs(p[0], p[1]),
-                                zip(comp1.ag_seqs, comp2.ag_seqs)))
+                                zip(comp1.ag_seqs_b, comp2.ag_seqs_b)))
 
     return ab_chains_similar and ag_chains_similar
 
