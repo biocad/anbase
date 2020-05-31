@@ -445,21 +445,29 @@ class Conformation:
         return atoms1, atoms2
 
     @staticmethod
-    def _get_corresponding_atoms(chain_ids_b, chains_b, pdb_id_b, structure_u,
-                                 chain_ids_u, pdb_id_u, atoms, only_cas=True):
+    def get_corresponding_atoms(chain_ids_b, chains_b, pdb_id_b, structure_u,
+                                chain_ids_u, pdb_id_u, atoms, only_cas=True,
+                                seqs_b=None, seqs_u=None):
         chains_u = Conformation.extract_chains(structure_u, chain_ids_u)
 
         atoms1 = []
         atoms2 = []
 
         for i in range(len(chains_u)):
-            tmp_atoms1, tmp_atoms2 = Conformation._matching_atoms_for_chains(
-                chains_b[i],
-                pdb_id_b,
-                chain_ids_b[i],
-                chains_u[i],
-                pdb_id_u,
-                chain_ids_u[i], only_cas=only_cas)
+            if seqs_b is not None and seqs_u is not None:
+                tmp_atoms1, tmp_atoms2 = Conformation._matching_atoms_for_chains_seqs(
+                    chains_b[i],
+                    seqs_b[i],
+                    chains_u[i],
+                    seqs_u[i], only_cas=only_cas)
+            else:
+                tmp_atoms1, tmp_atoms2 = Conformation._matching_atoms_for_chains(
+                    chains_b[i],
+                    pdb_id_b,
+                    chain_ids_b[i],
+                    chains_u[i],
+                    pdb_id_u,
+                    chain_ids_u[i], only_cas=only_cas)
 
             atoms1 += tmp_atoms1
             atoms2 += tmp_atoms2
@@ -478,7 +486,7 @@ class Conformation:
     def _inner_align(chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
                      pdb_id_u, atoms):
         interface_atoms_b, interface_atoms_u = \
-            Conformation._get_corresponding_atoms(
+            Conformation.get_corresponding_atoms(
                 chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
                 pdb_id_u, atoms)
 
@@ -510,93 +518,6 @@ class Conformation:
         self.write_candidate(epoch_name)
 
         self.is_aligned = True
-
-    def constraints_generation_epoch(self, epoch_name):
-        def group(l):
-            res = []
-
-            for x in l:
-                if len(res) == 0:
-                    res.append((x, x))
-                elif x.isnumeric() and res[-1][1].isnumeric() \
-                        and int(x) == int(res[-1][1]) + 1:
-                    res[-1] = (res[-1][0], x)
-                else:
-                    res.append((x, x))
-
-            return res
-
-        def form_constraints(atoms_set, chain_ids):
-            chains_to_constraints = {x: [] for x in chain_ids}
-
-            atoms = list(atoms_set)
-
-            atoms.sort(key=lambda x: x.get_full_id())
-
-            for atom in atoms:
-                _, residue_id, residue_suf = atom.get_parent().get_id()
-
-                chain_id = atom.get_parent().get_parent().get_id()
-                res_name = str(residue_id) + residue_suf.strip()
-
-                if len(chains_to_constraints[chain_id]) == 0:
-                    chains_to_constraints[chain_id].append(res_name)
-                elif chains_to_constraints[chain_id][-1] != res_name:
-                    chains_to_constraints[chain_id].append(res_name)
-
-            for key in chains_to_constraints:
-                chains_to_constraints[key] = group(
-                    chains_to_constraints[key])
-
-            return chains_to_constraints
-
-        def write_constraints(path, constraints):
-            with open(path, 'w') as f:
-                for chain_id, ranges in constraints.items():
-                    f.write('>{}:{}\n'.format(chain_id, 'attraction'))
-                    f.write(','.join(map(lambda x: x[0] if x[0] == x[1] else
-                    '{}-{}'.format(x[0], x[1]), ranges)))
-
-        chains_b = list(self.complex_structure_b.get_chains())
-        ab_chains_b = list(filter(
-            lambda x: self.complex_mapping_b[x.get_id()] in self.ab_chain_ids_b,
-            chains_b))
-        ag_chains_b = list(filter(
-            lambda x: self.complex_mapping_b[x.get_id()] in self.ag_chain_ids_b,
-            chains_b))
-
-        _, ag_interface_atoms_b = self.get_interface_atoms(self.comp_name,
-                                                           ab_chains_b,
-                                                           ag_chains_b,
-                                                           dist=6.5,
-                                                           only_ca=False)
-        _, ag_interface_atoms_u = self._get_corresponding_atoms(
-            self.ag_chain_ids_b, self.ag_chains_b, self.pdb_id_b,
-            self.ag_structure_u, self.ag_chain_ids_u,
-            self.ag_pdb_id_u, ag_interface_atoms_b, only_cas=False)
-
-        pre_path = os.path.join(DB_PATH, self.dir_name, epoch_name)
-
-        chains_to_constraints_b = form_constraints(ag_interface_atoms_b,
-                                                   self.ag_chain_ids_b)
-        chains_to_constraints_u = form_constraints(ag_interface_atoms_u,
-                                                   self.ag_chain_ids_u)
-
-        path_to_constraints_b = os.path.join(pre_path,
-                                             self.pdb_id_b + '_ag_b.fasta')
-
-        if not os.path.exists(os.path.dirname(path_to_constraints_b)):
-            os.makedirs(os.path.dirname(path_to_constraints_b))
-
-        write_constraints(path_to_constraints_b, chains_to_constraints_b)
-
-        path_to_candidate = os.path.join(pre_path, str(self.candidate_id),
-                                         self.pdb_id_b + '_ag_u.fasta')
-
-        if not os.path.exists(os.path.dirname(path_to_candidate)):
-            os.makedirs(os.path.dirname(path_to_candidate))
-
-        write_constraints(path_to_candidate, chains_to_constraints_u)
 
     class SmallMoleculeStat:
         def __init__(self, name, n_atoms, dist):
@@ -1112,7 +1033,6 @@ def process_filtered_csv(path_to_filtered_structures_csv,
                     candidate.alignment_epoch(ALIGNED)
                     candidate.write_info(db_info_csv)
                     candidate.hetatms_deletion_epoch(HETATMS_DELETED)
-                    candidate.constraints_generation_epoch(CONSTRAINTS)
 
                 except Exception as e:
                     rejected_complexes_csv.write('{},{},{},{}\n'.format(
@@ -1144,5 +1064,4 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 if __name__ == '__main__':
     process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV, to_accept=['6al0_H+L|A',
-                                                            '3g6d_H+L|A'])
+                         REJECTED_COMPLEXES_CSV)

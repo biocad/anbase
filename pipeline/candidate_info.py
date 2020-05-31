@@ -1,7 +1,10 @@
 import os
 
+from Bio.PDB import PDBParser
 from fetch_unbound_data import CHAINS_SEPARATOR, sub_nan
 import numpy as np
+
+from process_unbound_data import SEQUENCES, Conformation
 
 DB_INFO_PATH = 'db_info.csv'
 DB_PATH = 'data'
@@ -9,6 +12,7 @@ DB_PATH = 'data'
 SEQS = 'seqs'
 ANNOTATION = 'annotation'
 
+DOT_PDB = '.pdb'
 DOT_FASTA = '.fasta'
 
 DUPLICATES_CSV = 'duplicates.csv'
@@ -42,8 +46,10 @@ class CandidateInfo:
         self.ag_mismatches = df_row['ag_mismatches_cnt']
         self.small_mols_msg = sub_nan(df_row['small_molecules_message'])
 
-        self.ab_seqs = []
-        self.ag_seqs = []
+        self.ab_seqs_b = []
+        self.ag_seqs_b = []
+        self.ab_seqs_u = []
+        self.ag_seqs_u = []
 
         self.ab_cdrs_annotation_b = []
 
@@ -65,8 +71,8 @@ class CandidateInfo:
         selection_b = df_gaps_b['comp_name'] == self.comp_name
 
         selection_u = np.logical_and(df_gaps_u['comp_name'] == self.comp_name,
-                                   df_gaps_u[
-                                       'candidate_id'] == self.candidate_id)
+                                     df_gaps_u[
+                                         'candidate_id'] == self.candidate_id)
 
         if any(selection_b):
             df_gaps_row = df_gaps_b[selection_b].iloc[0]
@@ -84,7 +90,7 @@ class CandidateInfo:
 
     def to_string(self, with_candidate_id=True):
         return ','.join([self.comp_name + (('_' + self.candidate_id) if
-                         with_candidate_id else ''),
+                                           with_candidate_id else ''),
                          self.candidate_type,
                          self.pdb_id_b.upper(),
                          self.resolution_b,
@@ -132,12 +138,61 @@ class CandidateInfo:
         complex_fasta_b = read_fasta(
             os.path.join(os.path.join(comp_path, SEQS), self.pdb_id_b +
                          DOT_FASTA))
+        ab_fasta_u = read_fasta(
+            os.path.join(os.path.join(comp_path, SEQS, str(self.candidate_id)),
+                         self.pdb_id_b +
+                         '_ab_u' + DOT_FASTA))
+        ag_fasta_u = read_fasta(
+            os.path.join(os.path.join(comp_path, SEQS, str(self.candidate_id)),
+                         self.pdb_id_b +
+                         '_ag_u' + DOT_FASTA))
 
         for x in self.ab_chain_ids_b:
-            self.ab_seqs.append(complex_fasta_b[x])
+            self.ab_seqs_b.append(complex_fasta_b[x])
 
         for x in self.ag_chain_ids_b:
-            self.ag_seqs.append(complex_fasta_b[x])
+            self.ag_seqs_b.append(complex_fasta_b[x])
+
+        for x in self.ab_chain_ids_u:
+            self.ab_seqs_u.append(ab_fasta_u[x])
+
+        for x in self.ag_chain_ids_u:
+            self.ag_seqs_u.append(ag_fasta_u[x])
+
+    # noinspection PyAttributeOutsideInit
+    def to_conformation_like(self, db_path, prev_epoch):
+        pdb_parser = PDBParser()
+
+        self.comp_path = os.path.join(db_path, self.comp_name)
+
+        epoch_path = os.path.join(self.comp_path, prev_epoch)
+
+        self.load_sequences(db_path)
+
+        complex_name_b = self.pdb_id_b
+        complex_path_b = os.path.join(epoch_path, complex_name_b + DOT_PDB)
+        self.complex_structure_b = pdb_parser.get_structure(self.comp_name,
+                                                            complex_path_b)
+        self.ab_chains_b = Conformation.extract_chains(
+            self.complex_structure_b, self.ab_chain_ids_b)
+        self.ag_chains_b = Conformation.extract_chains(
+            self.complex_structure_b, self.ag_chain_ids_b)
+
+        candidate_path = os.path.join(epoch_path, str(self.candidate_id))
+
+        ab_name_u = self.pdb_id_b + '_ab_u'
+        ab_path_u = os.path.join(candidate_path, ab_name_u + DOT_PDB)
+        self.ab_structure_u = pdb_parser.get_structure('ab', ab_path_u)
+        self.ab_chains_u = Conformation.extract_chains(
+            self.ab_structure_u, self.ab_chain_ids_u)
+
+        ag_name_u = self.pdb_id_b + '_ag_u'
+        ag_path_u = os.path.join(candidate_path, ag_name_u + DOT_PDB)
+        self.ag_structure_u = pdb_parser.get_structure('ag', ag_path_u)
+        self.ag_chains_u = Conformation.extract_chains(
+            self.ag_structure_u, self.ag_chain_ids_u)
+
+        return self
 
 
 def read_fasta(path):

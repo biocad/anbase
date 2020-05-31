@@ -135,10 +135,10 @@ class Candidate:
                                                        ag_chain_ids_u)
 
         self.ab_interface_cas_b, self.ag_interface_cas_b = \
-            get_interface_atoms(self.ab_struct_b, self.ag_struct_b, only_cas=True)
+            Conformation.get_interface_atoms(self.ab_struct_b, self.ag_struct_b, only_cas=True)
 
         self.ab_interface_atoms_u, self.ag_interface_atoms_u = \
-            get_interface_atoms(self.ab_struct_u, self.ag_struct_u)
+            Conformation.get_interface_atoms(self.ab_struct_u, self.ag_struct_u)
 
     def fetch_struct(self, suff):
         return pdb_parser.get_structure(self.pdb_id_b, os.path.join(self.path,
@@ -324,30 +324,6 @@ def process_alternative_candidates(path_to_comp, comp_row):
     os.remove(path_to_alternative_candidates_csv)
     alternative_candidates_tbl.to_csv(path_to_alternative_candidates_csv,
                                       na_rep='NA', index=False)
-
-
-INTERFACE_CUTOFF = 10
-
-
-def get_interface_atoms(ab_struct, ag_struct, only_cas=False):
-    ab_interface_atoms = set()
-    ag_interface_atoms = set()
-
-    ab_ca_atoms = get_atoms(ab_struct, only_ca=True)
-    ag_ca_atoms = get_atoms(ag_struct, only_ca=True)
-
-    for ab_atom in ab_ca_atoms:
-        for ag_atom in ag_ca_atoms:
-            if np.linalg.norm(ab_atom.coord - ag_atom.coord) < \
-                    INTERFACE_CUTOFF:
-                ab_interface_atoms.add(ab_atom)
-                ag_interface_atoms.add(ag_atom)
-
-    if not only_cas:
-        ab_interface_atoms = [y for x in ab_interface_atoms for y in list(x.get_parent())]
-        ag_interface_atoms = [y for x in ag_interface_atoms for y in list(x.get_parent())]
-
-    return frozenset(ab_interface_atoms), frozenset(ag_interface_atoms)
 
 
 def process(dir_path):
