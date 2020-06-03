@@ -24,6 +24,7 @@ DB_INFO_PATH = 'db_info.csv'
 pdb_parser = PDBParser()
 
 CONSTRAINTS = 'constraints'
+EPITOPE = 'epitope'
 
 CLOSE_CUTOFF = 6.5
 
@@ -131,6 +132,12 @@ if __name__ == '__main__':
                       help='Name of the epoch structures from which will be '
                            'checked for gaps. [default: {}]'.format(
                           HETATMS_DELETED))
+    parser.add_option('--name-of-constraints-folder', default=EPITOPE,
+                      dest='constraints_folder_name',
+                      metavar='CONSTRAINTS_FOLDER_NAME',
+                      help='Name of the folder where constraints will be '
+                           'stored for each complex. [default: {}]'.format(
+                          EPITOPE))
     parser.add_option('--only-uu', default=False,
                       dest='only_uu', metavar='ONLY_UU',
                       help='Flag to process only candidates of type UU. '
@@ -155,7 +162,7 @@ if __name__ == '__main__':
             generate_constraints(
                 candidate_info.to_conformation_like(options.db,
                                                     options.prev_epoch),
-                CONSTRAINTS)
+                options.constraints_folder_name)
         except Exception as e:
             print('Couldn\'t process candidate:', candidate_name,
                   'reason:', e, flush=True)
