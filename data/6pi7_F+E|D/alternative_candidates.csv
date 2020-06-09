@@ -1,0 +1,8 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+6pi7_F+E|D_0,B:U,6PI7,2.8,xray,F:E,D,6pi7,2.8,xray,F:E,5J39,1.95,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+6pi7_F+E|D_2,B:U,6PI7,2.8,xray,F:E,D,6pi7,2.8,xray,F:E,6B57,1.93,xray,A,0,15,NA,0,0,0,0,0,0,0,0
+6pi7_F+E|D_3,B:U,6PI7,2.8,xray,F:E,D,6pi7,2.8,xray,F:E,6B57,1.93,xray,B,0,15,NA,0,0,0,0,0,0,0,0
+6pi7_C+B|A_0,B:U,6PI7,2.8,xray,C:B,A,6pi7,2.8,xray,C:B,5J39,1.95,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+6pi7_C+B|A_1,B:U,6PI7,2.8,xray,C:B,A,6pi7,2.8,xray,C:B,5J39,1.95,xray,B,0,0,NA,0,0,0,0,0,0,0,0
+6pi7_C+B|A_2,B:U,6PI7,2.8,xray,C:B,A,6pi7,2.8,xray,C:B,6B57,1.93,xray,A,0,15,NA,0,0,0,0,0,0,0,0
+6pi7_C+B|A_3,B:U,6PI7,2.8,xray,C:B,A,6pi7,2.8,xray,C:B,6B57,1.93,xray,B,0,15,NA,0,0,0,0,0,0,0,0

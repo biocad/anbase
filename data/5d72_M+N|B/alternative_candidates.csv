@@ -1,0 +1,4 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+5d72_M+N|B_1,B:U,5D72,2.6,xray,M:N,B,5d72,2.6,xray,M:N,2GMF,2.4,xray,B,0,0,NA,0,0,0,0,0,0,0,0
+5d72_H+L|A_0,B:U,5D72,2.6,xray,H:L,A,5d72,2.6,xray,H:L,2GMF,2.4,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+5d72_H+L|A_1,B:U,5D72,2.6,xray,H:L,A,5d72,2.6,xray,H:L,2GMF,2.4,xray,B,0,0,NA,0,0,0,0,0,0,0,0

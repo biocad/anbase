@@ -1,20 +1,22 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
-6jb2_A|B_1,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6RT3,1.05,xray,A,1,0,NA,0,0,0,1,0,0,0,0,0.466,0.444,0.978
-6jb2_A|B_2,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0,0.5,0.469,1.115
-6jb2_A|B_3,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6F9Y,1.2,xray,A,1,0,NA,0,0,0,1,0,0,0,0,0.089,0.088,0.404
-6jb2_A|B_4,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6ABN,1.17,xray,A,1,0,NA,0,0,0,1,0,0,0,0,0.451,0.433,1.005
-1zvy_A|B_0,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6F9Z,1.2,xray,A,0,0,NA,0,0,0,1,0,0,0,0,0.001,0.001,0.001
-1zvy_A|B_1,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6RT3,1.05,xray,A,0,0,NA,0,0,0,1,0,0,0,0,0.471,0.455,1.175
-1zvy_A|B_2,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0,0.502,0.478,1.17
-1zvy_A|B_3,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6F9Y,1.2,xray,A,0,0,NA,0,0,0,1,0,0,0,0,0.089,0.088,0.404
-1zvy_A|B_4,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6ABN,1.17,xray,A,0,0,NA,0,0,0,1,0,0,0,0,0.457,0.443,1.208
-6jb5_A|B_0,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6F9Z,1.2,xray,A,1,0,NA,0,0,0,1,0,0,0,0,0.001,0.001,0.001
-6jb5_A|B_1,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6RT3,1.05,xray,A,1,0,NA,0,0,0,1,0,0,0,0,0.466,0.444,0.978
-6jb5_A|B_2,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,1,0,0,0,0,0.5,0.469,1.105
-6jb5_A|B_3,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6F9Y,1.2,xray,A,1,0,NA,0,0,0,1,0,0,0,0,0.089,0.088,0.404
-6jb5_A|B_4,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6ABN,1.17,xray,A,1,0,NA,0,0,0,1,0,0,0,0,0.452,0.433,1.005
-6jb8_A|B_0,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6F9Z,1.2,xray,A,0,0,NA,0,1,0,2,0,0,0,0,0.001,0.001,0.001
-6jb8_A|B_1,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6RT3,1.05,xray,A,0,0,NA,0,1,0,2,0,0,0,0,0.47,0.448,0.989
-6jb8_A|B_2,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,1,0,2,0,0,0,0,0.5,0.469,1.105
-6jb8_A|B_3,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6F9Y,1.2,xray,A,0,0,NA,0,1,0,2,0,0,0,0,0.089,0.088,0.404
-6jb8_A|B_4,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6ABN,1.17,xray,A,0,0,NA,0,1,0,2,0,0,0,0,0.451,0.433,1.005
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+6jb2_A|B_0,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6G8A,1.14,xray,C,1,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+6jb2_A|B_1,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6ADF,1.08,xray,A,1,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+6jb2_A|B_2,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6AGN,1.08,xray,A,1,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+6jb2_A|B_3,U:U,6JB2,1.5,xray,A,B,6JB9,1.15,xray,A,6F1P,1.12,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+1zvy_A|B_0,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+1zvy_A|B_1,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6ADF,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+1zvy_A|B_2,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6AGN,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+1zvy_A|B_3,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6F1P,1.12,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+1zvy_A|B_4,U:U,1ZVY,1.63,xray,A,B,6JB9,1.15,xray,A,6F1O,0.96,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+6jb5_A|B_0,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6F1P,1.12,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+6jb5_A|B_1,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6P4D,1.05,xray,A,1,3,NA,0,0,0,0,0,0,0,0
+6jb5_A|B_2,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6K5Q,1.18,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+6jb5_A|B_3,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6RO3,1.03,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+6jb5_A|B_4,U:U,6JB5,1.55,xray,A,B,6JB9,1.15,xray,A,6RT3,1.05,xray,A,1,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_0,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6A10,1.13,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_1,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6A10,1.13,xray,B,0,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_2,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6A10,1.13,xray,C,0,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_3,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6ADF,1.08,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+6jb8_A|B_4,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6RO3,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+6jb8_A|B_5,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6F1O,0.96,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+6jb8_A|B_6,U:U,6JB8,1.65,xray,A,B,6JB9,1.15,xray,A,6G8A,1.14,xray,C,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0

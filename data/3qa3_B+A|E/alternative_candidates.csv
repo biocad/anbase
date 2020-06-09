@@ -1,0 +1,40 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+3qa3_B+A|E_0,B:U,3QA3,3.0,xray,B:A,E,3qa3,3.0,xray,B:A,4XW2,2.0,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3qa3_B+A|E_2,B:U,3QA3,3.0,xray,B:A,E,3qa3,3.0,xray,B:A,1JLM,2.0,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3qa3_B+A|E_3,B:U,3QA3,3.0,xray,B:A,E,3qa3,3.0,xray,B:A,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3qa3_B+A|E_4,B:U,3QA3,3.0,xray,B:A,E,3qa3,3.0,xray,B:A,1NA5,1.5,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3q3g_K+J|L_0,B:U,3Q3G,2.7,xray,K:J,L,3q3g,2.7,xray,K:J,4XW2,2.0,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3q3g_K+J|L_1,B:U,3Q3G,2.7,xray,K:J,L,3q3g,2.7,xray,K:J,1MF7,1.25,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3q3g_K+J|L_2,B:U,3Q3G,2.7,xray,K:J,L,3q3g,2.7,xray,K:J,1JLM,2.0,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_K+J|L_3,B:U,3Q3G,2.7,xray,K:J,L,3q3g,2.7,xray,K:J,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_K+J|L_4,B:U,3Q3G,2.7,xray,K:J,L,3q3g,2.7,xray,K:J,1NA5,1.5,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3qa3_K+J|L_0,B:U,3QA3,3.0,xray,K:J,L,3qa3,3.0,xray,K:J,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3qa3_K+J|L_1,B:U,3QA3,3.0,xray,K:J,L,3qa3,3.0,xray,K:J,1NA5,1.5,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3qa3_K+J|L_2,B:U,3QA3,3.0,xray,K:J,L,3qa3,3.0,xray,K:J,4XW2,2.0,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3qa3_K+J|L_3,B:U,3QA3,3.0,xray,K:J,L,3qa3,3.0,xray,K:J,1JLM,2.0,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3qa3_K+J|L_4,B:U,3QA3,3.0,xray,K:J,L,3qa3,3.0,xray,K:J,1MF7,1.25,xray,A,0,2,NA,0,0,0,0,0,0,0,0
+3q3g_D+C|G_0,B:U,3Q3G,2.7,xray,D:C,G,3q3g,2.7,xray,D:C,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_D+C|G_1,B:U,3Q3G,2.7,xray,D:C,G,3q3g,2.7,xray,D:C,1NA5,1.5,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_D+C|G_2,B:U,3Q3G,2.7,xray,D:C,G,3q3g,2.7,xray,D:C,4XW2,2.0,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3q3g_D+C|G_3,B:U,3Q3G,2.7,xray,D:C,G,3q3g,2.7,xray,D:C,1JLM,2.0,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_D+C|G_4,B:U,3Q3G,2.7,xray,D:C,G,3q3g,2.7,xray,D:C,1MF7,1.25,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3qa3_D+C|G_0,B:U,3QA3,3.0,xray,D:C,G,3qa3,3.0,xray,D:C,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3qa3_D+C|G_1,B:U,3QA3,3.0,xray,D:C,G,3qa3,3.0,xray,D:C,1MF7,1.25,xray,A,0,2,NA,0,0,0,0,0,0,0,0
+3qa3_D+C|G_2,B:U,3QA3,3.0,xray,D:C,G,3qa3,3.0,xray,D:C,1JLM,2.0,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3qa3_D+C|G_3,B:U,3QA3,3.0,xray,D:C,G,3qa3,3.0,xray,D:C,4XW2,2.0,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3qa3_D+C|G_4,B:U,3QA3,3.0,xray,D:C,G,3qa3,3.0,xray,D:C,1NA5,1.5,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3q3g_H+F|I_0,B:U,3Q3G,2.7,xray,H:F,I,3q3g,2.7,xray,H:F,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_H+F|I_1,B:U,3Q3G,2.7,xray,H:F,I,3q3g,2.7,xray,H:F,4XW2,2.0,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3q3g_H+F|I_2,B:U,3Q3G,2.7,xray,H:F,I,3q3g,2.7,xray,H:F,1JLM,2.0,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_H+F|I_3,B:U,3Q3G,2.7,xray,H:F,I,3q3g,2.7,xray,H:F,1NA5,1.5,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_H+F|I_4,B:U,3Q3G,2.7,xray,H:F,I,3q3g,2.7,xray,H:F,1MF7,1.25,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3q3g_B+A|E_0,B:U,3Q3G,2.7,xray,B:A,E,3q3g,2.7,xray,B:A,4XW2,2.0,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3q3g_B+A|E_1,B:U,3Q3G,2.7,xray,B:A,E,3q3g,2.7,xray,B:A,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_B+A|E_2,B:U,3Q3G,2.7,xray,B:A,E,3q3g,2.7,xray,B:A,1JLM,2.0,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3q3g_B+A|E_3,B:U,3Q3G,2.7,xray,B:A,E,3q3g,2.7,xray,B:A,1MF7,1.25,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3q3g_B+A|E_4,B:U,3Q3G,2.7,xray,B:A,E,3q3g,2.7,xray,B:A,1NA5,1.5,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3qa3_H+F|I_0,B:U,3QA3,3.0,xray,H:F,I,3qa3,3.0,xray,H:F,1IDO,1.7,xray,A,0,0,NA,0,0,0,0,0,0,0,0
+3qa3_H+F|I_1,B:U,3QA3,3.0,xray,H:F,I,3qa3,3.0,xray,H:F,4XW2,2.0,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+3qa3_H+F|I_2,B:U,3QA3,3.0,xray,H:F,I,3qa3,3.0,xray,H:F,1JLM,2.0,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3qa3_H+F|I_3,B:U,3QA3,3.0,xray,H:F,I,3qa3,3.0,xray,H:F,1NA5,1.5,xray,A,0,1,NA,0,0,0,0,0,0,0,0
+3qa3_H+F|I_4,B:U,3QA3,3.0,xray,H:F,I,3qa3,3.0,xray,H:F,1MF7,1.25,xray,A,0,2,NA,0,0,0,0,0,0,0,0

@@ -1,16 +1,16 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
-3ulu_F+E|A_5,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,1,3,0,0,1,3,0.247,0.24,0.79
-3ulu_F+E|A_6,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,D:C,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,1,3,0,0,1,4,0.229,0.225,0.462
-3ulu_F+E|A_7,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,1,3,0,0,1,4,0.163,0.164,0.858
-3ulv_F+E|A_4,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,H:L,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,4,0.001,0.001,0.001
-3ulv_F+E|A_5,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,3,0.247,0.24,0.79
-3ulv_F+E|A_6,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,D:C,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,4,0.229,0.225,0.462
-3ulv_F+E|A_7,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,4,0.164,0.166,0.865
-3ulu_F+E|A_0,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,H:L,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,1,3,0,0,1,4,0.2,0.215,0.851
-3ulu_F+E|A_1,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,1,3,0,0,1,3,0.316,0.322,1.171
-3ulu_F+E|A_2,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,D:C,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,1,3,0,0,1,4,0.302,0.311,0.98
-3ulu_F+E|A_3,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,1,3,0,0,1,4,0.26,0.273,1.205
-3ulv_F+E|A_0,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,H:L,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,4,0.201,0.217,0.858
-3ulv_F+E|A_1,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,3,0.316,0.322,1.171
-3ulv_F+E|A_2,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,D:C,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,4,0.303,0.312,0.988
-3ulv_F+E|A_3,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,3,0,0,1,4,0.259,0.273,1.223
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
+3ulv_F+E|A_3,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulu_F+E|A_4,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,H:L,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulv_F+E|A_7,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulu_F+E|A_0,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,H:L,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulu_F+E|A_1,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulu_F+E|A_3,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulv_F+E|A_0,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,H:L,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulv_F+E|A_1,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulv_F+E|A_2,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,D:C,2A0Z,2.4,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulu_F+E|A_5,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulu_F+E|A_6,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,D:C,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulu_F+E|A_7,U:U,3ULU,3.52,xray,F:E,A,3QPQ,1.9,xray,J:I,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulv_F+E|A_4,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,H:L,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulv_F+E|A_5,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,F:E,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+3ulv_F+E|A_6,U:U,3ULV,3.52,xray,F:E,A,3QPQ,1.9,xray,D:C,1ZIW,2.1,xray,A,0,4,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
