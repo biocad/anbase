@@ -47,7 +47,9 @@ ABASE_DATA_PATH = 'abase'
 
 def check_perfect_candidate(candidate):
     return candidate.in_between_u == 0 and candidate.one_side_u == 0 \
-           and candidate.small_mols_msg is None
+           and candidate.small_mols_msg is None and os.path.exists(
+        os.path.join(DB_PATH, candidate.comp_name, PREPPED,
+                     candidate.candidate_id))
 
 
 def finalize_complex(comp_name, candidate_infos, duplicates):
@@ -70,6 +72,9 @@ def finalize_complex(comp_name, candidate_infos, duplicates):
     all_candidates.sort(key=lambda x: x.ab_mismatches + x.ag_mismatches)
     all_candidates.sort(key=lambda x: x.one_side_u)
     all_candidates.sort(key=lambda x: x.in_between_u)
+    all_candidates.sort(key=lambda x: 0 if
+    os.path.exists(os.path.join(DB_PATH, x.comp_name, PREPPED,
+                                x.candidate_id)) else 1)
 
     return all_candidates[0], False, all_candidates[1:]
 
@@ -81,7 +86,8 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
         path_to_folder = os.path.join(comp_path, folder_name,
                                       candidate_info.candidate_id)
 
-        path_to_dst = os.path.join(dir_path, folder_name)
+        path_to_dst = os.path.join(dir_path, folder_name.replace('prepared',
+                                                                 'prepared_schrod'))
 
         try:
             if not os.path.exists(path_to_dst):
@@ -103,13 +109,18 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
                     os.path.join(path_to_dst, file))
         except Exception as e:
             print('Unsuccessful move:', path_to_folder, e, flush=True)
+            return False
+
+        return True
 
     move_to_dir_path(ALIGNED)
     move_to_dir_path(HETATMS_DELETED)
-    move_to_dir_path(PREPPED + '_' + SCHROD)
+    prepped_moved = move_to_dir_path(PREPPED)
     move_to_dir_path(SEQUENCES)
     move_to_dir_path(ANNOTATION)
     move_to_dir_path(CONSTRAINTS)
+
+    return prepped_moved
 
 
 if __name__ == '__main__':
@@ -153,14 +164,18 @@ if __name__ == '__main__':
     options, _ = parser.parse_args()
 
     db_df = pd.read_csv(options.db_info, dtype=str)
-    gaps_b_df = pd.read_csv(options.gaps_b, dtype=str)
-    gaps_u_df = pd.read_csv(options.gaps_u, dtype=str)
+
+    gaps = None
+
+    if os.path.exists(options.gaps_b) and os.path.exists(options.gaps_u):
+        gaps_b_df = pd.read_csv(options.gaps_b, dtype=str)
+        gaps_u_df = pd.read_csv(options.gaps_u, dtype=str)
 
     complexes = set()
     candidate_infos = defaultdict(list)
 
     for i in range(len(db_df)):
-        candidate_info = CandidateInfo(db_df.iloc[i], (gaps_b_df, gaps_u_df))
+        candidate_info = CandidateInfo(db_df.iloc[i], gaps)
 
         if options.only_uu and candidate_info.candidate_type != 'U:U':
             continue
@@ -201,15 +216,17 @@ if __name__ == '__main__':
             final_candidate, is_perfect, alternative_candidates = \
                 finalize_complex(comp, candidate_infos, duplicates)
 
-            abase_summary_csv.write(
-                final_candidate.to_string(with_candidate_id=False) +
-                ',' + str(is_perfect) + '\n')
-            abase_summary_csv.flush()
-
             comp_path = os.path.join(options.abase_data,
                                      final_candidate.comp_name)
 
-            move_candidate_to_dir(options.db, final_candidate, comp_path)
+            successful_move = move_candidate_to_dir(options.db,
+                                                    final_candidate, comp_path)
+
+            if successful_move:
+                abase_summary_csv.write(
+                    final_candidate.to_string(with_candidate_id=False) +
+                    ',' + str(is_perfect) + '\n')
+                abase_summary_csv.flush()
 
             with open(os.path.join(comp_path, ALTERNATIVE_CANDIDATES + '.csv'),
                       'w') as alternative_candidates_csv:

@@ -120,9 +120,26 @@ class CandidateInfo:
 
     def load_ab_annotation(self, db_path):
         comp_path = os.path.join(db_path, self.comp_name)
-        ab_fasta_b = read_annotation(
-            os.path.join(os.path.join(comp_path, ANNOTATION), self.pdb_id_b +
-                         DOT_FASTA))
+
+        path_to_ann_comp = os.path.join(comp_path, ANNOTATION, self.pdb_id_b +
+                                        DOT_FASTA)
+        path_to_fasta_ab = os.path.join(os.path.join(comp_path, ANNOTATION),
+                                        self.pdb_id_b +
+                                        '_ab_b' +
+                                        DOT_FASTA)
+
+        if os.path.exists(path_to_ann_comp) and \
+                (not os.path.exists(path_to_fasta_ab) or
+                     len(open(path_to_fasta_ab, 'r').readlines())) < 2:
+            ann = read_annotation(path_to_ann_comp)
+
+            with open(path_to_fasta_ab, 'w') as f:
+                for x in self.ab_chain_ids_b:
+                    for cdr in CDRS:
+                        f.writelines('>{}:{}\n{}\n'.
+                                     format(x, cdr, ann[(x, cdr)]))
+
+        ab_fasta_b = read_annotation(path_to_fasta_ab)
 
         for x in self.ab_chain_ids_b:
             annotation = {}
@@ -135,29 +152,37 @@ class CandidateInfo:
     def load_sequences(self, db_path):
         comp_path = os.path.join(db_path, self.comp_name)
 
-        complex_fasta_b = read_fasta(
-            os.path.join(os.path.join(comp_path, SEQS), self.pdb_id_b +
-                         DOT_FASTA))
-        ab_fasta_u = read_fasta(
+        ab_fasta_b = read_fasta(
+            os.path.join(os.path.join(comp_path, SEQS),
+                         self.pdb_id_b +
+                         '_ab_b' + DOT_FASTA))
+        ag_fasta_b = read_fasta(
+            os.path.join(os.path.join(comp_path, SEQS),
+                         self.pdb_id_b +
+                         '_ag_b' + DOT_FASTA))
+
+        self.complex_fasta_b = {**ab_fasta_b, **ag_fasta_b}
+
+        self.ab_fasta_u = read_fasta(
             os.path.join(os.path.join(comp_path, SEQS, str(self.candidate_id)),
                          self.pdb_id_b +
                          '_ab_u' + DOT_FASTA))
-        ag_fasta_u = read_fasta(
+        self.ag_fasta_u = read_fasta(
             os.path.join(os.path.join(comp_path, SEQS, str(self.candidate_id)),
                          self.pdb_id_b +
                          '_ag_u' + DOT_FASTA))
 
         for x in self.ab_chain_ids_b:
-            self.ab_seqs_b.append(complex_fasta_b[x])
+            self.ab_seqs_b.append(ab_fasta_b[x])
 
         for x in self.ag_chain_ids_b:
-            self.ag_seqs_b.append(complex_fasta_b[x])
+            self.ag_seqs_b.append(ag_fasta_b[x])
 
         for x in self.ab_chain_ids_u:
-            self.ab_seqs_u.append(ab_fasta_u[x])
+            self.ab_seqs_u.append(self.ab_fasta_u[x])
 
         for x in self.ag_chain_ids_u:
-            self.ag_seqs_u.append(ag_fasta_u[x])
+            self.ag_seqs_u.append(self.ag_fasta_u[x])
 
     # noinspection PyAttributeOutsideInit
     def to_conformation_like(self, db_path, prev_epoch):

@@ -1,8 +1,10 @@
 #!/bin/bash
 files=(*$1.pdb)
-maxtasks=50
+maxtasks=100
 ix=0
 len=${#files[@]}
+hostname=$(hostname | cut -d"." -f1)
+
 while [[ $ix -lt $len ]]
 do
   echo "[$(date)] Started iteration $ix" >> LOG.txt
@@ -32,11 +34,13 @@ do
     let "ix += 1"
   done
 
-  tasks=$($SCHRODINGER/jobcontrol -list | wc -l)
-  while [[ $tasks -ne 1 ]]
-  do
-    sleep 5
-    tasks=$($SCHRODINGER/jobcontrol -list | wc -l)
-    echo "[$(date)] waiting" >> LOG.txt
-  done
+  sleep 5
+done
+
+tasks=$($SCHRODINGER/jobcontrol -list | grep $hostname | wc -l)
+while [[ $tasks -ne 0 ]]
+do
+  sleep 5
+  tasks=$($SCHRODINGER/jobcontrol -list | grep $hostname | wc -l)
+  echo "[$(date)] waiting" >> LOG.txt
 done

@@ -1,5 +1,6 @@
 import os
 from collections import defaultdict
+from multiprocessing.pool import Pool
 
 from Bio import pairwise2
 from Bio.PDB import PDBParser
@@ -27,6 +28,18 @@ CONSTRAINTS = 'constraints'
 EPITOPE = 'epitope'
 
 CLOSE_CUTOFF = 6.5
+
+
+def generate_constraints_task(conformation_like, epoch_name):
+    candidate_name = conformation_like.comp_name + '_' + \
+                     str(conformation_like.candidate_id)
+    print('Processing candidate:', candidate_name)
+
+    try:
+        generate_constraints(conformation_like, epoch_name)
+    except Exception as e:
+        print('Couldn\'t process candidate:', candidate_name,
+              'reason:', e, flush=True)
 
 
 def generate_constraints(conformation_like, epoch_name):
@@ -142,27 +155,41 @@ if __name__ == '__main__':
                       dest='only_uu', metavar='ONLY_UU',
                       help='Flag to process only candidates of type UU. '
                            '[default: False]')
+    parser.add_option('--number-of-processes', default=1,
+                      dest='number_of_processes',
+                      metavar='NUMBER_OF_PROCESSES',
+                      help='Number of processes to use. '
+                           '[default: 1]')
     options, _ = parser.parse_args()
 
     df = pd.read_csv(options.db_info, dtype=str)
 
-    for i in range(len(df)):
-        candidate_info = CandidateInfo(df.iloc[i])
-        print('Processing', candidate_info.comp_name + '_' + str(
-            candidate_info.candidate_id), '[{}/{}]'.format(i + 1, len(df)),
-              flush=True)
+    with Pool(int(options.number_of_processes)) as pool:
+        tasks = []
 
-        if options.only_uu and candidate_info.candidate_type != 'U:U':
-            continue
+        for i in range(len(df)):
+            candidate_info = CandidateInfo(df.iloc[i])
 
-        candidate_name = '_'.join([candidate_info.comp_name,
-                                   candidate_info.candidate_id])
+            print('Reading', candidate_info.comp_name + '_' + str(
+                candidate_info.candidate_id), '[{}/{}]'.format(i + 1, len(df)),
+                  flush=True)
 
-        try:
-            generate_constraints(
-                candidate_info.to_conformation_like(options.db,
-                                                    options.prev_epoch),
-                options.constraints_folder_name)
-        except Exception as e:
-            print('Couldn\'t process candidate:', candidate_name,
-                  'reason:', e, flush=True)
+            if options.only_uu and candidate_info.candidate_type != 'U:U':
+                continue
+
+            try:
+                if int(options.number_of_processes) == 1:
+                    generate_constraints(
+                        candidate_info.to_conformation_like(options.db,
+                                                            options.prev_epoch),
+                        options.constraints_folder_name)
+                else:
+                    tasks.append(
+                        (candidate_info.to_conformation_like(options.db,
+                                                             options.prev_epoch),
+                         options.constraints_folder_name))
+            except Exception as e:
+                print(e)
+
+        if len(tasks) > 0:
+            pool.starmap(generate_constraints_task, tasks)
