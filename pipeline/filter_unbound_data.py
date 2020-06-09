@@ -11,11 +11,8 @@ from fetch_unbound_data import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
     get_while_true, comp_name_to_pdb_and_chains, CHAINS_SEPARATOR, \
     is_subsequence_of, get_real_seqs, fetch_struct
 
-FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
-REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
-
-FILTERED_COMPLEXES_CSV = 'filtered_complexes.csv'
-REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
+FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness_{}.csv'
+REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness_{}.csv'
 
 
 def process_csv(csv):
@@ -245,19 +242,21 @@ def filter_candidates_pack(comp_name, pdb_id, candidate_pdb_ids, chain_ids, ty,
         rejected_csv.flush()
 
 
-def filter_for_unboundness(processed_csv):
+def filter_for_unboundness(processed_csv,
+                           run_id):
     post_processed = set([])
 
-    if os.path.exists('post_processed.csv'):
-        with open('post_processed.csv', 'r') as f:
+    if os.path.exists('post_processed_{}.csv'.format(run_id)):
+        with open('post_processed_{}.csv'.format(run_id), 'r') as f:
             for line in f.readlines():
                 post_processed.add(line.strip())
 
     mode = 'a' if post_processed else 'w'
 
-    with open(FILTERED_STRUCTURES_CSV, mode) as filtered_csv, open(
-            REJECTED_STRUCTURES_CSV, mode) as rejected_csv, open(
-        'post_processed.csv', 'a') as post_processed_csv:
+    with open(FILTERED_STRUCTURES_CSV.format(run_id
+                                             ), mode) as filtered_csv, open(
+            REJECTED_STRUCTURES_CSV.format(run_id), mode) as rejected_csv, open(
+        'post_processed_{}.csv'.format(run_id), 'a') as post_processed_csv:
 
         if mode == 'w':
             filtered_csv.write(
@@ -267,28 +266,51 @@ def filter_for_unboundness(processed_csv):
                 'comp_name,type,chain_ids,candidate_pdb_id,'
                 'candidate_chain_ids,assembly_id,reason\n')
 
+        counter = 0
+
         for comp_name, candidates in processed_csv.items():
+            counter += 1
+
+            print('Processing {} [{}/{}]'.format(comp_name, counter,
+                                                 len(processed_csv)),
+                  flush=True)
+
             if comp_name in post_processed:
                 continue
 
-            pdb_id, ab_chains, ag_chains = comp_name_to_pdb_and_chains(
-                comp_name)
+            try:
+                pdb_id, ab_chains, ag_chains = comp_name_to_pdb_and_chains(
+                    comp_name)
 
-            ab_candidates_pdb_ids = get_pdb_ids(candidates, AB)
-            ag_candidates_pdb_ids = get_pdb_ids(candidates, AG)
+                ab_candidates_pdb_ids = get_pdb_ids(candidates, AB)
+                ag_candidates_pdb_ids = get_pdb_ids(candidates, AG)
 
-            filter_candidates_pack(comp_name, pdb_id, ab_candidates_pdb_ids,
-                                   ab_chains, AB,
-                                   filtered_csv, rejected_csv)
+                filter_candidates_pack(comp_name, pdb_id, ab_candidates_pdb_ids,
+                                       ab_chains, AB,
+                                       filtered_csv, rejected_csv)
 
-            filter_candidates_pack(comp_name, pdb_id, ag_candidates_pdb_ids,
-                                   ag_chains, AG,
-                                   filtered_csv, rejected_csv)
+                filter_candidates_pack(comp_name, pdb_id, ag_candidates_pdb_ids,
+                                       ag_chains, AG,
+                                       filtered_csv, rejected_csv)
 
-            post_processed_csv.write(str(comp_name) + '\n')
-            post_processed_csv.flush()
+                post_processed_csv.write(str(comp_name) + '\n')
+                post_processed_csv.flush()
+            except Exception as e:
+                print('Can\'t process:', e, flush=True)
 
 
 if __name__ == '__main__':
+    from optparse import OptionParser
+
+    parser = OptionParser()
+    parser.add_option('--run-id', default='0',
+                      dest='run_id',
+                      metavar='RUN_ID',
+                      help='ID of the current run [default: {}]'.
+                      format('0'))
+    options, _ = parser.parse_args()
+
     filter_for_unboundness(
-        process_csv(pd.read_csv('unbound_data.csv').drop_duplicates()))
+        process_csv(pd.read_csv('unbound_data_{}.csv'.format(options.run_id)).
+                    drop_duplicates()),
+        options.run_id)

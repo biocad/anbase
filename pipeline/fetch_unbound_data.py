@@ -1,6 +1,10 @@
 import json
 import math
 import operator
+import random
+import time
+from multiprocessing import Process, Queue
+from multiprocessing.pool import Pool
 
 import requests
 
@@ -34,8 +38,6 @@ NA = 'NA'
 DB_PATH = 'data'
 DOT_PDB = '.pdb'
 DOT_FASTA = '.fasta'
-
-MISMATCHED_LOG = 'mismatched.log'
 
 AG = 'AG'
 AB = 'AB'
@@ -158,6 +160,10 @@ def get_while_true(curl):
             if '404 Not Found' in content:
                 return None
 
+            if '429 Too Many Requests' in content:
+                roll = random.random()
+                time.sleep(roll)
+
             if content.startswith('<!DOCTYPE'):
                 continue
 
@@ -188,6 +194,10 @@ def post_while_true(url, json):
 
             if '404 Not Found' in content:
                 return None
+
+            if '429 Too Many Requests' in content:
+                roll = random.random()
+                time.sleep(roll)
 
             if content.startswith('<!DOCTYPE'):
                 continue
@@ -250,6 +260,7 @@ def get_real_seqs(struct, chain_ids_to_seqs):
 
         if not alignment_n:
             real_seqs.append(None)
+            continue
 
         alignment = alignment_n[0]
 
@@ -382,12 +393,12 @@ def sub_nan(val):
     return val
 
 
-def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
+def get_bound_complexes(run_id, sabdab_summary_df, to_accept=None, p=None):
     complexes = []
 
     obsolete = {}
 
-    with open('obsolete.log', 'a+') as obsolete_log:
+    with open('obsolete_{}.log'.format(run_id), 'a+') as obsolete_log:
         obsolete_log.seek(0)
 
         for line in obsolete_log.readlines():
@@ -400,52 +411,55 @@ def get_bound_complexes(sabdab_summary_df, to_accept=None, p=None):
                                     'protein | protein | protein']
 
         for _, row in sabdab_summary_df.iterrows():
-            counter += 1
+            try:
+                counter += 1
 
-            if p and not (p[0] <= counter < p[1]):
-                continue
-
-            if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] in \
-                    allowed_types_of_antigen:
-                if to_accept and row[PDB_ID].upper() not in to_accept:
+                if p and not (p[0] <= counter < p[1]):
                     continue
 
-                is_vhh_l = sub_nan(row[H_CHAIN]) is None and sub_nan(
-                    row[L_CHAIN]) is not None
-
-                if row[PDB_ID] in obsolete.keys():
-                    if obsolete[row[PDB_ID]]:
-                        continue
-                else:
-                    is_obs = is_obsolete(row[PDB_ID])
-
-                    obsolete_log.write(
-                        '{},{}\n'.format(row[PDB_ID], int(is_obs)))
-                    obsolete_log.flush()
-
-                    if is_obs:
+                if sub_nan(row[ANTIGEN_TYPE]) and row[ANTIGEN_TYPE] in \
+                        allowed_types_of_antigen:
+                    if to_accept and row[PDB_ID].upper() not in to_accept:
                         continue
 
-                antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
+                    is_vhh_l = sub_nan(row[H_CHAIN]) is None and sub_nan(
+                        row[L_CHAIN]) is not None
 
-                if is_vhh_l:
-                    new_complex = Complex(
-                        row[PDB_ID], sub_nan(row[L_CHAIN]),
-                        sub_nan(row[H_CHAIN]),
-                        antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+                    if row[PDB_ID] in obsolete.keys():
+                        if obsolete[row[PDB_ID]]:
+                            continue
+                    else:
+                        is_obs = is_obsolete(row[PDB_ID])
+
+                        obsolete_log.write(
+                            '{},{}\n'.format(row[PDB_ID], int(is_obs)))
+                        obsolete_log.flush()
+
+                        if is_obs:
+                            continue
+
+                    antigen_chains = row[ANTIGEN_CHAIN].split(' | ')
+
+                    if is_vhh_l:
+                        new_complex = Complex(
+                            row[PDB_ID], sub_nan(row[L_CHAIN]),
+                            sub_nan(row[H_CHAIN]),
+                            antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+                    else:
+                        new_complex = Complex(
+                            row[PDB_ID], sub_nan(row[H_CHAIN]),
+                            sub_nan(row[L_CHAIN]),
+                            antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
+
+                    if new_complex.has_unfetched_sequences():
+                        print('Has unfetched sequences:', row[PDB_ID])
+                        continue
+
+                    complexes.append(new_complex)
                 else:
-                    new_complex = Complex(
-                        row[PDB_ID], sub_nan(row[H_CHAIN]),
-                        sub_nan(row[L_CHAIN]),
-                        antigen_chains, sub_nan(row[ANTIGEN_HET_NAME]))
-
-                if new_complex.has_unfetched_sequences():
-                    print('Has unfetched sequences:', row[PDB_ID])
-                    continue
-
-                complexes.append(new_complex)
-            else:
-                print('Not protein-protein complex:', row[PDB_ID])
+                    print('Not protein-protein complex:', row[PDB_ID])
+            except Exception as e:
+                print('Complex not read', e)
 
     return complexes
 
@@ -542,6 +556,32 @@ def is_match(query_seq, hit_alignment,
     return is_subsequence_of(query_seq, hit_with_removed_gaps, is_ab=is_ab)
 
 
+def process_hit(seq, is_ab, hit):
+    hit_def = hit.find('Hit_def')
+    hit_def_parts = hit_def.text.split('|')[0].split(':')
+
+    hit_pdb_id = hit_def_parts[0]
+
+    hit_chain_ids = [x for x in hit_def_parts[2].split(',')]
+
+    res = []
+
+    for hsp in hit.find('Hit_hsps'):
+        hsp_hseq = hsp.find('Hsp_hseq').text
+
+        good_chain_ids = []
+
+        for hit_chain_id in hit_chain_ids:
+            if is_match(seq, hsp_hseq,
+                        is_ab=is_ab):
+                good_chain_ids.append(hit_chain_id)
+
+        if good_chain_ids:
+            res.append(Candidate(hit_pdb_id, good_chain_ids))
+
+    return res
+
+
 def get_blast_data(pdb_id, chain_id, seq, is_ab):
     curl = 'https://www.rcsb.org/pdb/rest/getBlastPDB2?structureId' \
            '={}&chainId={}&eCutOff=10.0&matrix=BLOSUM62&outputFormat=XML'. \
@@ -552,6 +592,8 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
 
     res = []
 
+    hits = []
+
     for child in xml:
         for iteration in child:
             for iteration_data in iteration:
@@ -559,25 +601,11 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
                     if hit.tag != 'Hit':
                         continue
 
-                    hit_def = hit.find('Hit_def')
-                    hit_def_parts = hit_def.text.split('|')[0].split(':')
+                    hits.append((seq, is_ab, hit))
 
-                    hit_pdb_id = hit_def_parts[0]
-
-                    hit_chain_ids = [x for x in hit_def_parts[2].split(',')]
-
-                    for hsp in hit.find('Hit_hsps'):
-                        hsp_hseq = hsp.find('Hsp_hseq').text
-
-                        good_chain_ids = []
-
-                        for hit_chain_id in hit_chain_ids:
-                            if is_match(seq, hsp_hseq,
-                                        is_ab=is_ab):
-                                good_chain_ids.append(hit_chain_id)
-
-                        if good_chain_ids:
-                            res.append(Candidate(hit_pdb_id, good_chain_ids))
+    with Pool(NUMBER_OF_PROCESSES) as pool:
+        for x in pool.starmap(process_hit, hits):
+            res += x
 
     return res
 
@@ -816,12 +844,7 @@ test_structures = [('1AHW', '1FGN', '1TFH'),
 
 
 def run_zlab_test():
-    with open(MISMATCHED_LOG, 'w') as f:
-        f.write(
-            'bound_id,unbound_id,bound_chain,unbound_chain,mismatches_count,' +
-            'len_diff\n')
-
-    comps = get_bound_complexes(structures_summary,
+    comps = get_bound_complexes('-1', structures_summary,
                                 list(map(lambda x: x[0], test_structures)))
 
     for pdb_id, unbound_antibody_id, unbound_antigen_id in test_structures:
@@ -871,8 +894,8 @@ def remove_if_contains(path, s):
             os.remove(os.path.join(path, file))
 
 
-def collect_unbound_structures(overwrite=True, p=None, to_accept=None):
-    comps = get_bound_complexes(structures_summary, p=p,
+def collect_unbound_structures(run_id, overwrite=True, p=None, to_accept=None):
+    comps = get_bound_complexes(run_id, structures_summary, p=p,
                                 to_accept=to_accept)
 
     processed = set()
@@ -880,9 +903,9 @@ def collect_unbound_structures(overwrite=True, p=None, to_accept=None):
     w_or_a = 'w' if overwrite else 'a'
     processed_open_mode = 'w' if overwrite else 'a+'
 
-    with open('not_processed.log', w_or_a) as not_processed, open(
-            'processed.log', processed_open_mode) as processed_log, \
-            open('unbound_data.csv',
+    with open('not_processed_{}.log'.format(run_id), processed_open_mode) as not_processed, open(
+            'processed_{}.log'.format(run_id), processed_open_mode) as processed_log, \
+            open('unbound_data_{}.csv'.format(run_id),
                  w_or_a) as unbound_data_csv:
 
         if overwrite:
@@ -895,6 +918,11 @@ def collect_unbound_structures(overwrite=True, p=None, to_accept=None):
 
             for processed_complex in processed_log.readlines():
                 processed.add(processed_complex.strip())
+
+            not_processed.seek(0)
+
+            for not_processed_complex in not_processed.readlines():
+                processed.add(not_processed_complex.strip())
 
         print('Complexes to process:', len(comps))
 
@@ -936,30 +964,51 @@ def collect_unbound_structures(overwrite=True, p=None, to_accept=None):
 
 
 if __name__ == '__main__':
-    if sys.argv and sys.argv[0] == 'test':
-        run_zlab_test()
+    from optparse import OptionParser
+
+    parser = OptionParser()
+    parser.add_option('--run-id', default='0',
+                      dest='run_id',
+                      metavar='RUN_ID',
+                      help='ID of the current run [default: {}]'.
+                      format('0'))
+    parser.add_option('--is-test', default=False, dest='is_test',
+                      metavar='IS_TEST',
+                      help='Run in test mode [default: {}]'.
+                      format('False'))
+    parser.add_option('--range', default=None,
+                      dest='range', metavar='RANGE',
+                      help='Range of complexes to process from sabdab_'
+                           'summary_all.tsv. [default: {}]'.format('None'))
+    parser.add_option('--continue', default=False,
+                      dest='cont', metavar='CONTINUE',
+                      help='Whether to continue execution of a script from '
+                           'the cached place [default: {}]'.format('False'))
+    parser.add_option('--number-of-processes', default=3,
+                      dest='n', metavar='N',
+                      help='n')
+    options, _ = parser.parse_args()
+
+    NUMBER_OF_PROCESSES = int(options.n)
+
+    if options.cont == 'True':
+        cont = True
     else:
-        p = list(filter(lambda x: x.startswith('--range='), sys.argv))
+        cont = False
 
-        if p:
-            rest = p[0][8:].strip('(').strip(')').split(',')
-            p = (int(rest[0]), int(rest[1]))
-        else:
-            p = None
+    if options.is_test:
+        run_zlab_test()
 
-        to_accept = None
+    if options.range:
+        [l, r] = options.range.replace(' ', '').strip('(').strip(')').split(',')
+        p = (int(l), int(r))
+    else:
+        p = None
 
-        if os.path.exists('uus.txt'):
-            with open('uus.txt', 'r') as f:
-                to_accept = list(map(lambda x: x[:4].upper(), f.readlines()))
+    to_accept = None
 
-        collect_unbound_structures(overwrite=len(
-            list(filter(lambda x: x == 'continue', sys.argv))) == 0, p=p)
-                                   # to_accept=['1BVK', '4FQI', '3V6Z', '2FD6',
-                                   #            '1E6J', '3RVW', '4GXU', '3EOA',
-                                   #            '2VIS', '1DQJ', '3EO1'])
+    if os.path.exists('uus.txt'):
+        with open('uus.txt', 'r') as f:
+            to_accept = list(map(lambda x: x[:4].upper(), f.readlines()))
 
-# ZLAB COMPS: '1E6J', '3RVW', '2VIS', '1WEJ', '4G6M', '3HMX', '3V6Z', '2FD6',
-#             '1JPS', '4GXU', '3EOA', '4DN4', '2VXT', '1BVK', '1MLC', '1VFB',
-#             '3MXW', '3G6D', '2W9E', '4FQI', '3L5W', '1AHW', '4G6J', '3HI6',
-#             '1DQJ', '3EO1'
+    collect_unbound_structures(options.run_id, overwrite=not cont, p=p)

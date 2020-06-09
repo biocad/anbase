@@ -217,47 +217,19 @@ def interface_residue_ids(ab_chains, ag_chains):
 def process_candidate(candidate, db_path, prev_epoch, gap_stats_b_csv,
                       processed_comps,
                       gap_stats_u_csv):
-    pdb_id_b, _, _ = comp_name_to_pdb_and_chains(candidate.comp_name)
+    candidate.to_conformation_like(db_path, prev_epoch)
+    candidate.load_sequences(db_path)
 
-    comp_path = os.path.join(db_path, candidate.comp_name)
-
-    epoch_path = os.path.join(comp_path, prev_epoch)
-    seqs_path = os.path.join(comp_path, SEQUENCES)
-
-    complex_name_b = pdb_id_b
-    complex_path_b = os.path.join(epoch_path, complex_name_b + DOT_PDB)
-    complex_structure_b = pdb_parser.get_structure(candidate.comp_name,
-                                                   complex_path_b)
-    complex_fasta_b = read_fasta(
-        os.path.join(seqs_path, complex_name_b + DOT_FASTA))
-
-    candidate_path = os.path.join(epoch_path, str(candidate.candidate_id))
-
-    [ab_suf, ag_suf] = ['_u', '_u']
-
-    ab_name_u = pdb_id_b + '_ab' + ab_suf
-    ab_path_u = os.path.join(candidate_path, ab_name_u + DOT_PDB)
-    ab_structure_u = pdb_parser.get_structure('ab', ab_path_u)
-    ab_fasta_u = read_fasta(
-        os.path.join(seqs_path, str(candidate.candidate_id),
-                     ab_name_u + DOT_FASTA))
-
-    ag_name_u = pdb_id_b + '_ag' + ag_suf
-    ag_path_u = os.path.join(candidate_path, ag_name_u + DOT_PDB)
-    ag_structure_u = pdb_parser.get_structure('ag', ag_path_u)
-    ag_fasta_u = read_fasta(
-        os.path.join(seqs_path, str(candidate.candidate_id),
-                     ag_name_u + DOT_FASTA))
-
-    gap_stats_b, gap_stats_u = get_gap_stats(complex_structure_b,
+    gap_stats_b, gap_stats_u = get_gap_stats(candidate.complex_structure_b,
                                              candidate.ab_chain_ids_b,
                                              candidate.ag_chain_ids_b,
-                                             ab_structure_u,
+                                             candidate.ab_structure_u,
                                              candidate.ab_chain_ids_u,
-                                             ag_structure_u,
+                                             candidate.ag_structure_u,
                                              candidate.ag_chain_ids_u,
-                                             complex_fasta_b, ab_fasta_u,
-                                             ag_fasta_u)
+                                             candidate.complex_fasta_b,
+                                             candidate.ab_fasta_u,
+                                             candidate.ag_fasta_u)
 
     if candidate.comp_name not in processed_comps:
         processed_comps.add(candidate.comp_name)
@@ -297,6 +269,11 @@ if __name__ == '__main__':
                            '[default: False]')
     options, _ = parser.parse_args()
 
+    if options.only_uu == 'True':
+        only_uu = True
+    else:
+        only_uu = False
+
     processed_comps = set([])
     processed_candidates = frozenset([])
 
@@ -334,7 +311,7 @@ if __name__ == '__main__':
         for i in range(len(df)):
             candidate_info = CandidateInfo(df.iloc[i])
 
-            if options.only_uu and candidate_info.candidate_type != 'U:U':
+            if only_uu and candidate_info.candidate_type != 'U:U':
                 continue
 
             candidate_name = '_'.join([candidate_info.comp_name,
@@ -344,6 +321,7 @@ if __name__ == '__main__':
                 continue
 
             try:
+                print(candidate_name)
                 process_candidate(candidate_info, options.db,
                                   options.prev_epoch, gap_stats_csv_b,
                                   processed_comps,

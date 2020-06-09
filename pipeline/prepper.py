@@ -1,9 +1,11 @@
 import multiprocessing
 import os
+import random
 import shutil
 import subprocess
 import time
 import re
+import pandas as pd
 
 DB_PATH = 'data'
 DOT_PDB = '.pdb'
@@ -25,26 +27,42 @@ SEQS = 'seqs'
 
 DOT_FASTA = '.fasta'
 
-DB_INFO_PATH = 'db_info.csv'
+DB_INFO_PATH = 'db_info_{}.csv'
 
 
-def get_pdb_paths(dir_path, prev_epoch, uu_comps):
+def get_pdb_paths(dir_path, prev_epoch, comps_to_take, fast_version=False):
     def accept_path(p):
-        if not uu_comps:
+        if not comps_to_take:
             return True
 
         m = re.search('/(...._(.\+.|.)\|(.\+.\+.\+.|.\+.\+.|.\+.|.))/', p)
         comp_name = m.group(1)
 
-        return comp_name in uu_comps
+        return comp_name in comps_to_take
 
     pdb_paths = []
 
-    for root, _, files in os.walk(dir_path):
+    for root, dirnames, files in os.walk(dir_path):
+        if not os.path.basename(root) == prev_epoch:
+            continue
+
+        if not accept_path(root):
+            continue
+
         for file in files:
-            if prev_epoch in root and accept_path(root) \
-                    and file.endswith(DOT_PDB):
+            if file.endswith(DOT_PDB):
                 pdb_paths.append(os.path.join(root, file))
+
+        random.shuffle(dirnames)
+        candidate_dirs = dirnames if not fast_version else \
+            dirnames[:min(2, len(dirnames))]
+
+        for candidate_dir in candidate_dirs:
+            candidate_dir_path = os.path.join(root, candidate_dir)
+
+            for file in os.listdir(candidate_dir_path):
+                if file.endswith(DOT_PDB):
+                    pdb_paths.append(os.path.join(candidate_dir_path, file))
 
     return pdb_paths
 
@@ -102,22 +120,15 @@ def pdb_fixer_prep(file_names, tmp_dir):
     return prep_in_mode(file_names, tmp_dir, PDBFIXER, DB_PATH)
 
 
-def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir, only_uu):
+def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir,
+              fast_version, comps_to_take, run_id):
     pdbs_to_copy = []
-
-    uu_comps = None
-
-    if only_uu:
-        with open(DB_INFO_PATH, 'r') as f:
-            uu_comps = frozenset(map(lambda x: x[0],
-                                     filter(lambda x: x[1] == 'U:U',
-                                            map(lambda x: x.split(','),
-                                                f.readlines()))))
 
     for file in os.listdir(db_path):
         dir_path = os.path.join(db_path, file)
         if os.path.isdir(dir_path):
-            pdbs_to_copy += get_pdb_paths(dir_path, last_epoch_name, uu_comps)
+            pdbs_to_copy += get_pdb_paths(dir_path, last_epoch_name, comps_to_take,
+                                          fast_version=fast_version)
 
     if not os.path.exists(tmp_dir):
         os.mkdir(tmp_dir)
@@ -141,7 +152,7 @@ def prep_pdbs(last_epoch_name, epoch_name, db_path, mode, tmp_dir, only_uu):
     while len(unprepped_names) > 0:
         print('New iteration:', len(unprepped_names), flush=True)
 
-        with open('unprepped_{}.log'.format(mode), 'w') as f:
+        with open('unprepped_{}_{}.log'.format(mode, run_id), 'w') as f:
             for name in unprepped_names:
                 f.write(name_to_path[name] + '\n')
                 f.flush()
@@ -190,11 +201,28 @@ if __name__ == '__main__':
                       dest='cur_epoch', metavar='CUR_EPOCH',
                       help='Name of the preparation epoch. [default: {}]'.
                       format(PREPPED))
-    parser.add_option('--only-uu', default=False,
-                      dest='only_uu', metavar='ONLY_UU',
-                      help='Flag to prepare only candidates of type UU. '
+    parser.add_option('--fast-version', default=False,
+                      dest='fast_version', metavar='FAST_VERSION',
+                      help='Skip most of the alternative candidates. '
                            '[default: False]')
+    parser.add_option('--run-id', default='0',
+                      dest='run_id',
+                      metavar='RUN_ID',
+                      help='ID of the current run [default: {}]'.
+                      format('0'))
     options, _ = parser.parse_args()
 
+    if options.fast_version == 'True':
+        is_fast_version = True
+    else:
+        is_fast_version = False
+
+    comps_to_take = set()
+    db_info = pd.read_csv(DB_INFO_PATH.format(options.run_id))
+
+    for i in range(len(db_info)):
+        comps_to_take.add(db_info.iloc[i]['comp_name'])
+
     prep_pdbs(options.prev_epoch, options.cur_epoch, options.db, options.mode,
-              options.tmp_dir, options.only_uu)
+              options.tmp_dir + '_' + options.run_id,
+              is_fast_version, comps_to_take, options.run_id)

@@ -18,8 +18,8 @@ from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
 from filter_unbound_data import union_models, \
     fetch_all_assemblies
 
-FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness.csv'
-REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness.csv'
+FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness_{}.csv'
+REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness_{}.csv'
 
 FILTERED_COMPLEXES_CSV = 'filtered_complexes.csv'
 REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
@@ -280,8 +280,7 @@ class Conformation:
 
         return frozenset(ab_interface), frozenset(ag_interface)
 
-    @staticmethod
-    def _load_structure(pdb_id, assembly_id):
+    def _load_structure(self, pdb_id, assembly_id):
         assemblies = fetch_all_assemblies(pdb_id)
         pdb = Conformation.pdb_parser.get_structure(pdb_id,
                                                     assemblies[
@@ -290,7 +289,7 @@ class Conformation:
         for x in assemblies:
             os.remove(x)
 
-        tmp_path = os.path.join(DB_PATH, 'tmp.pdb')
+        tmp_path = os.path.join(DB_PATH, self.comp_name + '_tmp.pdb')
 
         Conformation.pdb_io.set_structure(pdb)
         # delete all second variants from disordered atoms in order to get
@@ -906,7 +905,7 @@ def get_pbds_with_chains_and_assembly_ids(candidates, ty):
         filter(lambda x: x.ty == ty, candidates)))
 
 
-def get_candidates(comp_name, candidates, cache=False):
+def get_candidates(comp_name, candidates, processed, cache=False):
     pdb_id_b, ab_chain_ids_b, ag_chain_ids_b = comp_name_to_pdb_and_chains(
         comp_name)
 
@@ -947,6 +946,12 @@ def get_candidates(comp_name, candidates, cache=False):
         chains_ag_split = chains_ag.split(CHAINS_SEPARATOR)
         for ab_pdb_id_u, chains_ab, ab_assembly_id in ab_pdbs_with_chains:
             counter += 1
+
+            if (comp_name, counter) in processed:
+                continue
+
+            if not is_ag_u:
+                continue
 
             ab_chain_ids_u = chains_ab.split(CHAINS_SEPARATOR)
             try:
@@ -991,7 +996,7 @@ class FilteredStructure:
         self.assembly_id = line['assembly_id']
 
 
-def process_filtered_csv(path_to_filtered_structures_csv,
+def process_filtered_csv(run_id, path_to_filtered_structures_csv,
                          path_to_rejected_complexes_csv, to_accept=None):
     filtered_structures_csv = pd.read_csv(path_to_filtered_structures_csv)
 
@@ -1004,22 +1009,42 @@ def process_filtered_csv(path_to_filtered_structures_csv,
     filter_out_peptides(by_complex,
                         pd.read_csv('data/sabdab_summary_all.tsv', sep='\t'))
 
-    with open(path_to_rejected_complexes_csv, 'w') as rejected_complexes_csv, \
-            open('db_info.csv', 'w') as db_info_csv:
+    db_info_path = 'db_info_{}.csv'.format(run_id)
 
-        db_info_csv.write(DB_INFO_HEADER + '\n')
-        db_info_csv.flush()
+    processed = set()
+
+    if os.path.exists(db_info_path):
+        db_info = pd.read_csv(db_info_path)
+
+        for i in range(len(db_info)):
+            comp_name = db_info.iloc[i]['comp_name']
+            candidate_id = db_info.iloc[i]['candidate_id']
+
+            processed.add((comp_name, candidate_id))
+
+    with open(path_to_rejected_complexes_csv, 'w') as rejected_complexes_csv, \
+            open(db_info_path, 'a') as db_info_csv:
+
+        if len(processed) == 0:
+            db_info_csv.write(DB_INFO_HEADER + '\n')
+            db_info_csv.flush()
 
         rejected_complexes_csv.write(REJECTED_COMPLEXES_HEADER + '\n')
         rejected_complexes_csv.flush()
 
         with_candidates = {}
 
+        counter = 0
         for comp_name, structures in by_complex.items():
+            counter += 1
+            print('Reading complex', comp_name,
+                  '[{}/{}]'.format(counter, len(by_complex)))
+
             if to_accept and comp_name not in to_accept:
                 continue
 
             with_candidates[comp_name] = get_candidates(comp_name, structures,
+                                                        processed,
                                                         cache=True)
 
         counter = 1
@@ -1063,5 +1088,16 @@ def filter_out_peptides(filtered_structures, sabdab_tb):
 
 
 if __name__ == '__main__':
-    process_filtered_csv(FILTERED_STRUCTURES_CSV,
-                         REJECTED_COMPLEXES_CSV)
+    from optparse import OptionParser
+
+    parser = OptionParser()
+    parser.add_option('--run-id', default='0',
+                      dest='run_id',
+                      metavar='RUN_ID',
+                      help='ID of the current run [default: {}]'.
+                      format('0'))
+    options, _ = parser.parse_args()
+
+    process_filtered_csv(options.run_id,
+                         FILTERED_STRUCTURES_CSV.format(options.run_id),
+                         REJECTED_COMPLEXES_CSV.format(options.run_id))

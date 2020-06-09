@@ -1,3 +1,5 @@
+from multiprocessing.pool import Pool
+
 import pandas as pd
 
 import alignments
@@ -15,6 +17,8 @@ DOT_FASTA = '.fasta'
 DUPLICATES_CSV = 'duplicates.csv'
 
 CDRS = ['CDR1', 'CDR2', 'CDR3']
+
+NUMBER_OF_PROCESSES = 50
 
 
 def similarity_of_two_seqs(seq1, seq2):
@@ -43,7 +47,7 @@ def similarity_of_abs(comp1, comp2):
 
 def similarity_of_two_complexes(comp1, comp2):
     if len(comp1.ab_seqs_b) != len(comp2.ab_seqs_b) or \
-            len(comp1.ag_seqs) != len(comp2.ag_seqs):
+            len(comp1.ag_seqs_b) != len(comp2.ag_seqs_b):
         return False
 
     ab_chains_similar = similarity_of_abs(comp1, comp2)
@@ -100,12 +104,18 @@ if __name__ == '__main__':
             print('Searching for duplicates of:', comp.comp_name, flush=True)
 
             similar_comps = []
-            for other_comp in complexes_with_chains:
-                if other_comp.comp_name == comp.comp_name:
-                    continue
 
-                if similarity_of_two_complexes(comp, other_comp):
-                    similar_comps.append(other_comp.comp_name)
+            with Pool(NUMBER_OF_PROCESSES) as pool:
+                res = pool.starmap(similarity_of_two_complexes,
+                                      list((comp, x) for x in
+                                           complexes_with_chains))
+
+                for other_comp, are_similar in zip(complexes_with_chains, res):
+                    if other_comp.comp_name == comp.comp_name:
+                        continue
+
+                    if are_similar:
+                        similar_comps.append(other_comp.comp_name)
 
             for similar_comp in similar_comps:
                 duplicates_csv.write(
