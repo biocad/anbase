@@ -6,8 +6,9 @@ from collections import defaultdict
 
 from candidate_info import CandidateInfo, ANNOTATION
 from process_unbound_data import Conformation, ALIGNED, HETATMS_DELETED, \
-    SEQUENCES, CONSTRAINTS
+    SEQUENCES
 from prepper import PREPPED, SCHROD
+from generate_constraints import EPITOPE
 
 ABASE_SUMMARY_CSV = 'abase_summary.csv'
 
@@ -118,7 +119,7 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
     prepped_moved = move_to_dir_path(PREPPED)
     move_to_dir_path(SEQUENCES)
     move_to_dir_path(ANNOTATION)
-    move_to_dir_path(CONSTRAINTS)
+    move_to_dir_path(EPITOPE)
 
     return prepped_moved
 
