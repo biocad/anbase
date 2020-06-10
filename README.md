@@ -19,11 +19,9 @@ which is described below.
 Summary file has following fields:
 
 * **comp_name** — name of the given complex in terms of abase.
-* **type** — type of complex. As of now there's only one type of 
-complexes — **U:U**, what means that database contains both
+* **type** — type of complex. There are several types of complexes. **U:U** type means that database contains both
 unbound antibody and unbound antigen for the 
-complex. In the future there will
-be two more types of complexes: **U:B** and **B:U**.
+complex. **B:U** — bound antibody and unbound antigen.
 * **pdb_id_b** — PDB id of the *bound* complex.
 * **ab_chain_ids_b** — ids of the 
 antibody's chains in bound complex's structure.
