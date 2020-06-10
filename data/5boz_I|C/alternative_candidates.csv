@@ -1,0 +1,22 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+5boz_I|C_2,B:U,5BOZ,3.1,xray,I,C,5boz,3.1,xray,I,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_J|D_1,B:U,5BOZ,3.1,xray,J,D,5boz,3.1,xray,J,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_J|D_2,B:U,5BOZ,3.1,xray,J,D,5boz,3.1,xray,J,4MX5,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_L|F_2,B:U,5BOZ,3.1,xray,L,F,5boz,3.1,xray,L,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_L|F_3,B:U,5BOZ,3.1,xray,L,F,5boz,3.1,xray,L,4MX5,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_H|B_3,B:U,5BOZ,3.1,xray,H,B,5boz,3.1,xray,H,4MX5,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_H|B_0,B:U,5BOZ,3.1,xray,H,B,5boz,3.1,xray,H,1J1M,1.5,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_K|E_0,B:U,5BOZ,3.1,xray,K,E,5boz,3.1,xray,K,3PX8,1.29,xray,X,127,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_K|E_1,B:U,5BOZ,3.1,xray,K,E,5boz,3.1,xray,K,4MX5,1.52,xray,X,127,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_G|A_2,B:U,5BOZ,3.1,xray,G,A,5boz,3.1,xray,G,3PX8,1.29,xray,X,127,258,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_G|A_1,B:U,5BOZ,3.1,xray,G,A,5boz,3.1,xray,G,4HUO,1.52,xray,X,127,267,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_I|C_1,B:U,5BOZ,3.1,xray,I,C,5boz,3.1,xray,I,3PX8,1.29,xray,X,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_J|D_3,B:U,5BOZ,3.1,xray,J,D,5boz,3.1,xray,J,3PX8,1.29,xray,X,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_H|B_2,B:U,5BOZ,3.1,xray,H,B,5boz,3.1,xray,H,3PX8,1.29,xray,X,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_L|F_1,B:U,5BOZ,3.1,xray,L,F,5boz,3.1,xray,L,4HV3,1.54,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_H|B_1,B:U,5BOZ,3.1,xray,H,B,5boz,3.1,xray,H,4HUO,1.52,xray,X,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_J|D_0,B:U,5BOZ,3.1,xray,J,D,5boz,3.1,xray,J,1J1M,1.5,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_K|E_2,B:U,5BOZ,3.1,xray,K,E,5boz,3.1,xray,K,4HUO,1.52,xray,X,127,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_K|E_3,B:U,5BOZ,3.1,xray,K,E,5boz,3.1,xray,K,1J1M,1.5,xray,A,127,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_G|A_0,B:U,5BOZ,3.1,xray,G,A,5boz,3.1,xray,G,4MX5,1.52,xray,X,127,268,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+5boz_G|A_3,B:U,5BOZ,3.1,xray,G,A,5boz,3.1,xray,G,1J1M,1.5,xray,A,127,268,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA

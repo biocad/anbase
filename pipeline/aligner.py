@@ -2,6 +2,9 @@ import math
 import os
 import re
 import subprocess
+import traceback
+from multiprocessing.dummy import Pool
+from sys import stdout
 
 from Bio.PDB import PDBParser, PDBIO
 import numpy as np
@@ -13,6 +16,8 @@ DOT_PDB = '.pdb'
 DOT_MAE = '.mae'
 
 CHAINS_SEPARATOR = '+'
+
+NUMBER_OF_PROCESSES = 50
 
 pdb_parser = PDBParser()
 pdb_io = PDBIO()
@@ -135,10 +140,13 @@ class Candidate:
                                                        ag_chain_ids_u)
 
         self.ab_interface_cas_b, self.ag_interface_cas_b = \
-            Conformation.get_interface_atoms(self.ab_struct_b, self.ag_struct_b, only_cas=True)
+            Conformation.get_interface_atoms(self.pdb_id_b, self.ab_chains_b,
+                                             self.ag_chains_b, only_ca=True)
 
         self.ab_interface_atoms_u, self.ag_interface_atoms_u = \
-            Conformation.get_interface_atoms(self.ab_struct_u, self.ag_struct_u)
+            Conformation.get_interface_atoms(self.ab_pdb_id_u + '_' +
+                                             self.ag_pdb_id_u,
+                                             self.ab_struct_u, self.ag_struct_u)
 
     def fetch_struct(self, suff):
         return pdb_parser.get_structure(self.pdb_id_b, os.path.join(self.path,
@@ -237,13 +245,14 @@ def process_alternative_candidates(path_to_comp, comp_row):
     all_atoms_rmsds = []
 
     for candidate_name in alternative_candidates_tbl['candidate_name']:
+        ca_add = None
+        ncac_add = None
+        all_atoms_add = None
+
         try:
             candidate_row = alternative_candidates_tbl[
                 alternative_candidates_tbl[
                     'candidate_name'] == candidate_name].iloc[0]
-
-            if candidate_row['type'] != 'U:U':
-                continue
 
             alt_ab_pdb_id_u = candidate_row['ab_pdb_id_u']
             alt_ag_pdb_id_u = candidate_row['ag_pdb_id_u']
@@ -307,23 +316,30 @@ def process_alternative_candidates(path_to_comp, comp_row):
                     ca_rmsd, ncac_rmsd, all_atoms_rmsd = get_rmsds_stats(main_candidate,
                                                   alternative_candidate)
 
-                    ca_rmsds.append(ca_rmsd)
-                    ncac_rmsds.append(ncac_rmsd)
-                    all_atoms_rmsds.append(all_atoms_rmsd)
+                    ca_add = ca_rmsd
+                    ncac_add = ncac_rmsd
+                    all_atoms_add = all_atoms_rmsd
         except Exception as e:
-            ca_rmsds.append(None)
-            ncac_rmsds.append(None)
-            all_atoms_rmsds.append(None)
+            traceback.print_tb(e.__traceback__, file=stdout)
 
             print('Can\'t:', candidate_name, e)
+
+        ca_rmsds.append(ca_add)
+        ncac_rmsds.append(ncac_add)
+        all_atoms_rmsds.append(all_atoms_add)
 
     alternative_candidates_tbl['ca_rmsds'] = ca_rmsds
     alternative_candidates_tbl['ncac_rmsds'] = ncac_rmsds
     alternative_candidates_tbl['all_atoms_rmsds'] = all_atoms_rmsds
 
-    os.remove(path_to_alternative_candidates_csv)
     alternative_candidates_tbl.to_csv(path_to_alternative_candidates_csv,
                                       na_rep='NA', index=False)
+
+
+def pool_task(comp_name, pre_path, comp_row):
+    print('Processing {}'.format(comp_name), flush=True)
+
+    process_alternative_candidates(pre_path, comp_row)
 
 
 def process(dir_path):
@@ -334,21 +350,25 @@ def process(dir_path):
 
     data_path = os.path.join(dir_path, 'data')
 
-    for comp_name in os.listdir(data_path):
-        pre_path = os.path.join(data_path, comp_name)
+    with Pool(1) as pool:
+        tasks = []
 
-        if not os.path.isdir(pre_path):
-            continue
+        for comp_name in os.listdir(data_path):
+            pre_path = os.path.join(data_path, comp_name)
 
-        comp_row = abase_summary_tbl[
-            abase_summary_tbl[
-                'comp_name'] == comp_name].iloc[0]
+            if not os.path.isdir(pre_path):
+                continue
 
-        counter += 1
+            comp_row = abase_summary_tbl[
+                abase_summary_tbl[
+                    'comp_name'] == comp_name].iloc[0]
 
-        print('Processing {}'.format(comp_name), flush=True)
+            counter += 1
 
-        process_alternative_candidates(pre_path, comp_row)
+            # tasks.append((comp_name, pre_path, comp_row))
+            pool_task(comp_name, pre_path, comp_row)
+
+        # pool.starmap(pool_task, tasks)
 
 
 if __name__ == '__main__':

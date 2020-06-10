@@ -1,0 +1,15 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+1ndm_B+A|C_0,U:U,1NDM,2.1,xray,B:A,C,1DQM,2.1,xray,H:L,6F1P,1.12,xray,A,7,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_1,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,B:A,6F1P,1.12,xray,A,7,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_2,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,D:C,6F1P,1.12,xray,A,7,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_3,U:U,1NDM,2.1,xray,B:A,C,1DQM,2.1,xray,H:L,6P4D,1.05,xray,A,7,3,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_4,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,B:A,6P4D,1.05,xray,A,7,3,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_6,U:U,1NDM,2.1,xray,B:A,C,1DQM,2.1,xray,H:L,6K5Q,1.18,xray,A,7,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_7,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,B:A,6K5Q,1.18,xray,A,7,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_8,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,D:C,6K5Q,1.18,xray,A,7,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_9,U:U,1NDM,2.1,xray,B:A,C,1DQM,2.1,xray,H:L,6RO3,1.03,xray,A,7,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_10,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,B:A,6RO3,1.03,xray,A,7,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_11,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,D:C,6RO3,1.03,xray,A,7,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_12,U:U,1NDM,2.1,xray,B:A,C,1DQM,2.1,xray,H:L,6RT3,1.05,xray,A,7,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_13,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,B:A,6RT3,1.05,xray,A,7,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+1ndm_B+A|C_14,U:U,1NDM,2.1,xray,B:A,C,1DQQ,1.8,xray,D:C,6RT3,1.05,xray,A,7,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA

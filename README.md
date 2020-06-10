@@ -4,7 +4,7 @@ abase is a database of antibody-antigen complexes designed especially for
 validation of algorithms of prediction of mutual conformation of
 antibody and antigen.
 
-Database consists of a **86** antibody-antigen complexs, for every one of which there
+Database consists of a **456** antibody-antigen complexs, for every one of which there
 are both antibody and  antigen present in their *unbound* forms.
 
 Information about complexes of the database and their unbound parts
@@ -19,11 +19,9 @@ which is described below.
 Summary file has following fields:
 
 * **comp_name** — name of the given complex in terms of abase.
-* **type** — type of complex. As of now there's only one type of 
-complexes — **U:U**, what means that database contains both
+* **type** — type of complex. There are several types of complexes. **U:U** type means that database contains both
 unbound antibody and unbound antigen for the 
-complex. In the future there will
-be two more types of complexes: **U:B** and **B:U**.
+complex. **B:U** — bound antibody and unbound antigen.
 * **pdb_id_b** — PDB id of the *bound* complex.
 * **ab_chain_ids_b** — ids of the 
 antibody's chains in bound complex's structure.
@@ -93,9 +91,9 @@ the bound complex and its unbound structures.
 * `annotation` — folder that contains annotation for the 
 antibody in the bound complex and the antibody in its unbound
 form.
-* `constraints` — folder that contains constraints for the 
-antigen in the bound complex and the antigen in its unbound
-form.
+* `epitope` — folder that contains constraints for the 
+antigen's epitope in the bound complex and the antigen's epitope 
+in its unbound form.
 
 Also, each **comp_name** folder contains file 
 `alternative_candidates.csv`, that lists all the potential

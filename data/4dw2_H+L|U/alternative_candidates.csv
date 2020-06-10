@@ -1,0 +1,10 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+4dw2_H+L|U_9,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,H:L,4FU9,1.6,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_0,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,A:B,5YC6,1.18,xray,U,1,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_1,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,H:L,5YC6,1.18,xray,U,1,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_6,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,A:B,5Z1C,1.45,xray,U,1,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_7,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,H:L,5Z1C,1.45,xray,U,1,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_2,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,A:B,5ZA9,1.62,xray,U,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_3,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,H:L,5ZA9,1.62,xray,U,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_5,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,H:L,6AG9,1.63,xray,U,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4dw2_H+L|U_8,U:U,4DW2,2.97,xray,H:L,U,4DVB,1.93,xray,A:B,4FU9,1.6,xray,A,1,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA

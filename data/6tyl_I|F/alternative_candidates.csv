@@ -1,0 +1,11 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+6tyl_I|F_0,B:U,6TYL,3.3,xray,I,F,6tyl,3.3,xray,I,6NMJ,2.3,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6tyl_I|F_2,B:U,6TYL,3.3,xray,I,F,6tyl,3.3,xray,I,6NMG,2.2,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6tyl_I|F_3,B:U,6TYL,3.3,xray,I,F,6tyl,3.3,xray,I,6NMG,2.2,xray,B,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6ukt_D|A_0,B:U,6UKT,3.87,electronMicroscopy,D,A,6ukt,3.87,electronMicroscopy,D,6NMG,2.2,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6ukt_D|A_1,B:U,6UKT,3.87,electronMicroscopy,D,A,6ukt,3.87,electronMicroscopy,D,6NMG,2.2,xray,B,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6ukt_D|A_2,B:U,6UKT,3.87,electronMicroscopy,D,A,6ukt,3.87,electronMicroscopy,D,6NMJ,2.3,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6ukt_D|A_3,B:U,6UKT,3.87,electronMicroscopy,D,A,6ukt,3.87,electronMicroscopy,D,6NMJ,2.3,xray,B,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6tyl_D|A_1,B:U,6TYL,3.3,xray,D,A,6tyl,3.3,xray,D,6NMG,2.2,xray,B,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6tyl_D|A_2,B:U,6TYL,3.3,xray,D,A,6tyl,3.3,xray,D,6NMJ,2.3,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6tyl_D|A_3,B:U,6TYL,3.3,xray,D,A,6tyl,3.3,xray,D,6NMJ,2.3,xray,B,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA

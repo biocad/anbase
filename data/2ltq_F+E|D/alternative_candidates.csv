@@ -1,0 +1,26 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+2ltq_F+E|D_0,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_0,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_1,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_0,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_1,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_0,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_1,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_0,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_1,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_0,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_F+E|D_1,B:U,2LTQ,100.0,UNKNOWN,F:E,D,2ltq,100.0,UNKNOWN,F:E,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_0,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_1,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_0,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_1,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_0,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_1,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_0,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_1,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_0,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2ltq_C+B|A_1,B:U,2LTQ,100.0,UNKNOWN,C:B,A,2ltq,100.0,UNKNOWN,C:B,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2zuq_C+B|A_0,B:U,2ZUQ,3.3,xray,C:B,A,2zuq,3.3,xray,C:B,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2zuq_C+B|A_1,B:U,2ZUQ,3.3,xray,C:B,A,2zuq,3.3,xray,C:B,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+2zuq_F+E|D_0,B:U,2ZUQ,3.3,xray,F:E,D,2zuq,3.3,xray,F:E,2K74,100.0,UNKNOWN,A,0,4,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+2zuq_F+E|D_1,B:U,2ZUQ,3.3,xray,F:E,D,2zuq,3.3,xray,F:E,2K73,100.0,UNKNOWN,A,0,4,NA,0,0,0,0,0,0,0,0,NA,NA,NA

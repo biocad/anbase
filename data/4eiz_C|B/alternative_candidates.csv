@@ -1,0 +1,15 @@
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+4eiz_C|B_4,B:U,4EIZ,2.2,xray,C,B,4eiz,2.2,xray,C,6CW7,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4ej1_C|B_1,B:U,4EJ1,1.75,xray,C,B,4ej1,1.75,xray,C,4PSY,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4ej1_C|B_3,B:U,4EJ1,1.75,xray,C,B,4ej1,1.75,xray,C,4PSS,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_D|A_2,B:U,4EIZ,2.2,xray,D,A,4eiz,2.2,xray,D,4PTH,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_D|A_3,B:U,4EIZ,2.2,xray,D,A,4eiz,2.2,xray,D,4PSS,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_C|B_0,B:U,4EIZ,2.2,xray,C,B,4eiz,2.2,xray,C,4PTJ,1.05,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_C|B_2,B:U,4EIZ,2.2,xray,C,B,4eiz,2.2,xray,C,4PSY,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_C|B_3,B:U,4EIZ,2.2,xray,C,B,4eiz,2.2,xray,C,4PSS,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4ej1_C|B_0,B:U,4EJ1,1.75,xray,C,B,4ej1,1.75,xray,C,4PST,1.05,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4ej1_C|B_2,B:U,4EJ1,1.75,xray,C,B,4ej1,1.75,xray,C,4PTH,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4ej1_C|B_4,B:U,4EJ1,1.75,xray,C,B,4ej1,1.75,xray,C,6CW7,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_D|A_0,B:U,4EIZ,2.2,xray,D,A,4eiz,2.2,xray,D,4PST,1.05,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_D|A_1,B:U,4EIZ,2.2,xray,D,A,4eiz,2.2,xray,D,4PSY,0.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4eiz_D|A_4,B:U,4EIZ,2.2,xray,D,A,4eiz,2.2,xray,D,6CW7,1.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
