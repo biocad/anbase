@@ -1,6 +1,6 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-3mxw_H+L|A_0,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,1VHH,1.7,xray,A,0,1,NA,0,0,0,0,0,0,0,0
-3mxw_H+L|A_1,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,6PJV,1.43,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-3mxw_H+L|A_3,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,4C4M,1.74,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-3mxw_H+L|A_4,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,3M1N,1.85,xray,A,0,0,NA,0,0,0,0,0,0,0,0
-3mxw_H+L|A_5,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,3M1N,1.85,xray,B,0,0,NA,0,0,0,0,0,0,0,0
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+3mxw_H+L|A_0,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,1VHH,1.7,xray,A,0,1,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+3mxw_H+L|A_1,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,6PJV,1.43,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+3mxw_H+L|A_3,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,4C4M,1.74,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+3mxw_H+L|A_4,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,3M1N,1.85,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+3mxw_H+L|A_5,U:U,3MXW,1.83,xray,H:L,A,3MXV,1.9,xray,H:L,3M1N,1.85,xray,B,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA

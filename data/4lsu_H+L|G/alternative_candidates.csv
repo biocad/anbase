@@ -1,10 +1,10 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-4lsu_H+L|G_3,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DKR,1.8,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_0,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DVV,1.94,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_4,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DKR,1.8,xray,C,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_5,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DKQ,1.89,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_6,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_7,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,B,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_8,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,C,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_9,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,D,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-4lsu_H+L|G_2,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,6ONF,1.84,xray,A,0,7,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+4lsu_H+L|G_3,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DKR,1.8,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_0,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DVV,1.94,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_4,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DKR,1.8,xray,C,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_5,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4DKQ,1.89,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_6,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,A,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_7,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,B,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_8,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,C,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_9,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,4RZ8,1.9,xray,D,0,1,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4lsu_H+L|G_2,B:U,4LSU,2.3,xray,H:L,G,4lsu,2.3,xray,H:L,6ONF,1.84,xray,A,0,7,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA

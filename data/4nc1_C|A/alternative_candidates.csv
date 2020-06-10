@@ -1,12 +1,12 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-4nc1_D|B_0,B:U,4NC1,2.61,xray,D,B,4nc1,2.61,xray,D,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nc1_D|B_1,B:U,4NC1,2.61,xray,D,B,4nc1,2.61,xray,D,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nc1_C|A_0,B:U,4NC1,2.61,xray,C,A,4nc1,2.61,xray,C,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nc1_C|A_1,B:U,4NC1,2.61,xray,C,A,4nc1,2.61,xray,C,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nc1_C|A_3,B:U,4NC1,2.61,xray,C,A,4nc1,2.61,xray,C,2QJ6,2.5,xray,B,0,14,NA,0,0,0,0,0,0,0,0
-4nby_C|A_0,B:U,4NBY,2.08,xray,C,A,4nby,2.08,xray,C,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nby_C|A_1,B:U,4NBY,2.08,xray,C,A,4nby,2.08,xray,C,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nby_B|A_0,B:U,4NBY,2.08,xray,B,A,4nby,2.08,xray,B,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nby_B|A_1,B:U,4NBY,2.08,xray,B,A,4nby,2.08,xray,B,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nbx_B|A_0,B:U,4NBX,1.75,xray,B,A,4nbx,1.75,xray,B,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-4nbx_B|A_1,B:U,4NBX,1.75,xray,B,A,4nbx,1.75,xray,B,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+4nc1_D|B_0,B:U,4NC1,2.61,xray,D,B,4nc1,2.61,xray,D,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nc1_D|B_1,B:U,4NC1,2.61,xray,D,B,4nc1,2.61,xray,D,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nc1_C|A_0,B:U,4NC1,2.61,xray,C,A,4nc1,2.61,xray,C,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nc1_C|A_1,B:U,4NC1,2.61,xray,C,A,4nc1,2.61,xray,C,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nc1_C|A_3,B:U,4NC1,2.61,xray,C,A,4nc1,2.61,xray,C,2QJ6,2.5,xray,B,0,14,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+4nby_C|A_0,B:U,4NBY,2.08,xray,C,A,4nby,2.08,xray,C,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nby_C|A_1,B:U,4NBY,2.08,xray,C,A,4nby,2.08,xray,C,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nby_B|A_0,B:U,4NBY,2.08,xray,B,A,4nby,2.08,xray,B,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nby_B|A_1,B:U,4NBY,2.08,xray,B,A,4nby,2.08,xray,B,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nbx_B|A_0,B:U,4NBX,1.75,xray,B,A,4nbx,1.75,xray,B,2G7C,2.0,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+4nbx_B|A_1,B:U,4NBX,1.75,xray,B,A,4nbx,1.75,xray,B,2G7C,2.0,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA

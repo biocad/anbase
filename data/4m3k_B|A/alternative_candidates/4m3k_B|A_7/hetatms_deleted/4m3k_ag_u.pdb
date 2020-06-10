@@ -19,7 +19,7 @@ SEQRES  18 B  268  ALA ILE ILE TRP PRO PRO LYS GLY ASP PRO VAL VAL LEU
 SEQRES  19 B  268  ALA VAL LEU SER SER ARG ASP LYS LYS ASP ALA LYS TYR          
 SEQRES  20 B  268  ASP ASP LYS LEU ILE ALA GLU ALA THR LYS VAL VAL MET          
 SEQRES  21 B  268  LYS ALA LEU ASN MET ASN GLY LYS                              
-ATOM      1  N   ASP B  31       8.291  21.136 -15.738  1.00 24.70           N  
+ATOM      1  N   ASP B  31       8.291  21.136 -15.737  1.00 24.70           N  
 ATOM      2  CA  ASP B  31       8.011  19.714 -16.140  1.00 17.46           C  
 ATOM      3  C   ASP B  31       6.883  19.707 -17.157  1.00 14.31           C  
 ATOM      4  O   ASP B  31       5.910  20.496 -17.025  1.00 12.90           O  
@@ -58,8 +58,8 @@ ATOM     36  O   LYS B  35       0.415  22.646 -18.713  1.00  8.42           O
 ATOM     37  CB  LYS B  35       3.657  22.450 -18.934  1.00 12.52           C  
 ATOM     38  CG  LYS B  35       3.386  23.383 -20.017  1.00 18.74           C  
 ATOM     39  CD  LYS B  35       4.607  23.566 -20.926  1.00 24.33           C  
-ATOM     40  CE  LYS B  35       5.794  23.917 -20.068  1.00 28.52           C  
-ATOM     41  NZ  LYS B  35       6.661  22.762 -19.759  1.00 36.20           N  
+ATOM     40  CE  LYS B  35       5.794  23.917 -20.067  1.00 28.52           C  
+ATOM     41  NZ  LYS B  35       6.661  22.762 -19.758  1.00 36.20           N  
 ATOM     42  N   LEU B  36       1.137  20.530 -18.938  1.00  7.89           N  
 ATOM     43  CA  LEU B  36      -0.153  20.090 -19.454  1.00  7.70           C  
 ATOM     44  C   LEU B  36      -1.270  20.149 -18.448  1.00  7.75           C  

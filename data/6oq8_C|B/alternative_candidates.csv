@@ -1,12 +1,12 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u
-6oq8_D|A_5,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,2BVM,2.55,xray,A,0,2,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-6oq8_C|B_2,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,2BVM,2.55,xray,A,0,2,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0
-6oq8_D|A_0,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,2BVL,2.2,xray,A,0,2,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-6oq8_D|A_3,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQT,2.75,xray,A,0,0,NA,0,0,0,0,0,0,0,0
-6oq8_C|B_4,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,5UQT,2.75,xray,A,0,0,NA,0,0,0,0,0,0,0,0
-6oq8_D|A_1,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQN,2.06,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-6oq8_D|A_2,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQM,2.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-6oq8_D|A_4,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQT,2.75,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-6oq8_C|B_0,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,5UQN,2.06,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-6oq8_C|B_1,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,5UQM,2.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
-6oq8_C|B_3,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,2BVL,2.2,xray,A,0,2,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0
+candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
+6oq8_D|A_5,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,2BVM,2.55,xray,A,0,2,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_C|B_2,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,2BVM,2.55,xray,A,0,2,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_D|A_0,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,2BVL,2.2,xray,A,0,2,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_D|A_3,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQT,2.75,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_C|B_4,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,5UQT,2.75,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_D|A_1,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQN,2.06,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_D|A_2,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQM,2.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_D|A_4,B:U,6OQ8,2.2,xray,D,A,6oq8,2.2,xray,D,5UQT,2.75,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_C|B_0,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,5UQN,2.06,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_C|B_1,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,5UQM,2.03,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
+6oq8_C|B_3,B:U,6OQ8,2.2,xray,C,B,6oq8,2.2,xray,C,2BVL,2.2,xray,A,0,2,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA

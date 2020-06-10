@@ -26,7 +26,7 @@ SEQRES  25 A  355  THR GLY ILE LEU LEU THR ARG ASP GLY GLY ALA ASN ASN
 SEQRES  26 A  355  THR SER ASN GLU THR PHE ARG PRO GLY GLY GLY ASP MET          
 SEQRES  27 A  355  ARG ASP ASN TRP ARG SER GLU LEU TYR LYS TYR LYS VAL          
 SEQRES  28 A  355  VAL GLN ILE GLU                                              
-ATOM      1  N   PRO A  43      25.314  20.759 -30.140  1.00 68.67           N  
+ATOM      1  N   PRO A  43      25.314  20.759 -30.141  1.00 68.67           N  
 ATOM      2  CA  PRO A  43      23.882  20.447 -30.064  1.00 69.23           C  
 ATOM      3  C   PRO A  43      23.497  19.766 -28.750  1.00 68.91           C  
 ATOM      4  O   PRO A  43      24.387  19.293 -28.048  1.00 72.38           O  
@@ -377,7 +377,7 @@ ATOM    348  CA  GLU A  87      32.305  14.548 -31.240  1.00 39.48           C
 ATOM    349  C   GLU A  87      32.057  14.011 -29.836  1.00 37.18           C  
 ATOM    350  O   GLU A  87      31.260  14.573 -29.081  1.00 43.61           O  
 ATOM    351  CB  GLU A  87      33.030  15.894 -31.143  1.00 48.19           C  
-ATOM    352  CG  GLU A  87      33.608  16.396 -32.449  1.00 55.86           C  
+ATOM    352  CG  GLU A  87      33.608  16.396 -32.450  1.00 55.86           C  
 ATOM    353  CD  GLU A  87      34.765  15.548 -32.928  1.00 61.57           C  
 ATOM    354  OE1 GLU A  87      35.054  15.569 -34.146  1.00 68.46           O  
 ATOM    355  OE2 GLU A  87      35.390  14.864 -32.088  1.00 57.40           O  
