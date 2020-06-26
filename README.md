@@ -4,8 +4,7 @@ abase is a database of antibody-antigen complexes designed especially for
 validation of algorithms of prediction of mutual conformation of
 antibody and antigen.
 
-Database consists of a **456** antibody-antigen complexs, for every one of which there
-are both antibody and  antigen present in their *unbound* forms.
+Database consists of a **456** antibody-antigen complexs: **114** of which are *unbound-antibody*:*unbound-antigen*, and **342** are *bound-antibody:unbound-antigen*.
 
 Information about complexes of the database and their unbound parts
 can be found in the `abase_summary.csv`. Description of the summary 
