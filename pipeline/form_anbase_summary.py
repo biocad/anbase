@@ -10,7 +10,7 @@ from process_unbound_data import Conformation, ALIGNED, HETATMS_DELETED, \
 from prepper import PREPPED, SCHROD
 from generate_constraints import EPITOPE
 
-ABASE_SUMMARY_CSV = 'abase_summary.csv'
+ANBASE_SUMMARY_CSV = 'anbase_summary.csv'
 
 DB_PATH = 'data'
 DB_INFO_PATH = 'db_info.csv'
@@ -18,7 +18,7 @@ DUPLICATES_PATH = 'duplicates.csv'
 GAPS_B_PATH = 'gap_stats_b.csv'
 GAPS_U_PATH = 'gap_stats_u.csv'
 
-ABASE_SUMMARY_COLUMNS = ['comp_name', 'type',
+ANBASE_SUMMARY_COLUMNS = ['comp_name', 'type',
 
                          'pdb_id_b', 'resolution_b', 'resolution_method_b',
                          'ab_chain_ids_b', 'ag_chain_ids_b',
@@ -36,14 +36,14 @@ ABASE_SUMMARY_COLUMNS = ['comp_name', 'type',
                          'one_side_gaps_u', 'long_gaps_u', 'total_gaps_u',
                          'is_perfect']
 
-ABASE_SUMMARY_HEADER = ','.join(ABASE_SUMMARY_COLUMNS)
-ALTERNATIVE_CANDIDATES_COLUMNS = ['candidate_name'] + ABASE_SUMMARY_COLUMNS[
+ANBASE_SUMMARY_HEADER = ','.join(ANBASE_SUMMARY_COLUMNS)
+ALTERNATIVE_CANDIDATES_COLUMNS = ['candidate_name'] + ANBASE_SUMMARY_COLUMNS[
                                                       1:-1]
 ALTERNATIVE_CANDIDATES_HEADER = ','.join(ALTERNATIVE_CANDIDATES_COLUMNS)
 
 ALTERNATIVE_CANDIDATES = 'alternative_candidates'
 
-ABASE_DATA_PATH = 'abase'
+ANBASE_DATA_PATH = 'anbase'
 
 
 def check_perfect_candidate(candidate):
@@ -129,16 +129,16 @@ if __name__ == '__main__':
 
     parser = OptionParser()
     parser.add_option('--db', default=DB_PATH, dest='db', metavar='DB',
-                      help='Path to dev database [default: {}]'.format(
+                      help='Path to dev datanbase [default: {}]'.format(
                           DB_PATH))
     parser.add_option('--db-info', default=DB_INFO_PATH, dest='db_info',
                       metavar='DB_INFO_PATH',
-                      help='Path to dev database info csv file [default: {}]'.
+                      help='Path to dev datanbase info csv file [default: {}]'.
                       format(DB_INFO_PATH))
-    parser.add_option('--abase-data', default=ABASE_DATA_PATH,
-                      dest='abase_data',
+    parser.add_option('--anbase-data', default=ANBASE_DATA_PATH,
+                      dest='anbase_data',
                       metavar='ABASE_DATA_PATH',
-                      help='Path where abase\'s data will be stored '
+                      help='Path where anbase\'s data will be stored '
                            '[default: {}]'.
                       format(DB_INFO_PATH))
     parser.add_option('--duplicates', default=DUPLICATES_PATH,
@@ -203,12 +203,12 @@ if __name__ == '__main__':
             if x in complexes:
                 complexes.remove(x)
 
-    if not os.path.exists(options.abase_data):
-        os.makedirs(options.abase_data)
+    if not os.path.exists(options.anbase_data):
+        os.makedirs(options.anbase_data)
 
-    with open(ABASE_SUMMARY_CSV, 'w') as abase_summary_csv:
-        abase_summary_csv.write(ABASE_SUMMARY_HEADER + '\n')
-        abase_summary_csv.flush()
+    with open(ANBASE_SUMMARY_CSV, 'w') as anbase_summary_csv:
+        anbase_summary_csv.write(ABASE_SUMMARY_HEADER + '\n')
+        anbase_summary_csv.flush()
 
         complexes_l = list(complexes)
         complexes_l.sort()
@@ -217,17 +217,17 @@ if __name__ == '__main__':
             final_candidate, is_perfect, alternative_candidates = \
                 finalize_complex(comp, candidate_infos, duplicates)
 
-            comp_path = os.path.join(options.abase_data,
+            comp_path = os.path.join(options.anbase_data,
                                      final_candidate.comp_name)
 
             successful_move = move_candidate_to_dir(options.db,
                                                     final_candidate, comp_path)
 
             if successful_move:
-                abase_summary_csv.write(
+                anbase_summary_csv.write(
                     final_candidate.to_string(with_candidate_id=False) +
                     ',' + str(is_perfect) + '\n')
-                abase_summary_csv.flush()
+                anbase_summary_csv.flush()
 
             with open(os.path.join(comp_path, ALTERNATIVE_CANDIDATES + '.csv'),
                       'w') as alternative_candidates_csv:

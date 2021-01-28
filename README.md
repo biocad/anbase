@@ -1,23 +1,23 @@
-# abase
+# anbase
 
-abase is a database of antibody-antigen complexes designed especially for
+anbase is a database of antibody-antigen complexes designed especially for
 validation of algorithms of prediction of mutual conformation of
 antibody and antigen.
 
 Database consists of a **456** antibody-antigen complexs: **114** of which are *unbound-antibody*:*unbound-antigen*, and **342** are *bound-antibody:unbound-antigen*.
 
 Information about complexes of the database and their unbound parts
-can be found in the `abase_summary.csv`. Description of the summary 
+can be found in the `anbase_summary.csv`. Description of the summary 
 file's columns can be found below.
 
 Complexes themselves are stored in the `data` folder structure of
 which is described below.
 
-## abase_summary.csv
+## anbase_summary.csv
 
 Summary file has following fields:
 
-* **comp_name** — name of the given complex in terms of abase.
+* **comp_name** — name of the given complex in terms of anbase.
 * **type** — type of complex. There are several types of complexes. **U:U** type means that database contains both
 unbound antibody and unbound antigen for the 
 complex. **B:U** — bound antibody and unbound antigen.
@@ -70,7 +70,7 @@ with length more than 15 amino acids.
 
 ## `data` folder
 
-Every complex in the abase has its own subfolder in the `data`
+Every complex in the anbase has its own subfolder in the `data`
 folder. Complex's subfolder's name is equal to 
 the corresponding **comp_name**.
 
@@ -99,7 +99,7 @@ Also, each **comp_name** folder contains file
 candidates that can act as a pair of unbound antibody and 
 unbound antigen for the given complex. 
 This file has all the same fields
-as `abase_summary.csv` with some changes:
+as `anbase_summary.csv` with some changes:
 * Field **candidate_name** is replaced with field **comp_name**.
 * Field **is_perfect** is removed.
 * Added fields **ca_rmsds**, **ncac_rmsds** and **all_atoms_rmsds** 
