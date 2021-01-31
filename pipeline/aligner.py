@@ -345,8 +345,8 @@ def pool_task(comp_name, pre_path, comp_row):
 def process(dir_path):
     counter = 0
 
-    abase_summary_tbl = pd.read_csv(os.path.join(dir_path,
-                                                 'abase_summary.csv'))
+    anbase_summary_tbl = pd.read_csv(os.path.join(dir_path,
+                                                 'anbase_summary.csv'))
 
     data_path = os.path.join(dir_path, 'data')
 
@@ -359,8 +359,8 @@ def process(dir_path):
             if not os.path.isdir(pre_path):
                 continue
 
-            comp_row = abase_summary_tbl[
-                abase_summary_tbl[
+            comp_row = anbase_summary_tbl[
+                anbase_summary_tbl[
                     'comp_name'] == comp_name].iloc[0]
 
             counter += 1

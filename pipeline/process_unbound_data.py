@@ -1,6 +1,7 @@
 import os
 import pickle
 import string
+import traceback
 from collections import defaultdict
 
 import numpy as np
@@ -17,6 +18,8 @@ from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
     retrieve_resolution
 from filter_unbound_data import union_models, \
     fetch_all_assemblies
+
+from pipeline.filter_unbound_data import MINIMAL_CHAIN_LENGTH
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness_{}.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness_{}.csv'
@@ -285,6 +288,17 @@ class Conformation:
         pdb = Conformation.pdb_parser.get_structure(pdb_id,
                                                     assemblies[
                                                         assembly_id - 1])
+
+        for model in pdb:
+            chain_ids_to_remove = []
+
+            for chain in model:
+                if len(chain) <= MINIMAL_CHAIN_LENGTH:
+                    chain_ids_to_remove.append(chain.get_id())
+
+            for chain_id in chain_ids_to_remove:
+                model.detach_child(chain_id)
+
 
         for x in assemblies:
             os.remove(x)
@@ -1060,6 +1074,7 @@ def process_filtered_csv(run_id, path_to_filtered_structures_csv,
                     candidate.hetatms_deletion_epoch(HETATMS_DELETED)
 
                 except Exception as e:
+                    traceback.print_tb(e.__traceback__)
                     rejected_complexes_csv.write('{},{},{},{}\n'.format(
                         candidate.comp_name, candidate.candidate_id,
                         candidate.candidate_type, str(e)))

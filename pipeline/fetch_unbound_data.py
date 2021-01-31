@@ -3,6 +3,7 @@ import math
 import operator
 import random
 import time
+import traceback
 from multiprocessing import Process, Queue
 from multiprocessing.pool import Pool
 
@@ -20,6 +21,8 @@ from collections import defaultdict
 import sys
 import signal
 import functools
+from urllib.parse import quote_plus
+import json
 
 import alignments
 
@@ -212,15 +215,15 @@ def post_while_true(url, json):
 
 
 def is_obsolete(pdb_id):
-    curl = 'https://www.rcsb.org/pdb/rest/getEntityInfo?structureId={}' \
-        .format(pdb_id)
-
-    r = get_while_true(curl)
-    xml = ElementTree.fromstring(r)
-
-    for child in xml:
-        if child.tag == 'obsolete':
-            return True
+    # curl = 'https://www.rcsb.org/pdb/rest/getEntityInfo?structureId={}' \
+    #     .format(pdb_id)
+    # 
+    # r = get_while_true(curl)
+    # xml = ElementTree.fromstring(r)
+    # 
+    # for child in xml:
+    #     if child.tag == 'obsolete':
+    #         return True
 
     return False
 
@@ -358,24 +361,71 @@ class Complex:
         return fasta[1]
 
 
-def fetch_all_sequences(pdb_id):
-    url = 'https://www.rcsb.org/pdb/download/downloadFastaFiles.do'
-    r = post_while_true(url, {'structureIdList': pdb_id,
-                              'compressionType': 'uncompressed'})
+def fetch_all_sequences(pdb_id, mol_names_res=None):
+    url = f'https://www.rcsb.org/fasta/entry/{pdb_id}'
+    r = get_while_true(url)
 
-    seqs = []
+    seqs = {}
+    chain_names = []
 
-    for line in r.split():
+    for line in r.split('\n'):
         if line.startswith('>'):
-            seqs.append([line[6], ''])
+            [_, chains, mol_name] = line.strip().split('|')[:3]
+
+            if mol_names_res is not None:
+                mol_names_res.append(mol_name)
+
+            chain_names = chains.split(' ')[1].split(',')
+
+            for chain_name in chain_names:
+                seqs[chain_name] = ''
         else:
-            if not seqs:
+            if not chain_names:
                 print('bad line:', line, 'in', r, flush=True)
                 return fetch_all_sequences(pdb_id)
 
-            seqs[-1][1] += line
+            for chain_name in chain_names:
+                seqs[chain_name] += line
 
-    return {y[0]: y[1] for y in seqs}
+    return seqs
+
+
+def fetch_all_sequences_for_entity(pdb_id, entity_id):
+    url = f'https://www.rcsb.org/fasta/entry/{pdb_id}'
+    r = get_while_true(url)
+
+    seqs = {}
+    chain_names = []
+
+    filling = False
+
+    for line in r.split('\n'):
+        if line.startswith('>'):
+            [pdb_entity, chains] = line.strip().split('|')[:2]
+
+            this_entity_id = pdb_entity.split('_')[1]
+
+            if this_entity_id != entity_id:
+                filling = False
+                continue
+
+            chain_names = chains.split(' ')[1].split(',')
+            for chain_name in chain_names:
+                seqs[chain_name] = ''
+
+            filling = True
+        else:
+            if not filling:
+                continue
+
+            if not chain_names:
+                print('bad line:', line, 'in', r, flush=True)
+                return fetch_all_sequences(pdb_id)
+
+            for chain_name in chain_names:
+                seqs[chain_name] += line
+
+    return seqs
 
 
 def fetch_sequence(pdb_id, chain_id):
@@ -528,7 +578,7 @@ def calc_mismatches_stat(query_seq, target_seq):
 
 
 def is_subsequence_of(query_seq, target_seq, is_ab=True):
-    min_intersection_len = int(0.9 * len(query_seq))
+    min_intersection_len = int(0.9 * min(len(query_seq), len(target_seq)))
     max_miss_cutoff = max(10, int(0.03 * len(query_seq))) if is_ab else int(
         0.05 * len(query_seq))
 
@@ -541,71 +591,69 @@ def is_subsequence_of(query_seq, target_seq, is_ab=True):
            max_miss_cutoff
 
 
-# IDEA: maybe, make query seq the subseq of query seq that contains
-#       all near-interface residues.
-def is_match(query_seq, hit_alignment,
-             is_ab=True):
-    if query_seq == hit_alignment:
-        return True
-
-    hit_with_removed_gaps = hit_alignment.replace('-', '')
-
-    if len(hit_with_removed_gaps) < int(0.9 * len(query_seq)):
-        return False
-
-    return is_subsequence_of(query_seq, hit_with_removed_gaps, is_ab=is_ab)
+class Hit:
+    def __init__(self, hit):
+        [self.pdb_id, entity_id] = hit['identifier'].split('_')
+        self.chain_ids_to_seqs = fetch_all_sequences_for_entity(self.pdb_id,
+                                                                entity_id)
 
 
 def process_hit(seq, is_ab, hit):
-    hit_def = hit.find('Hit_def')
-    hit_def_parts = hit_def.text.split('|')[0].split(':')
-
-    hit_pdb_id = hit_def_parts[0]
-
-    hit_chain_ids = [x for x in hit_def_parts[2].split(',')]
-
     res = []
+    good_chain_ids = []
 
-    for hsp in hit.find('Hit_hsps'):
-        hsp_hseq = hsp.find('Hsp_hseq').text
+    for chain_id, hit_seq in hit.chain_ids_to_seqs.items():
 
-        good_chain_ids = []
+        if is_subsequence_of(hit_seq, seq, is_ab=is_ab):
+            good_chain_ids.append(chain_id)
 
-        for hit_chain_id in hit_chain_ids:
-            if is_match(seq, hsp_hseq,
-                        is_ab=is_ab):
-                good_chain_ids.append(hit_chain_id)
-
-        if good_chain_ids:
-            res.append(Candidate(hit_pdb_id, good_chain_ids))
+    if good_chain_ids:
+        res.append(Candidate(hit.pdb_id, good_chain_ids))
 
     return res
 
 
 def get_blast_data(pdb_id, chain_id, seq, is_ab):
-    curl = 'https://www.rcsb.org/pdb/rest/getBlastPDB2?structureId' \
-           '={}&chainId={}&eCutOff=10.0&matrix=BLOSUM62&outputFormat=XML'. \
-        format(pdb_id, chain_id)
+    params = \
+        {
+            'query': {
+                'type': 'terminal',
+                'service': 'sequence',
+                'parameters': {
+                    'evalue_cutoff': 10,
+                    'identity_cutoff': 0.9,
+                    'target': 'pdb_protein_sequence',
+                    'value': seq
+                }
+            },
+            'request_options': {
+                'scoring_strategy': 'sequence',
+                "pager": {
+                    "start": 0,
+                    "rows": 100
+                }
+
+            },
+            'return_type': 'polymer_entity'
+        }
+
+    curl = f'https://search.rcsb.org/rcsbsearch/v1/query?' \
+           f'json={quote_plus(json.dumps(params, separators=(",", ":")))}'
 
     r = get_while_true(curl)
-    xml = ElementTree.fromstring(r)
 
     res = []
 
     hits = []
 
-    for child in xml:
-        for iteration in child:
-            for iteration_data in iteration:
-                for hit in iteration_data:
-                    if hit.tag != 'Hit':
-                        continue
-
-                    hits.append((seq, is_ab, hit))
+    for hit in json.loads(r)['result_set']:
+        hits.append((seq, is_ab, Hit(hit)))
 
     with Pool(NUMBER_OF_PROCESSES) as pool:
         for x in pool.starmap(process_hit, hits):
             res += x
+
+    print(res)
 
     return res
 
@@ -627,50 +675,33 @@ def retrieve_uniprot_ids(pdb_id):
 
 
 def retrieve_names(pdb_id):
-    curl = 'https://www.rcsb.org/pdb/rest/describeMol?structureId={}' \
-        .format(pdb_id)
-
-    r = get_while_true(curl)
-    xml = ElementTree.fromstring(r)
-
     res = []
 
-    for child in xml:
-        for polymer in child:
-            for attr in polymer:
-                if attr.tag == 'polymerDescription':
-                    res.append(attr.attrib['description'])
+    fetch_all_sequences(pdb_id, mol_names_res=res)
 
     return res
 
 
 def retrieve_resolution(pdb_id):
-    curl = 'https://www.rcsb.org/pdb/rest/getEntityInfo?structureId={}' \
-        .format(pdb_id)
+    curl = f'https://data.rcsb.org/rest/v1/core/entry/{pdb_id}'
 
     r = get_while_true(curl)
-    xml = ElementTree.fromstring(r)
 
     unknown_method = 'UNKNOWN'
 
-    for pdb in xml:
-        try:
-            resolution = pdb.attrib['resolution']
+    info = json.loads(r)
 
-            method = unknown_method
+    try:
+        info = json.loads(r)
 
-            for x in pdb:
-                if x.tag == 'Method':
-                    method = x.attrib['name']
-                    break
+        resolution = int(info['pdbx_vrpt_summary']['pdbresolution'])
+        method = info['rcsb_entry_info']['experimental_method']
 
-            return resolution, method
-        except Exception:
-            break
-
-    # if there's no info about resolution,
-    # then we consider it to be bad
-    return 100, unknown_method
+        return resolution, method
+    except Exception:
+        # if there's no info about resolution,
+        # then we consider it to be bad
+        return 100, unknown_method
 
 
 def check_names(names):
@@ -711,11 +742,6 @@ def check_unbound(candidate_pdb_id, candidate_chain_ids, query_seqs, is_ab):
 
     for seq in candidate_seqs:
         if 'X' in seq:
-            return None
-
-    for i in range(len(query_seqs)):
-        if not is_subsequence_of(query_seqs[i], candidate_seqs[i],
-                                 is_ab=is_ab):
             return None
 
     c1 = check_names(retrieve_names(candidate_pdb_id))
@@ -903,8 +929,10 @@ def collect_unbound_structures(run_id, overwrite=True, p=None, to_accept=None):
     w_or_a = 'w' if overwrite else 'a'
     processed_open_mode = 'w' if overwrite else 'a+'
 
-    with open('not_processed_{}.log'.format(run_id), processed_open_mode) as not_processed, open(
-            'processed_{}.log'.format(run_id), processed_open_mode) as processed_log, \
+    with open('not_processed_{}.log'.format(run_id),
+              processed_open_mode) as not_processed, open(
+        'processed_{}.log'.format(run_id),
+        processed_open_mode) as processed_log, \
             open('unbound_data_{}.csv'.format(run_id),
                  w_or_a) as unbound_data_csv:
 
@@ -959,9 +987,9 @@ def collect_unbound_structures(run_id, overwrite=True, p=None, to_accept=None):
                 processed_log.write(comp.comp_name + '\n')
                 processed_log.flush()
             except Exception as e:
+                traceback.print_tb(e.__traceback__)
                 not_processed.write('{}: {}\n'.format(comp.comp_name, e))
                 not_processed.flush()
-
 
 if __name__ == '__main__':
     from optparse import OptionParser
@@ -1000,15 +1028,10 @@ if __name__ == '__main__':
         run_zlab_test()
 
     if options.range:
-        [l, r] = options.range.replace(' ', '').strip('(').strip(')').split(',')
+        [l, r] = options.range.replace(' ', '').strip('(').strip(')').split(
+            ',')
         p = (int(l), int(r))
     else:
         p = None
-
-    to_accept = None
-
-    if os.path.exists('uus.txt'):
-        with open('uus.txt', 'r') as f:
-            to_accept = list(map(lambda x: x[:4].upper(), f.readlines()))
 
     collect_unbound_structures(options.run_id, overwrite=not cont, p=p)

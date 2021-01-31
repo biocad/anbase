@@ -1,11 +1,13 @@
 import os
 import string
+import traceback
 from collections import defaultdict
 from xml.etree import ElementTree
 
 import pandas as pd
 from Bio.PDB import PDBParser
 from Bio.PDB.StructureBuilder import StructureBuilder
+import json
 
 from fetch_unbound_data import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
     get_while_true, comp_name_to_pdb_and_chains, CHAINS_SEPARATOR, \
@@ -13,6 +15,9 @@ from fetch_unbound_data import fetch_all_sequences, AG, AB, DB_PATH, DOT_PDB, \
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness_{}.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness_{}.csv'
+
+# CRUTCH used to filter-out chains containing big small molecules
+MINIMAL_CHAIN_LENGTH = 10
 
 
 def process_csv(csv):
@@ -28,17 +33,13 @@ def process_csv(csv):
 
 
 def fetch_number_of_assemblies(pdb_id):
-    curl = 'https://www.rcsb.org/pdb/rest/bioassembly/' \
-           'nrbioassemblies?structureId={}' \
-        .format(pdb_id)
+    curl = f'https://data.rcsb.org/rest/v1/core/entry/{pdb_id}'
 
     r = get_while_true(curl)
-    xml = ElementTree.fromstring(r)
 
-    if 'count' not in xml.attrib:
-        return fetch_number_of_assemblies(pdb_id)
+    info = json.loads(r)
 
-    return int(xml.attrib['count'])
+    return int(info['rcsb_entry_info']['assembly_count'])
 
 
 def fetch_all_assemblies(pdb_id):
@@ -146,7 +147,9 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
         assembly = union_models(assembly_structure)
 
         chains_in_assembly = [x.get_id().split('_')[0]
-                              for x in assembly.get_chains()]
+                              for x in
+                              filter(lambda x: len(x) > MINIMAL_CHAIN_LENGTH,
+                                     assembly.get_chains())]
 
         assembly_ids_seqs = list(
             map(lambda x: (x, target_seqs[x]), chains_in_assembly))
@@ -220,26 +223,30 @@ def matching_to_str(chains, matchings):
 def filter_candidates_pack(comp_name, pdb_id, candidate_pdb_ids, chain_ids, ty,
                            filtered_csv, rejected_csv):
     for candidate_pdb_id in candidate_pdb_ids:
-        chains_str = CHAINS_SEPARATOR.join(chain_ids)
+        try:
+            chains_str = CHAINS_SEPARATOR.join(chain_ids)
 
-        assemblies = check_structure(pdb_id,
-                                     chain_ids,
-                                     candidate_pdb_id, ty)
-        for assembly in assemblies:
-            matching_str = matching_to_str(chain_ids, assembly.matching)
+            assemblies = check_structure(pdb_id,
+                                         chain_ids,
+                                         candidate_pdb_id, ty)
+            for assembly in assemblies:
+                matching_str = matching_to_str(chain_ids, assembly.matching)
 
-            if assembly.is_good:
-                filtered_csv.write(','.join(
-                    [comp_name, ty, chains_str, candidate_pdb_id,
-                     matching_str, str(assembly.id)]) + '\n')
-            else:
-                rejected_csv.write(','.join(
-                    [comp_name, ty, chains_str, candidate_pdb_id,
-                     matching_str, str(assembly.id),
-                     assembly.reason_bad]) + '\n')
+                if assembly.is_good:
+                    filtered_csv.write(','.join(
+                        [comp_name, ty, chains_str, candidate_pdb_id,
+                         matching_str, str(assembly.id)]) + '\n')
+                else:
+                    rejected_csv.write(','.join(
+                        [comp_name, ty, chains_str, candidate_pdb_id,
+                         matching_str, str(assembly.id),
+                         assembly.reason_bad]) + '\n')
 
-        filtered_csv.flush()
-        rejected_csv.flush()
+            filtered_csv.flush()
+            rejected_csv.flush()
+
+        except Exception:
+            print('ERROR', comp_name, candidate_pdb_id, flush=True)
 
 
 def filter_for_unboundness(processed_csv,
@@ -255,7 +262,7 @@ def filter_for_unboundness(processed_csv,
 
     with open(FILTERED_STRUCTURES_CSV.format(run_id
                                              ), mode) as filtered_csv, open(
-            REJECTED_STRUCTURES_CSV.format(run_id), mode) as rejected_csv, open(
+        REJECTED_STRUCTURES_CSV.format(run_id), mode) as rejected_csv, open(
         'post_processed_{}.csv'.format(run_id), 'a') as post_processed_csv:
 
         if mode == 'w':
@@ -285,17 +292,20 @@ def filter_for_unboundness(processed_csv,
                 ab_candidates_pdb_ids = get_pdb_ids(candidates, AB)
                 ag_candidates_pdb_ids = get_pdb_ids(candidates, AG)
 
-                filter_candidates_pack(comp_name, pdb_id, ab_candidates_pdb_ids,
+                filter_candidates_pack(comp_name, pdb_id,
+                                       ab_candidates_pdb_ids,
                                        ab_chains, AB,
                                        filtered_csv, rejected_csv)
 
-                filter_candidates_pack(comp_name, pdb_id, ag_candidates_pdb_ids,
+                filter_candidates_pack(comp_name, pdb_id,
+                                       ag_candidates_pdb_ids,
                                        ag_chains, AG,
                                        filtered_csv, rejected_csv)
 
                 post_processed_csv.write(str(comp_name) + '\n')
                 post_processed_csv.flush()
             except Exception as e:
+                traceback.print_tb(e.__traceback__)
                 print('Can\'t process:', e, flush=True)
 
 
