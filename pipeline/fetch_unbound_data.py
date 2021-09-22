@@ -535,30 +535,34 @@ class Candidate:
     def __repr__(self):
         return str((self.pdb_id, self.chain_ids))
 
+def is_subsequence_of(query_seq, target_seq):
+  identity = alignments.calc_identity(query_seq, target_seq)
+
+  return identity == 1.0
 
 def cut_alignments(query_alignment, target_alignment):
-    match_ids = []
+  match_ids = []
 
-    for i in range(len(query_alignment)):
-        if query_alignment[i] != '-' and query_alignment[i] == \
-                target_alignment[i]:
-            match_ids.append(i)
+  for i in range(len(query_alignment)):
+      if query_alignment[i] != '-' and query_alignment[i] == \
+              target_alignment[i]:
+          match_ids.append(i)
 
-    if not match_ids:
-        return [], [], []
+  if not match_ids:
+      return [], [], []
 
-    first_match_id = match_ids[0]
-    last_match_id = match_ids[-1]
+  first_match_id = match_ids[0]
+  last_match_id = match_ids[-1]
 
-    return match_ids, query_alignment[first_match_id: last_match_id + 1], \
-           target_alignment[first_match_id: last_match_id + 1]
+  return match_ids, query_alignment[first_match_id: last_match_id + 1], \
+          target_alignment[first_match_id: last_match_id + 1]
 
 
-def calc_mismatches_stat(query_seq, target_seq):
+def calc_mismatches(query_seq, target_seq):
     alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
 
     if not alignment_list:
-        return 0, len(query_seq), len(query_seq)
+        return len(query_seq)
 
     alignment = alignment_list[0]
 
@@ -571,50 +575,27 @@ def calc_mismatches_stat(query_seq, target_seq):
         query_alignment, target_alignment)
 
     if not match_ids:
-        return 0, len(query_seq), len(query_seq)
-
-    cur_miss_len = 0
-    max_miss_len = 0
+        return len(query_seq)
 
     for i in range(len(query_alignment)):
-        if query_alignment[i] != target_alignment[i]:
-            cur_miss_len += 1
-            mismatches_count += 1
-        else:
-            max_miss_len = max(max_miss_len, cur_miss_len)
-            cur_miss_len = 0
+      if query_alignment[i] != target_alignment[i]:
+        mismatches_count += 1
 
-    return len(match_ids), mismatches_count, max_miss_len
-
-
-def is_subsequence_of(query_seq, target_seq, is_ab=True):
-    min_intersection_len = int(0.9 * min(len(query_seq), len(target_seq)))
-    max_miss_cutoff = max(10, int(0.03 * len(query_seq))) if is_ab else int(
-        0.05 * len(query_seq))
-
-    matches_count, mismatches_count, max_miss_len = calc_mismatches_stat(
-        query_seq,
-        target_seq)
-
-    return matches_count + mismatches_count >= min_intersection_len and (
-            not is_ab or max_miss_len < 3) and mismatches_count <= \
-           max_miss_cutoff
-
+    return mismatches_count
 
 class Hit:
-    def __init__(self, hit):
-        [self.pdb_id, entity_id] = hit['identifier'].split('_')
-        self.chain_ids_to_seqs = fetch_all_sequences_for_entity(self.pdb_id,
+  def __init__(self, hit):
+    [self.pdb_id, entity_id] = hit['identifier'].split('_')
+    self.chain_ids_to_seqs = fetch_all_sequences_for_entity(self.pdb_id,
                                                                 entity_id)
 
-
-def process_hit(seq, is_ab, hit):
+def process_hit(seq, hit):
     res = []
     good_chain_ids = []
 
     for chain_id, hit_seq in hit.chain_ids_to_seqs.items():
 
-        if is_subsequence_of(hit_seq, seq, is_ab=is_ab):
+        if is_subsequence_of(hit_seq, seq):
             good_chain_ids.append(chain_id)
 
     if good_chain_ids:
@@ -657,11 +638,15 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
     hits = []
 
     for hit in json.loads(r)['result_set']:
-        hits.append((seq, is_ab, Hit(hit)))
+        hits.append((seq, Hit(hit)))
 
+    # if NUMBER_OF_PROCESSES > 1:
     with Pool(NUMBER_OF_PROCESSES) as pool:
-        for x in pool.starmap(process_hit, hits):
-            res += x
+      for x in pool.starmap(process_hit, hits):
+        res += x
+    # else:
+    #   for hit in hits:
+    #     res += process_hit(hit)
 
     print(res)
 
@@ -992,6 +977,7 @@ def collect_unbound_structures(run_id, structures_summary, overwrite=True, p=Non
                 processed_log.write(comp.comp_name + '\n')
                 processed_log.flush()
             except Exception as e:
+                print(e)
                 traceback.print_tb(e.__traceback__)
                 not_processed.write('{}: {}\n'.format(comp.comp_name, e))
                 not_processed.flush()

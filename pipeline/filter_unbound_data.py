@@ -113,9 +113,7 @@ class AssemblyMatchInfo:
         return str((self.is_good, self.id, self.matching,
                     self.reason_bad))
 
-
-def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
-    is_ab = type == AB
+def check_structure(source_pdb_id, source_chain_ids, target_pdb_id):
     pdb_parser = PDBParser()
 
     try:
@@ -158,7 +156,7 @@ def check_structure(source_pdb_id, source_chain_ids, target_pdb_id, type):
 
         for chain_id, chain_seq in real_source_seqs:
             for target_chain_id, target_seq in assembly_ids_seqs:
-                if is_subsequence_of(chain_seq, target_seq, is_ab=is_ab):
+                if is_subsequence_of(chain_seq, target_seq):
                     chain_matching[chain_id].append(target_chain_id)
 
         lens_of_matches = list(map(lambda x: len(chain_matching[x]),
@@ -228,7 +226,7 @@ def filter_candidates_pack(comp_name, pdb_id, candidate_pdb_ids, chain_ids, ty,
 
             assemblies = check_structure(pdb_id,
                                          chain_ids,
-                                         candidate_pdb_id, ty)
+                                         candidate_pdb_id)
             for assembly in assemblies:
                 matching_str = matching_to_str(chain_ids, assembly.matching)
 

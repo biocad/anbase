@@ -14,7 +14,7 @@ from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
-    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat, extract_seq, \
+    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches, extract_seq, \
     retrieve_resolution
 from filter_unbound_data import union_models, \
     fetch_all_assemblies
@@ -815,8 +815,7 @@ class Conformation:
         cnt = 0
 
         for x, y in zip(seqs1, seqs2):
-            _, c, _ = calc_mismatches_stat(x, y)
-            cnt += c
+          cnt += calc_mismatches(x, y)
 
         return cnt
 
