@@ -1009,9 +1009,11 @@ class FilteredStructure:
         self.assembly_id = line['assembly_id']
 
 
-def process_filtered_csv(run_id, path_to_filtered_structures_csv,
-                         path_to_rejected_complexes_csv, to_accept=None, 
-                         sabdab_summary_file_path='data/sabdab_summary_all.tsv'):
+def process_filtered_csv(run_id, 
+                         path_to_filtered_structures_csv,
+                         path_to_rejected_complexes_csv,
+                         sabdab_summary_file_path,
+                         to_accept=None):
     filtered_structures_csv = pd.read_csv(path_to_filtered_structures_csv)
 
     by_complex = defaultdict(list)
@@ -1106,6 +1108,9 @@ if __name__ == '__main__':
     from optparse import OptionParser
 
     parser = OptionParser()
+    parser.add_option('--sabdab-summary', default='sabdab_summary_all.tsv',
+                  dest='sabdab_summary_file_path', metavar='SABDAB_SUMMARY',
+                  help='Path to sabdab summary file')
     parser.add_option('--run-id', default='0',
                       dest='run_id',
                       metavar='RUN_ID',
@@ -1115,4 +1120,5 @@ if __name__ == '__main__':
 
     process_filtered_csv(options.run_id,
                          FILTERED_STRUCTURES_CSV.format(options.run_id),
-                         REJECTED_COMPLEXES_CSV.format(options.run_id))
+                         REJECTED_COMPLEXES_CSV.format(options.run_id),
+                         options.sabdab_summary_file_path)
