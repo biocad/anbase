@@ -19,7 +19,7 @@ from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
 from filter_unbound_data import union_models, \
     fetch_all_assemblies
 
-from pipeline.filter_unbound_data import MINIMAL_CHAIN_LENGTH
+from filter_unbound_data import MINIMAL_CHAIN_LENGTH
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness_{}.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness_{}.csv'
@@ -1011,7 +1011,8 @@ class FilteredStructure:
 
 
 def process_filtered_csv(run_id, path_to_filtered_structures_csv,
-                         path_to_rejected_complexes_csv, to_accept=None):
+                         path_to_rejected_complexes_csv, to_accept=None, 
+                         sabdab_summary_file_path='data/sabdab_summary_all.tsv'):
     filtered_structures_csv = pd.read_csv(path_to_filtered_structures_csv)
 
     by_complex = defaultdict(list)
@@ -1021,7 +1022,7 @@ def process_filtered_csv(run_id, path_to_filtered_structures_csv,
             FilteredStructure(filtered_structures_csv.iloc[i]))
 
     filter_out_peptides(by_complex,
-                        pd.read_csv('data/sabdab_summary_all.tsv', sep='\t'))
+                        pd.read_csv(sabdab_summary_file_path, sep='\t'))
 
     db_info_path = 'db_info_{}.csv'.format(run_id)
 

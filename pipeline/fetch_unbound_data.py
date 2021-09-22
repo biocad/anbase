@@ -6,6 +6,7 @@ import time
 import traceback
 from multiprocessing import Process, Queue
 from multiprocessing.pool import Pool
+import re
 
 import requests
 
@@ -360,6 +361,15 @@ class Complex:
 
         return fasta[1]
 
+def parse_freaking_chain_names(chains_line):
+    if "auth" in chains_line: # under auth are chain names corresponding to chains in the pdb file
+      chain_names = [m.replace('auth ', '') for m in re.findall('auth .', chains_line)]
+    elif "Chains" in chains_line: # if there are multiple chains
+      chain_names = chains_line.replace('Chains','').replace(' ', '').split(',')
+    else: # if there is one chain
+      chain_names = chains_line.split(' ')[1].split(',')
+
+    return chain_names
 
 def fetch_all_sequences(pdb_id, mol_names_res=None):
     url = f'https://www.rcsb.org/fasta/entry/{pdb_id}'
@@ -375,7 +385,7 @@ def fetch_all_sequences(pdb_id, mol_names_res=None):
             if mol_names_res is not None:
                 mol_names_res.append(mol_name)
 
-            chain_names = chains.split(' ')[1].split(',')
+            chain_names = parse_freaking_chain_names(chains)
 
             for chain_name in chain_names:
                 seqs[chain_name] = ''
@@ -388,7 +398,6 @@ def fetch_all_sequences(pdb_id, mol_names_res=None):
                 seqs[chain_name] += line
 
     return seqs
-
 
 def fetch_all_sequences_for_entity(pdb_id, entity_id):
     url = f'https://www.rcsb.org/fasta/entry/{pdb_id}'
@@ -409,7 +418,8 @@ def fetch_all_sequences_for_entity(pdb_id, entity_id):
                 filling = False
                 continue
 
-            chain_names = chains.split(' ')[1].split(',')
+            chain_names = parse_freaking_chain_names(chains)
+
             for chain_name in chain_names:
                 seqs[chain_name] = ''
 
@@ -824,7 +834,6 @@ def sort_and_take_ress(unbound_ress):
 
     return res[:5]
 
-
 def find_unbound_conformations(complex):
     unbound_antigen_valid_candidates = \
         find_unbound_structure(complex.pdb_id, complex.antigen_chains,
@@ -841,10 +850,6 @@ def find_unbound_conformations(complex):
 
     return sort_and_take_ress(unbound_antigen_valid_candidates), \
            sort_and_take_ress(unbound_antibody_valid_candidates)
-
-
-structures_summary = read_csv('data/sabdab_summary_all.tsv',
-                              sep='\t')
 
 test_structures = [('1AHW', '1FGN', '1TFH'),
                    ('1BVK', '1BVL', '3LZT'),
@@ -869,7 +874,7 @@ test_structures = [('1AHW', '1FGN', '1TFH'),
                    ('4GXU', '4GXV', '4I1B')]
 
 
-def run_zlab_test():
+def run_zlab_test(structures_summary):
     comps = get_bound_complexes('-1', structures_summary,
                                 list(map(lambda x: x[0], test_structures)))
 
@@ -920,7 +925,7 @@ def remove_if_contains(path, s):
             os.remove(os.path.join(path, file))
 
 
-def collect_unbound_structures(run_id, overwrite=True, p=None, to_accept=None):
+def collect_unbound_structures(run_id, structures_summary, overwrite=True, p=None, to_accept=None):
     comps = get_bound_complexes(run_id, structures_summary, p=p,
                                 to_accept=to_accept)
 
@@ -995,6 +1000,9 @@ if __name__ == '__main__':
     from optparse import OptionParser
 
     parser = OptionParser()
+    parser.add_option('--sabdab-summary', default='sabdab_summary_all.tsv',
+                      dest='sabdab_summary_file_path', metavar='SABDAB_SUMMARY',
+                      help='Path to sabdab summary file')
     parser.add_option('--run-id', default='0',
                       dest='run_id',
                       metavar='RUN_ID',
@@ -1014,8 +1022,11 @@ if __name__ == '__main__':
                            'the cached place [default: {}]'.format('False'))
     parser.add_option('--number-of-processes', default=3,
                       dest='n', metavar='N',
-                      help='n')
+                      help='Number of paralles prcoesses')
     options, _ = parser.parse_args()
+
+    structures_summary = read_csv(options.sabdab_summary_file_path,
+                              sep='\t')
 
     NUMBER_OF_PROCESSES = int(options.n)
 
@@ -1025,7 +1036,7 @@ if __name__ == '__main__':
         cont = False
 
     if options.is_test:
-        run_zlab_test()
+        run_zlab_test(structures_summary)
 
     if options.range:
         [l, r] = options.range.replace(' ', '').strip('(').strip(')').split(
@@ -1034,4 +1045,4 @@ if __name__ == '__main__':
     else:
         p = None
 
-    collect_unbound_structures(options.run_id, overwrite=not cont, p=p)
+    collect_unbound_structures(options.run_id, structures_summary, overwrite=not cont, p=p)
