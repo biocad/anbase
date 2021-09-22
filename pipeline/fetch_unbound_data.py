@@ -231,14 +231,14 @@ def is_obsolete(pdb_id):
 
 def form_comp_name(pdb_id, ab_chains, ag_chains):
     ab_names = list(map(lambda x: x if x else '', ab_chains))
-    comp_name = pdb_id + '_' + CHAINS_SEPARATOR.join(ab_names) + '|' + \
+    comp_name = pdb_id + '_' + CHAINS_SEPARATOR.join(ab_names) + '-' + \
                 CHAINS_SEPARATOR.join(ag_chains)
     return comp_name
 
 
 def comp_name_to_pdb_and_chains(comp_name):
     [pdb_id, chains] = comp_name.split('_')
-    ab_chains_s, ag_chains_s = chains.split('|')
+    ab_chains_s, ag_chains_s = chains.split('-')
 
     ab_chains = ab_chains_s.split(CHAINS_SEPARATOR)
     ag_chains = ag_chains_s.split(CHAINS_SEPARATOR)

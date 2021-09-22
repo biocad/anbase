@@ -17,7 +17,7 @@ pdb_io = PDBIO()
 
 def comp_name_to_pdb_and_chains(comp_name):
     [pdb_id, chains] = comp_name.split('_')[:2]
-    ab_chains_s, ag_chains_s = chains.split('|')
+    ab_chains_s, ag_chains_s = chains.split('-')
 
     ab_chains = ab_chains_s.split(CHAINS_SEPARATOR)
     ag_chains = ag_chains_s.split(CHAINS_SEPARATOR)
