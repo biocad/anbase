@@ -35,8 +35,9 @@ def get_pdb_paths(dir_path, prev_epoch, comps_to_take, fast_version=False):
         if not comps_to_take:
             return True
 
-        m = re.search('/(...._(.\+.|.)\|(.\+.\+.\+.|.\+.\+.|.\+.|.))/', p)
-        comp_name = m.group(1)
+        # m = re.search('/(...._(.\+.|.)\|(.\+.\+.\+.|.\+.\+.|.\+.|.))/', p)
+        # comp_name = m.group(1)
+        comp_name = os.path.basename(os.path.dirname(p))
 
         return comp_name in comps_to_take
 
