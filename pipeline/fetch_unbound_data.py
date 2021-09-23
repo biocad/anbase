@@ -268,8 +268,7 @@ def get_real_seqs(struct, chain_ids_to_seqs):
 
         alignment = alignment_n[0]
 
-        _, _, real_seq = cut_alignments(alignment[0],
-                                        alignment[1])
+        _, _, real_seq = cut_alignments(alignment[0], alignment[1])
 
         real_seqs.append(real_seq)
 
@@ -318,10 +317,9 @@ class Complex:
         self.antibody_l_seq = None
 
         if self.antibody_l_chain:
-            self.antibody_l_seq = \
-                get_real_seqs(self.struct, [(self.antibody_l_chain,
-                                             self._fetch_sequence(
-                                                 self.antibody_l_chain))])[0]
+            chain_ids_to_seqs = [(self.antibody_l_chain, self._fetch_sequence(self.antibody_l_chain))]
+            real_seqs = get_real_seqs(self.struct, chain_ids_to_seqs)
+            self.antibody_l_seq = real_seqs[0]
 
         self.antibody_seqs = [self.antibody_h_seq,
                               self.antibody_l_seq] if not self.is_vhh else [
@@ -362,14 +360,18 @@ class Complex:
         return fasta[1]
 
 def parse_freaking_chain_names(chains_line):
-    if "auth" in chains_line: # under auth are chain names corresponding to chains in the pdb file
-      chain_names = [m.replace('auth ', '') for m in re.findall('auth .', chains_line)]
-    elif "Chains" in chains_line: # if there are multiple chains
-      chain_names = chains_line.replace('Chains','').replace(' ', '').split(',')
-    else: # if there is one chain
-      chain_names = chains_line.split(' ')[1].split(',')
+    chains_line_tmp = chains_line
 
-    return chain_names
+    chain_names_auth = [m.replace('auth ', '') for m in re.findall('auth .', chains_line_tmp)]
+
+    chains_line_tmp = re.sub('\[auth..\]', '', chains_line_tmp) # remove all strings like '[auth A]'
+    chains_line_tmp = chains_line_tmp.replace('Chains','').replace('Chain','') # remove all 'Chains' and 'Chain'
+    chains_line_tmp = chains_line_tmp.replace(' ', '') # remove spaces and 
+    chains_names = chains_line_tmp.split(',') # just split by ','
+
+    all_chain_names = chain_names_auth + chains_names
+
+    return all_chain_names
 
 def fetch_all_sequences(pdb_id, mol_names_res=None):
     url = f'https://www.rcsb.org/fasta/entry/{pdb_id}'
@@ -519,7 +521,9 @@ def get_bound_complexes(run_id, sabdab_summary_df, to_accept=None, p=None):
                 else:
                     print('Not protein-protein complex:', row[PDB_ID])
             except Exception as e:
-                print('Complex not read', e)
+                print(f'WARNING: Complex {row[PDB_ID]} is not read:', e)
+                traceback.print_tb(e.__traceback__)
+                # raise e
 
     return complexes
 
