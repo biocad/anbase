@@ -13,7 +13,7 @@ from generate_constraints import EPITOPE
 ANBASE_SUMMARY_CSV = 'anbase_summary.csv'
 
 DB_PATH = 'data'
-DB_INFO_PATH = 'db_info.csv'
+DB_INFO_PATH = 'db_info_0.csv'
 DUPLICATES_PATH = 'duplicates.csv'
 GAPS_B_PATH = 'gap_stats_b.csv'
 GAPS_U_PATH = 'gap_stats_u.csv'
@@ -79,7 +79,7 @@ def finalize_complex(comp_name, candidate_infos, duplicates):
 
     return all_candidates[0], False, all_candidates[1:]
 
-
+# TODO: don't put alternative candidates into a separate folder
 def move_candidate_to_dir(db_path, candidate_info, dir_path):
     comp_path = os.path.join(db_path, candidate_info.comp_name)
 
@@ -118,8 +118,8 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
     move_to_dir_path(HETATMS_DELETED)
     prepped_moved = move_to_dir_path(PREPPED)
     move_to_dir_path(SEQUENCES)
-    move_to_dir_path(ANNOTATION)
-    move_to_dir_path(EPITOPE)
+    # move_to_dir_path(ANNOTATION)
+    # move_to_dir_path(EPITOPE)
 
     return prepped_moved
 
@@ -207,7 +207,7 @@ if __name__ == '__main__':
         os.makedirs(options.anbase_data)
 
     with open(ANBASE_SUMMARY_CSV, 'w') as anbase_summary_csv:
-        anbase_summary_csv.write(ABASE_SUMMARY_HEADER + '\n')
+        anbase_summary_csv.write(ANBASE_SUMMARY_HEADER + '\n')
         anbase_summary_csv.flush()
 
         complexes_l = list(complexes)
