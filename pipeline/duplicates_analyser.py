@@ -17,28 +17,23 @@ DUPLICATES_CSV = 'duplicates.csv'
 
 CDRS = ['CDR1', 'CDR2', 'CDR3']
 
-NUMBER_OF_PROCESSES = 50
-
-
-def similarity_of_two_seqs(seq1, seq2):
-    return is_subsequence_of(seq1, seq2)
+NUMBER_OF_PROCESSES = 30
 
 def similarity_of_two_complexes(comp1, comp2):
     if len(comp1.ab_seqs_b) != len(comp2.ab_seqs_b) or \
             len(comp1.ag_seqs_b) != len(comp2.ag_seqs_b):
         return False
 
-    # TODO: check if it works
-    if len(comp1.ab_seqs_b) == 2 and len(comp1.ab_seqs_b) == 2: # compare combinations of seqeunces
-      comp1_fst_seq_similarity = similarity_of_two_seqs(comp1.ab_seqs_b[0], comp2.ab_seqs_b[0]) or \
-                                 similarity_of_two_seqs(comp1.ab_seqs_b[0], comp2.ab_seqs_b[1])
-      comp1_snd_seq_similarity = similarity_of_two_seqs(comp1.ab_seqs_b[1], comp2.ab_seqs_b[1]) or \
-                                 similarity_of_two_seqs(comp1.ab_seqs_b[1], comp2.ab_seqs_b[0])
+    if len(comp1.ab_seqs_b) == 2 and len(comp2.ab_seqs_b) == 2: # compare combinations of seqeunces
+      comp1_fst_seq_similarity = is_subsequence_of(comp1.ab_seqs_b[0], comp2.ab_seqs_b[0]) or \
+                                 is_subsequence_of(comp1.ab_seqs_b[0], comp2.ab_seqs_b[1])
+      comp1_snd_seq_similarity = is_subsequence_of(comp1.ab_seqs_b[1], comp2.ab_seqs_b[1]) or \
+                                 is_subsequence_of(comp1.ab_seqs_b[1], comp2.ab_seqs_b[0])
       ab_chains_similar = comp1_fst_seq_similarity and comp1_snd_seq_similarity
     else: # compare just two sequnces for single chain antibodies
-      ab_chains_similar = similarity_of_two_seqs(comp1.ab_seqs_b[0], comp2.ab_seqs_b[0])
+      ab_chains_similar = is_subsequence_of(comp1.ab_seqs_b[0], comp2.ab_seqs_b[0])
 
-    ag_chains_similar = all(map(lambda p: similarity_of_two_seqs(p[0], p[1]),
+    ag_chains_similar = all(map(lambda p: is_subsequence_of(p[0], p[1]),
                                 zip(comp1.ag_seqs_b, comp2.ag_seqs_b)))
 
     return ab_chains_similar and ag_chains_similar
