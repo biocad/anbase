@@ -4,16 +4,15 @@ import shutil
 import pandas as pd
 from collections import defaultdict
 
-from candidate_info import CandidateInfo, ANNOTATION
+from candidate_info import CandidateInfo
 from process_unbound_data import Conformation, ALIGNED, HETATMS_DELETED, \
     SEQUENCES
-from prepper import PREPPED, SCHROD
-from generate_constraints import EPITOPE
+from prepper import PREPPED
 
 ANBASE_SUMMARY_CSV = 'anbase_summary.csv'
 
 DB_PATH = 'data'
-DB_INFO_PATH = 'db_info.csv'
+DB_INFO_PATH = 'db_info_0.csv'
 DUPLICATES_PATH = 'duplicates.csv'
 GAPS_B_PATH = 'gap_stats_b.csv'
 GAPS_U_PATH = 'gap_stats_u.csv'
@@ -52,21 +51,12 @@ def check_perfect_candidate(candidate):
         os.path.join(DB_PATH, candidate.comp_name, PREPPED,
                      candidate.candidate_id))
 
-
 def finalize_complex(comp_name, candidate_infos, duplicates):
     comp_candidates = candidate_infos[comp_name]
     comp_duplicates_candidates = [x for l in list(
-        map(lambda x: candidate_infos[x], duplicates[comp_name])) for x in l]
+       map(lambda x: candidate_infos[x], duplicates[comp_name])) for x in l]
 
     all_candidates = comp_candidates + comp_duplicates_candidates
-
-    ideal_candidates = list(
-        filter(lambda x: check_perfect_candidate(x), all_candidates))
-
-    if len(ideal_candidates) > 0:
-        alternative_candidates = list(
-            filter(lambda x: x != ideal_candidates[0], all_candidates))
-        return ideal_candidates[0], True, alternative_candidates
 
     all_candidates.sort(key=lambda x: 0 if x.small_mols_msg is None else (
         1 if x.small_mols_msg == Conformation.MOLS_WARNING else 2))
@@ -77,37 +67,62 @@ def finalize_complex(comp_name, candidate_infos, duplicates):
     os.path.exists(os.path.join(DB_PATH, x.comp_name, PREPPED,
                                 x.candidate_id)) else 1)
 
-    return all_candidates[0], False, all_candidates[1:]
+    # final_candidates = []
+    # for candidate in all_candidates:
+    #   is_dubplicate = any(map(
+    #     lambda c: c.ab_chain_ids_u == candidate.ab_chain_ids_u and c.ag_chain_ids_u == candidate.ag_chain_ids_u, 
+    #     final_candidates))
+      
+    #   if not is_dubplicate:
+    #     final_candidates.append(candidate)
 
+
+    # assign candidate idx to every candidate and
+    # assign final_complex_name to put 'alternative' candidates into a single complex folder later
+    i = 0
+    # for candidate in all_candidates:
+      # candidate.final_comp_name = final_candidates[0].comp_name
+      # candidate.ab_chain_ids_b  = final_candidates[0].ab_chain_ids_b
+      # candidate.ag_chain_ids_b  = final_candidates[0].ag_chain_ids_b
+      
+      # candidate.final_candidate_id = str(i)
+
+      # i+=1
+
+    is_perfect_flags = list(map(lambda x: check_perfect_candidate(x), all_candidates))
+
+    return all_candidates, is_perfect_flags
 
 def move_candidate_to_dir(db_path, candidate_info, dir_path):
     comp_path = os.path.join(db_path, candidate_info.comp_name)
 
     def move_to_dir_path(folder_name):
-        path_to_folder = os.path.join(comp_path, folder_name,
-                                      candidate_info.candidate_id)
+        path_to_folder = os.path.join(comp_path, folder_name, candidate_info.candidate_id)
 
-        path_to_dst = os.path.join(dir_path, folder_name.replace('prepared',
-                                                                 'prepared_schrod'))
+        path_to_dst_unbound = os.path.join(dir_path, 
+                                           folder_name.replace('prepared', 'prepared_schrod'), 
+                                           candidate_info.candidate_id)
+
+        path_to_dst_bound = os.path.join(dir_path, 
+                                         folder_name.replace('prepared', 'prepared_schrod'))
 
         try:
-            if not os.path.exists(path_to_dst):
-                os.makedirs(path_to_dst)
+            if not os.path.exists(path_to_dst_unbound):
+                os.makedirs(path_to_dst_unbound)
 
             for file in os.listdir(path_to_folder):
                 shutil.copyfile(os.path.join(path_to_folder, file),
-                                os.path.join(path_to_dst, file.replace('_l_',
-                                                                       '_ag_').
-                                             replace('_r_', '_ab_')))
+                                os.path.join(path_to_dst_unbound, file.replace('_l_', '_ag_').replace('_r_', '_ab_')))
 
-            files_in_folder = filter(lambda x: candidate_info.pdb_id_b in x,
-                                     os.listdir(os.path.join(comp_path,
-                                                             folder_name)))
+            if candidate_info.candidate_id == '0': # copy bound strctures only once 
+                                                   # with the first pair unbound structures
+              files_in_folder = filter(lambda x: candidate_info.pdb_id_b in x,
+                                      os.listdir(os.path.join(comp_path, folder_name)))
 
-            for file in files_in_folder:
-                shutil.copyfile(
-                    os.path.join(comp_path, folder_name, file),
-                    os.path.join(path_to_dst, file))
+              for file in files_in_folder:
+                  shutil.copyfile(
+                      os.path.join(comp_path, folder_name, file),
+                      os.path.join(path_to_dst_bound, file))
         except Exception as e:
             print('Unsuccessful move:', path_to_folder, e, flush=True)
             return False
@@ -118,8 +133,8 @@ def move_candidate_to_dir(db_path, candidate_info, dir_path):
     move_to_dir_path(HETATMS_DELETED)
     prepped_moved = move_to_dir_path(PREPPED)
     move_to_dir_path(SEQUENCES)
-    move_to_dir_path(ANNOTATION)
-    move_to_dir_path(EPITOPE)
+    # move_to_dir_path(ANNOTATION)
+    # move_to_dir_path(EPITOPE)
 
     return prepped_moved
 
@@ -129,11 +144,11 @@ if __name__ == '__main__':
 
     parser = OptionParser()
     parser.add_option('--db', default=DB_PATH, dest='db', metavar='DB',
-                      help='Path to dev datanbase [default: {}]'.format(
+                      help='Path to dev database [default: {}]'.format(
                           DB_PATH))
     parser.add_option('--db-info', default=DB_INFO_PATH, dest='db_info',
                       metavar='DB_INFO_PATH',
-                      help='Path to dev datanbase info csv file [default: {}]'.
+                      help='Path to dev database info csv file [default: {}]'.
                       format(DB_INFO_PATH))
     parser.add_option('--anbase-data', default=ANBASE_DATA_PATH,
                       dest='anbase_data',
@@ -149,7 +164,7 @@ if __name__ == '__main__':
     parser.add_option('--gaps-b', default=DUPLICATES_PATH,
                       dest='gaps_b',
                       metavar='GAPS_B',
-                      help='Path to csv with gaps info on bounded complexes'
+                      help='Path to csv with gaps info on bound complexes'
                            ' [default: {}]'.
                       format(GAPS_B_PATH))
     parser.add_option('--gaps-u', default=DUPLICATES_PATH,
@@ -190,8 +205,7 @@ if __name__ == '__main__':
     dup_df = pd.read_csv(options.duplicates, dtype=str)
 
     for i in range(len(dup_df)):
-        duplicates[dup_df.iloc[i]['comp_name']].append(
-            dup_df.iloc[i]['duplicate_name'])
+        duplicates[dup_df.iloc[i]['comp_name']].append(dup_df.iloc[i]['duplicate_name'])
 
     for comp_name, duplicates_ in duplicates.items():
         if comp_name in deleted:
@@ -207,55 +221,23 @@ if __name__ == '__main__':
         os.makedirs(options.anbase_data)
 
     with open(ANBASE_SUMMARY_CSV, 'w') as anbase_summary_csv:
-        anbase_summary_csv.write(ABASE_SUMMARY_HEADER + '\n')
+        anbase_summary_csv.write(ANBASE_SUMMARY_HEADER + '\n')
         anbase_summary_csv.flush()
 
         complexes_l = list(complexes)
         complexes_l.sort()
 
         for comp in complexes_l:
-            final_candidate, is_perfect, alternative_candidates = \
-                finalize_complex(comp, candidate_infos, duplicates)
+          all_candidates, is_perfect_flags = finalize_complex(comp, candidate_infos, duplicates)
 
-            comp_path = os.path.join(options.anbase_data,
-                                     final_candidate.comp_name)
+          for (candidate, is_perfect) in zip(all_candidates, is_perfect_flags):
 
-            successful_move = move_candidate_to_dir(options.db,
-                                                    final_candidate, comp_path)
+            comp_path = os.path.join(options.anbase_data, candidate.comp_name)
+
+            successful_move = move_candidate_to_dir(options.db, candidate, comp_path)
 
             if successful_move:
                 anbase_summary_csv.write(
-                    final_candidate.to_string(with_candidate_id=False) +
+                    candidate.to_string(with_candidate_id=False) +
                     ',' + str(is_perfect) + '\n')
                 anbase_summary_csv.flush()
-
-            with open(os.path.join(comp_path, ALTERNATIVE_CANDIDATES + '.csv'),
-                      'w') as alternative_candidates_csv:
-                alternative_candidates_csv.write(
-                    ALTERNATIVE_CANDIDATES_HEADER + '\n')
-
-                if alternative_candidates is not None:
-                    for alternative_candidate in alternative_candidates:
-                        alternative_candidates_csv.write(
-                            alternative_candidate.to_string() + '\n')
-
-            if alternative_candidates is None:
-                continue
-
-            alternative_candidates_path = os.path.join(comp_path,
-                                                       ALTERNATIVE_CANDIDATES)
-
-            if not os.path.exists(alternative_candidates_path):
-                os.mkdir(alternative_candidates_path)
-
-            for alternative_candidate in alternative_candidates:
-                path_to_alternative_candidate = os.path.join(
-                    alternative_candidates_path,
-                    alternative_candidate.comp_name + '_' +
-                    str(alternative_candidate.candidate_id))
-
-                if not os.path.exists(path_to_alternative_candidate):
-                    os.mkdir(path_to_alternative_candidate)
-
-                move_candidate_to_dir(options.db, alternative_candidate,
-                                      path_to_alternative_candidate)

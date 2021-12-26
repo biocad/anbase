@@ -6,6 +6,7 @@ import time
 import traceback
 from multiprocessing import Process, Queue
 from multiprocessing.pool import Pool
+import re
 
 import requests
 
@@ -230,14 +231,14 @@ def is_obsolete(pdb_id):
 
 def form_comp_name(pdb_id, ab_chains, ag_chains):
     ab_names = list(map(lambda x: x if x else '', ab_chains))
-    comp_name = pdb_id + '_' + CHAINS_SEPARATOR.join(ab_names) + '|' + \
+    comp_name = pdb_id + '_' + CHAINS_SEPARATOR.join(ab_names) + '-' + \
                 CHAINS_SEPARATOR.join(ag_chains)
     return comp_name
 
 
 def comp_name_to_pdb_and_chains(comp_name):
     [pdb_id, chains] = comp_name.split('_')
-    ab_chains_s, ag_chains_s = chains.split('|')
+    ab_chains_s, ag_chains_s = chains.split('-')
 
     ab_chains = ab_chains_s.split(CHAINS_SEPARATOR)
     ag_chains = ag_chains_s.split(CHAINS_SEPARATOR)
@@ -267,8 +268,7 @@ def get_real_seqs(struct, chain_ids_to_seqs):
 
         alignment = alignment_n[0]
 
-        _, _, real_seq = cut_alignments(alignment[0],
-                                        alignment[1])
+        _, _, real_seq = cut_alignments(alignment[0], alignment[1])
 
         real_seqs.append(real_seq)
 
@@ -317,10 +317,9 @@ class Complex:
         self.antibody_l_seq = None
 
         if self.antibody_l_chain:
-            self.antibody_l_seq = \
-                get_real_seqs(self.struct, [(self.antibody_l_chain,
-                                             self._fetch_sequence(
-                                                 self.antibody_l_chain))])[0]
+            chain_ids_to_seqs = [(self.antibody_l_chain, self._fetch_sequence(self.antibody_l_chain))]
+            real_seqs = get_real_seqs(self.struct, chain_ids_to_seqs)
+            self.antibody_l_seq = real_seqs[0]
 
         self.antibody_seqs = [self.antibody_h_seq,
                               self.antibody_l_seq] if not self.is_vhh else [
@@ -360,6 +359,19 @@ class Complex:
 
         return fasta[1]
 
+def parse_freaking_chain_names(chains_line):
+    chains_line_tmp = chains_line
+
+    chain_names_auth = [m.replace('auth ', '') for m in re.findall('auth .', chains_line_tmp)]
+
+    chains_line_tmp = re.sub('\[auth..\]', '', chains_line_tmp) # remove all strings like '[auth A]'
+    chains_line_tmp = chains_line_tmp.replace('Chains','').replace('Chain','') # remove all 'Chains' and 'Chain'
+    chains_line_tmp = chains_line_tmp.replace(' ', '') # remove spaces and 
+    chains_names = chains_line_tmp.split(',') # just split by ','
+
+    all_chain_names = chain_names_auth + chains_names
+
+    return all_chain_names
 
 def fetch_all_sequences(pdb_id, mol_names_res=None):
     url = f'https://www.rcsb.org/fasta/entry/{pdb_id}'
@@ -375,7 +387,7 @@ def fetch_all_sequences(pdb_id, mol_names_res=None):
             if mol_names_res is not None:
                 mol_names_res.append(mol_name)
 
-            chain_names = chains.split(' ')[1].split(',')
+            chain_names = parse_freaking_chain_names(chains)
 
             for chain_name in chain_names:
                 seqs[chain_name] = ''
@@ -388,7 +400,6 @@ def fetch_all_sequences(pdb_id, mol_names_res=None):
                 seqs[chain_name] += line
 
     return seqs
-
 
 def fetch_all_sequences_for_entity(pdb_id, entity_id):
     url = f'https://www.rcsb.org/fasta/entry/{pdb_id}'
@@ -409,7 +420,8 @@ def fetch_all_sequences_for_entity(pdb_id, entity_id):
                 filling = False
                 continue
 
-            chain_names = chains.split(' ')[1].split(',')
+            chain_names = parse_freaking_chain_names(chains)
+
             for chain_name in chain_names:
                 seqs[chain_name] = ''
 
@@ -509,7 +521,9 @@ def get_bound_complexes(run_id, sabdab_summary_df, to_accept=None, p=None):
                 else:
                     print('Not protein-protein complex:', row[PDB_ID])
             except Exception as e:
-                print('Complex not read', e)
+                print(f'WARNING: Complex {row[PDB_ID]} is not read:', e)
+                traceback.print_tb(e.__traceback__)
+                # raise e
 
     return complexes
 
@@ -525,30 +539,34 @@ class Candidate:
     def __repr__(self):
         return str((self.pdb_id, self.chain_ids))
 
+def is_subsequence_of(query_seq, target_seq):
+  identity = alignments.calc_identity(query_seq, target_seq)
+
+  return identity == 1.0
 
 def cut_alignments(query_alignment, target_alignment):
-    match_ids = []
+  match_ids = []
 
-    for i in range(len(query_alignment)):
-        if query_alignment[i] != '-' and query_alignment[i] == \
-                target_alignment[i]:
-            match_ids.append(i)
+  for i in range(len(query_alignment)):
+      if query_alignment[i] != '-' and query_alignment[i] == \
+              target_alignment[i]:
+          match_ids.append(i)
 
-    if not match_ids:
-        return [], [], []
+  if not match_ids:
+      return [], [], []
 
-    first_match_id = match_ids[0]
-    last_match_id = match_ids[-1]
+  first_match_id = match_ids[0]
+  last_match_id = match_ids[-1]
 
-    return match_ids, query_alignment[first_match_id: last_match_id + 1], \
-           target_alignment[first_match_id: last_match_id + 1]
+  return match_ids, query_alignment[first_match_id: last_match_id + 1], \
+          target_alignment[first_match_id: last_match_id + 1]
 
 
-def calc_mismatches_stat(query_seq, target_seq):
+def calc_mismatches(query_seq, target_seq):
     alignment_list = alignments.subsequence_without_gaps(query_seq, target_seq)
 
     if not alignment_list:
-        return 0, len(query_seq), len(query_seq)
+        return len(query_seq)
 
     alignment = alignment_list[0]
 
@@ -561,50 +579,27 @@ def calc_mismatches_stat(query_seq, target_seq):
         query_alignment, target_alignment)
 
     if not match_ids:
-        return 0, len(query_seq), len(query_seq)
-
-    cur_miss_len = 0
-    max_miss_len = 0
+        return len(query_seq)
 
     for i in range(len(query_alignment)):
-        if query_alignment[i] != target_alignment[i]:
-            cur_miss_len += 1
-            mismatches_count += 1
-        else:
-            max_miss_len = max(max_miss_len, cur_miss_len)
-            cur_miss_len = 0
+      if query_alignment[i] != target_alignment[i]:
+        mismatches_count += 1
 
-    return len(match_ids), mismatches_count, max_miss_len
-
-
-def is_subsequence_of(query_seq, target_seq, is_ab=True):
-    min_intersection_len = int(0.9 * min(len(query_seq), len(target_seq)))
-    max_miss_cutoff = max(10, int(0.03 * len(query_seq))) if is_ab else int(
-        0.05 * len(query_seq))
-
-    matches_count, mismatches_count, max_miss_len = calc_mismatches_stat(
-        query_seq,
-        target_seq)
-
-    return matches_count + mismatches_count >= min_intersection_len and (
-            not is_ab or max_miss_len < 3) and mismatches_count <= \
-           max_miss_cutoff
-
+    return mismatches_count
 
 class Hit:
-    def __init__(self, hit):
-        [self.pdb_id, entity_id] = hit['identifier'].split('_')
-        self.chain_ids_to_seqs = fetch_all_sequences_for_entity(self.pdb_id,
+  def __init__(self, hit):
+    [self.pdb_id, entity_id] = hit['identifier'].split('_')
+    self.chain_ids_to_seqs = fetch_all_sequences_for_entity(self.pdb_id,
                                                                 entity_id)
 
-
-def process_hit(seq, is_ab, hit):
+def process_hit(seq, hit):
     res = []
     good_chain_ids = []
 
     for chain_id, hit_seq in hit.chain_ids_to_seqs.items():
 
-        if is_subsequence_of(hit_seq, seq, is_ab=is_ab):
+        if is_subsequence_of(hit_seq, seq):
             good_chain_ids.append(chain_id)
 
     if good_chain_ids:
@@ -647,11 +642,15 @@ def get_blast_data(pdb_id, chain_id, seq, is_ab):
     hits = []
 
     for hit in json.loads(r)['result_set']:
-        hits.append((seq, is_ab, Hit(hit)))
+        hits.append((seq, Hit(hit)))
 
+    # if NUMBER_OF_PROCESSES > 1:
     with Pool(NUMBER_OF_PROCESSES) as pool:
-        for x in pool.starmap(process_hit, hits):
-            res += x
+      for x in pool.starmap(process_hit, hits):
+        res += x
+    # else:
+    #   for hit in hits:
+    #     res += process_hit(hit)
 
     print(res)
 
@@ -824,7 +823,6 @@ def sort_and_take_ress(unbound_ress):
 
     return res[:5]
 
-
 def find_unbound_conformations(complex):
     unbound_antigen_valid_candidates = \
         find_unbound_structure(complex.pdb_id, complex.antigen_chains,
@@ -841,10 +839,6 @@ def find_unbound_conformations(complex):
 
     return sort_and_take_ress(unbound_antigen_valid_candidates), \
            sort_and_take_ress(unbound_antibody_valid_candidates)
-
-
-structures_summary = read_csv('data/sabdab_summary_all.tsv',
-                              sep='\t')
 
 test_structures = [('1AHW', '1FGN', '1TFH'),
                    ('1BVK', '1BVL', '3LZT'),
@@ -869,7 +863,7 @@ test_structures = [('1AHW', '1FGN', '1TFH'),
                    ('4GXU', '4GXV', '4I1B')]
 
 
-def run_zlab_test():
+def run_zlab_test(structures_summary):
     comps = get_bound_complexes('-1', structures_summary,
                                 list(map(lambda x: x[0], test_structures)))
 
@@ -920,7 +914,7 @@ def remove_if_contains(path, s):
             os.remove(os.path.join(path, file))
 
 
-def collect_unbound_structures(run_id, overwrite=True, p=None, to_accept=None):
+def collect_unbound_structures(run_id, structures_summary, overwrite=True, p=None, to_accept=None):
     comps = get_bound_complexes(run_id, structures_summary, p=p,
                                 to_accept=to_accept)
 
@@ -987,6 +981,7 @@ def collect_unbound_structures(run_id, overwrite=True, p=None, to_accept=None):
                 processed_log.write(comp.comp_name + '\n')
                 processed_log.flush()
             except Exception as e:
+                print(e)
                 traceback.print_tb(e.__traceback__)
                 not_processed.write('{}: {}\n'.format(comp.comp_name, e))
                 not_processed.flush()
@@ -995,6 +990,9 @@ if __name__ == '__main__':
     from optparse import OptionParser
 
     parser = OptionParser()
+    parser.add_option('--sabdab-summary', default='sabdab_summary_all.tsv',
+                      dest='sabdab_summary_file_path', metavar='SABDAB_SUMMARY',
+                      help='Path to sabdab summary file')
     parser.add_option('--run-id', default='0',
                       dest='run_id',
                       metavar='RUN_ID',
@@ -1014,8 +1012,11 @@ if __name__ == '__main__':
                            'the cached place [default: {}]'.format('False'))
     parser.add_option('--number-of-processes', default=3,
                       dest='n', metavar='N',
-                      help='n')
+                      help='Number of paralles prcoesses')
     options, _ = parser.parse_args()
+
+    structures_summary = read_csv(options.sabdab_summary_file_path,
+                              sep='\t')
 
     NUMBER_OF_PROCESSES = int(options.n)
 
@@ -1025,7 +1026,7 @@ if __name__ == '__main__':
         cont = False
 
     if options.is_test:
-        run_zlab_test()
+        run_zlab_test(structures_summary)
 
     if options.range:
         [l, r] = options.range.replace(' ', '').strip('(').strip(')').split(
@@ -1034,4 +1035,4 @@ if __name__ == '__main__':
     else:
         p = None
 
-    collect_unbound_structures(options.run_id, overwrite=not cont, p=p)
+    collect_unbound_structures(options.run_id, structures_summary, overwrite=not cont, p=p)

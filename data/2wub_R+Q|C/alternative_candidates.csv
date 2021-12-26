@@ -1,7 +1,0 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
-2wub_R+Q|C_1,B:U,2WUB,2.9,xray,R:Q,C,2wub,2.9,xray,R:Q,1YBW,2.7,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-2wub_H+L|A_0,B:U,2WUB,2.9,xray,H:L,A,2wub,2.9,xray,H:L,1YBW,2.7,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-2wub_H+L|A_1,B:U,2WUB,2.9,xray,H:L,A,2wub,2.9,xray,H:L,1YBW,2.7,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-3k2u_H+L|A_0,B:U,3K2U,2.35,xray,H:L,A,3k2u,2.35,xray,H:L,1YBW,2.7,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-2wuc_H+L|A_0,B:U,2WUC,2.7,xray,H:L,A,2wuc,2.7,xray,H:L,1YBW,2.7,xray,A,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-2wuc_H+L|A_1,B:U,2WUC,2.7,xray,H:L,A,2wuc,2.7,xray,H:L,1YBW,2.7,xray,B,0,0,small molecules with 7 < n_atoms <= 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA

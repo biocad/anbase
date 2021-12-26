@@ -14,12 +14,12 @@ from fetch_unbound_data import AG, AB, DB_PATH, DOT_PDB, \
     fetch_sequence, memoize, \
     ANTIGEN_TYPE, PDB_ID, sub_nan, ANTIGEN_CHAIN, \
     H_CHAIN, L_CHAIN, form_comp_name, comp_name_to_pdb_and_chains, \
-    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches_stat, extract_seq, \
+    fetch_all_sequences, CHAINS_SEPARATOR, calc_mismatches, extract_seq, \
     retrieve_resolution
 from filter_unbound_data import union_models, \
     fetch_all_assemblies
 
-from pipeline.filter_unbound_data import MINIMAL_CHAIN_LENGTH
+from filter_unbound_data import MINIMAL_CHAIN_LENGTH
 
 FILTERED_STRUCTURES_CSV = 'filtered_for_unboundness_{}.csv'
 REJECTED_STRUCTURES_CSV = 'rejected_for_unboundness_{}.csv'
@@ -29,6 +29,7 @@ REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
 
 ALIGNED = 'aligned'
 HETATMS_DELETED = 'hetatms_deleted'
+PREPARED_SCHROD = 'prepared_schrod'
 CONSTRAINTS = 'constraints'
 
 SEQUENCES = 'seqs'
@@ -254,12 +255,13 @@ class Conformation:
         return cas
 
     @staticmethod
-    @memoize
+    # @memoize doesn't work with same chains but different dist values... what a crap
     def get_interface_atoms(comp_name, ab_chains,
                             ag_chains, dist=INTERFACE_CUTOFF,
                             only_ca=True):
 
-        print(comp_name)  # needed for memoization, do not delete
+        # print(comp_name)  # needed for memoization, do not delete
+        # print(dist)
 
         ab_interface = []
         ag_interface = []
@@ -276,8 +278,7 @@ class Conformation:
                                 if only_ca and ag_at.get_id() != 'CA':
                                     continue
 
-                                if np.linalg.norm(
-                                        ab_at.coord - ag_at.coord) < dist:
+                                if np.linalg.norm(ab_at.coord - ag_at.coord) < dist:
                                     ab_interface.append(ab_at)
                                     ag_interface.append(ag_at)
 
@@ -496,15 +497,11 @@ class Conformation:
         return interface_atoms_b, interface_atoms_u
 
     @staticmethod
-    def _inner_align(chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
-                     pdb_id_u, atoms):
-        interface_atoms_b, interface_atoms_u = \
-            Conformation.get_corresponding_atoms(
-                chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
-                pdb_id_u, atoms)
+    def _inner_align(chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u, pdb_id_u, atoms):
+        interface_atoms_b, interface_atoms_u = Conformation.get_corresponding_atoms(
+                chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u, pdb_id_u, atoms)
 
-        Conformation.super_imposer.set_atoms(interface_atoms_b,
-                                             interface_atoms_u)
+        Conformation.super_imposer.set_atoms(interface_atoms_b, interface_atoms_u)
         Conformation.super_imposer.apply(structure_u.get_atoms())
 
         print(Conformation.super_imposer.rms)
@@ -815,8 +812,7 @@ class Conformation:
         cnt = 0
 
         for x, y in zip(seqs1, seqs2):
-            _, c, _ = calc_mismatches_stat(x, y)
-            cnt += c
+          cnt += calc_mismatches(x, y)
 
         return cnt
 
@@ -1010,8 +1006,11 @@ class FilteredStructure:
         self.assembly_id = line['assembly_id']
 
 
-def process_filtered_csv(run_id, path_to_filtered_structures_csv,
-                         path_to_rejected_complexes_csv, to_accept=None):
+def process_filtered_csv(run_id, 
+                         path_to_filtered_structures_csv,
+                         path_to_rejected_complexes_csv,
+                         sabdab_summary_file_path,
+                         to_accept=None):
     filtered_structures_csv = pd.read_csv(path_to_filtered_structures_csv)
 
     by_complex = defaultdict(list)
@@ -1021,7 +1020,7 @@ def process_filtered_csv(run_id, path_to_filtered_structures_csv,
             FilteredStructure(filtered_structures_csv.iloc[i]))
 
     filter_out_peptides(by_complex,
-                        pd.read_csv('data/sabdab_summary_all.tsv', sep='\t'))
+                        pd.read_csv(sabdab_summary_file_path, sep='\t'))
 
     db_info_path = 'db_info_{}.csv'.format(run_id)
 
@@ -1106,6 +1105,9 @@ if __name__ == '__main__':
     from optparse import OptionParser
 
     parser = OptionParser()
+    parser.add_option('--sabdab-summary', default='sabdab_summary_all.tsv',
+                  dest='sabdab_summary_file_path', metavar='SABDAB_SUMMARY',
+                  help='Path to sabdab summary file')
     parser.add_option('--run-id', default='0',
                       dest='run_id',
                       metavar='RUN_ID',
@@ -1115,4 +1117,5 @@ if __name__ == '__main__':
 
     process_filtered_csv(options.run_id,
                          FILTERED_STRUCTURES_CSV.format(options.run_id),
-                         REJECTED_COMPLEXES_CSV.format(options.run_id))
+                         REJECTED_COMPLEXES_CSV.format(options.run_id),
+                         options.sabdab_summary_file_path)

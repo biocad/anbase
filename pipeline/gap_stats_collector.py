@@ -17,7 +17,7 @@ DB_PATH = 'data'
 DOT_PDB = '.pdb'
 DOT_FASTA = '.fasta'
 
-DB_INFO_PATH = 'db_info.csv'
+DB_INFO_PATH = 'db_info_0.csv'
 
 MAGIC_INTERFACE_EXTENSION_CONSTANT = 5
 

@@ -2,11 +2,10 @@ from multiprocessing.pool import Pool
 
 import pandas as pd
 
-import alignments
 from candidate_info import CandidateInfo
-from fetch_unbound_data import calc_mismatches_stat, is_subsequence_of
+from fetch_unbound_data import is_subsequence_of
 
-DB_INFO_PATH = 'db_info.csv'
+DB_INFO_PATH = 'db_info_0.csv'
 DB_PATH = 'data'
 
 SEQS = 'seqs'
@@ -18,40 +17,23 @@ DUPLICATES_CSV = 'duplicates.csv'
 
 CDRS = ['CDR1', 'CDR2', 'CDR3']
 
-NUMBER_OF_PROCESSES = 50
-
-
-def similarity_of_two_seqs(seq1, seq2):
-    return is_subsequence_of(seq1, seq2, is_ab=False) or \
-           is_subsequence_of(seq2, seq1, is_ab=False)
-
-
-def similarity_of_abs(comp1, comp2):
-    for i in range(len(comp1.ab_chain_ids_b)):
-        for cdr in CDRS:
-            seq1 = comp1.ab_cdrs_annotation_b[i][cdr]
-            seq2 = comp2.ab_cdrs_annotation_b[i][cdr]
-
-            matches, mismatches, _ = calc_mismatches_stat(seq1, seq2)
-
-            mismatches += max(abs(len(seq1) - matches - mismatches),
-                              abs(len(seq2) - matches - mismatches))
-
-            if mismatches >= 2 or matches + mismatches < len(seq1) or \
-                    matches + mismatches < len(seq2):
-                print('Not equal:', seq1, 'and', seq2, ', mismatches:',
-                      mismatches)
-                return False
-    return True
-
+NUMBER_OF_PROCESSES = 30
 
 def similarity_of_two_complexes(comp1, comp2):
     if len(comp1.ab_seqs_b) != len(comp2.ab_seqs_b) or \
             len(comp1.ag_seqs_b) != len(comp2.ag_seqs_b):
         return False
 
-    ab_chains_similar = similarity_of_abs(comp1, comp2)
-    ag_chains_similar = all(map(lambda p: similarity_of_two_seqs(p[0], p[1]),
+    if len(comp1.ab_seqs_b) == 2 and len(comp2.ab_seqs_b) == 2: # compare combinations of seqeunces
+      comp1_fst_seq_similarity = is_subsequence_of(comp1.ab_seqs_b[0], comp2.ab_seqs_b[0]) or \
+                                 is_subsequence_of(comp1.ab_seqs_b[0], comp2.ab_seqs_b[1])
+      comp1_snd_seq_similarity = is_subsequence_of(comp1.ab_seqs_b[1], comp2.ab_seqs_b[1]) or \
+                                 is_subsequence_of(comp1.ab_seqs_b[1], comp2.ab_seqs_b[0])
+      ab_chains_similar = comp1_fst_seq_similarity and comp1_snd_seq_similarity
+    else: # compare just two sequnces for single chain antibodies
+      ab_chains_similar = is_subsequence_of(comp1.ab_seqs_b[0], comp2.ab_seqs_b[0])
+
+    ag_chains_similar = all(map(lambda p: is_subsequence_of(p[0], p[1]),
                                 zip(comp1.ag_seqs_b, comp2.ag_seqs_b)))
 
     return ab_chains_similar and ag_chains_similar
@@ -93,7 +75,7 @@ if __name__ == '__main__':
         complexes.add(candidate_info.comp_name)
 
         candidate_info.load_sequences(options.db)
-        candidate_info.load_ab_annotation(options.db)
+        # candidate_info.load_ab_annotation(options.db)
         complexes_with_chains.append(candidate_info)
 
     with open(DUPLICATES_CSV, 'w') as duplicates_csv:

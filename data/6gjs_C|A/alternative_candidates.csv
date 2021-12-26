@@ -1,7 +1,0 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
-6gjs_C|A_6,B:U,6GJS,1.95,xray,C,A,6gjs,1.95,xray,C,5TFJ,1.85,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-6gjs_C|A_0,B:U,6GJS,1.95,xray,C,A,6gjs,1.95,xray,C,2PZG,1.8,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-6gjs_C|A_1,B:U,6GJS,1.95,xray,C,A,6gjs,1.95,xray,C,2PZG,1.8,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-6gjs_C|A_2,B:U,6GJS,1.95,xray,C,A,6gjs,1.95,xray,C,2PZE,1.7,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-6gjs_C|A_3,B:U,6GJS,1.95,xray,C,A,6gjs,1.95,xray,C,2PZE,1.7,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-6gjs_C|A_4,B:U,6GJS,1.95,xray,C,A,6gjs,1.95,xray,C,5TFB,1.87,xray,A,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
