@@ -29,6 +29,7 @@ REJECTED_COMPLEXES_CSV = 'rejected_complexes.csv'
 
 ALIGNED = 'aligned'
 HETATMS_DELETED = 'hetatms_deleted'
+PREPARED_SCHROD = 'prepared_schrod'
 CONSTRAINTS = 'constraints'
 
 SEQUENCES = 'seqs'
@@ -254,12 +255,13 @@ class Conformation:
         return cas
 
     @staticmethod
-    @memoize
+    # @memoize doesn't work with same chains but different dist values... what a crap
     def get_interface_atoms(comp_name, ab_chains,
                             ag_chains, dist=INTERFACE_CUTOFF,
                             only_ca=True):
 
-        print(comp_name)  # needed for memoization, do not delete
+        # print(comp_name)  # needed for memoization, do not delete
+        # print(dist)
 
         ab_interface = []
         ag_interface = []
@@ -276,8 +278,7 @@ class Conformation:
                                 if only_ca and ag_at.get_id() != 'CA':
                                     continue
 
-                                if np.linalg.norm(
-                                        ab_at.coord - ag_at.coord) < dist:
+                                if np.linalg.norm(ab_at.coord - ag_at.coord) < dist:
                                     ab_interface.append(ab_at)
                                     ag_interface.append(ag_at)
 
@@ -496,15 +497,11 @@ class Conformation:
         return interface_atoms_b, interface_atoms_u
 
     @staticmethod
-    def _inner_align(chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
-                     pdb_id_u, atoms):
-        interface_atoms_b, interface_atoms_u = \
-            Conformation.get_corresponding_atoms(
-                chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u,
-                pdb_id_u, atoms)
+    def _inner_align(chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u, pdb_id_u, atoms):
+        interface_atoms_b, interface_atoms_u = Conformation.get_corresponding_atoms(
+                chain_ids_b, chains_b, pdb_id_b, structure_u, chain_ids_u, pdb_id_u, atoms)
 
-        Conformation.super_imposer.set_atoms(interface_atoms_b,
-                                             interface_atoms_u)
+        Conformation.super_imposer.set_atoms(interface_atoms_b, interface_atoms_u)
         Conformation.super_imposer.apply(structure_u.get_atoms())
 
         print(Conformation.super_imposer.rms)

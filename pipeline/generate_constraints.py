@@ -7,8 +7,7 @@ from Bio.PDB import PDBParser
 
 from candidate_info import CandidateInfo
 from fetch_unbound_data import comp_name_to_pdb_and_chains
-from process_unbound_data import SEQUENCES, HETATMS_DELETED, \
-    INTERFACE_CUTOFF, extract_seq
+from process_unbound_data import SEQUENCES, HETATMS_DELETED, PREPARED_SCHROD, extract_seq
 import pandas as pd
 import numpy as np
 
@@ -16,19 +15,22 @@ from candidate_info import read_fasta
 from fetch_unbound_data import fetch_all_sequences
 from process_unbound_data import Conformation
 
-DB_PATH = 'data'
+# DB_PATH = 'data'
+DB_PATH = 'anbase'
 DOT_PDB = '.pdb'
 DOT_FASTA = '.fasta'
 
-DB_INFO_PATH = 'db_info.csv'
+DB_INFO_PATH = 'db_info_0.csv'
 
 pdb_parser = PDBParser()
 
 CONSTRAINTS = 'constraints'
 EPITOPE = 'epitope'
 
-CLOSE_CUTOFF = 6.5
+CLOSE_CUTOFFS = [2.0, 4.0, 6.5]
 
+NUMBER_OF_PROCESSES = 30
+# NUMBER_OF_PROCESSES = 1
 
 def generate_constraints_task(conformation_like, epoch_name):
     candidate_name = conformation_like.comp_name + '_' + \
@@ -88,46 +90,46 @@ def generate_constraints(conformation_like, epoch_name):
                 f.write(','.join(map(lambda x: x[0] if x[0] == x[1] else
                 '{}-{}'.format(x[0], x[1]), ranges)) + '\n')
 
-    _, ag_interface_atoms_b = Conformation.get_interface_atoms(
-        conformation_like.comp_name,
-        conformation_like.ab_chains_b,
-        conformation_like.ag_chains_b,
-        dist=CLOSE_CUTOFF,
-        only_ca=False)
-    _, ag_interface_atoms_u = Conformation.get_corresponding_atoms(
-        conformation_like.ag_chain_ids_b, conformation_like.ag_chains_b,
-        conformation_like.pdb_id_b,
-        conformation_like.ag_structure_u, conformation_like.ag_chain_ids_u,
-        conformation_like.ag_pdb_id_u, ag_interface_atoms_b,
-        only_cas=False,
-        seqs_b=conformation_like.ag_seqs_b,
-        seqs_u=conformation_like.ag_seqs_u)
+    for cutoff in CLOSE_CUTOFFS:
 
-    pre_path = os.path.join(DB_PATH, conformation_like.comp_name, epoch_name)
+      _, ag_interface_atoms_b = Conformation.get_interface_atoms(
+          conformation_like.comp_name,
+          conformation_like.ab_chains_b,
+          conformation_like.ag_chains_b,
+          dist=cutoff,
+          only_ca=False)
+      _, ag_interface_atoms_u = Conformation.get_corresponding_atoms(
+          conformation_like.ag_chain_ids_b, conformation_like.ag_chains_b,
+          conformation_like.pdb_id_b,
+          conformation_like.ag_structure_u, conformation_like.ag_chain_ids_u,
+          conformation_like.ag_pdb_id_u, ag_interface_atoms_b,
+          only_cas=False,
+          seqs_b=conformation_like.ag_seqs_b,
+          seqs_u=conformation_like.ag_seqs_u)
 
-    chains_to_constraints_b = form_constraints(ag_interface_atoms_b,
-                                               conformation_like.ag_chain_ids_b)
-    chains_to_constraints_u = form_constraints(ag_interface_atoms_u,
-                                               conformation_like.ag_chain_ids_u)
+      print(f"Cutoff: {cutoff}, epitope size, atoms: {len(ag_interface_atoms_b)}")
 
-    path_to_constraints_b = os.path.join(pre_path,
-                                         conformation_like.pdb_id_b +
-                                         '_ag_b.fasta')
+      pre_path = os.path.join(DB_PATH, conformation_like.comp_name, epoch_name)
 
-    if not os.path.exists(os.path.dirname(path_to_constraints_b)):
-        os.makedirs(os.path.dirname(path_to_constraints_b))
+      chains_to_constraints_b = form_constraints(ag_interface_atoms_b,
+                                                conformation_like.ag_chain_ids_b)
+      chains_to_constraints_u = form_constraints(ag_interface_atoms_u,
+                                                conformation_like.ag_chain_ids_u)
 
-    write_constraints(path_to_constraints_b, chains_to_constraints_b)
+      path_to_constraints_b = os.path.join(pre_path, conformation_like.pdb_id_b + f'_ag_b_{cutoff}.fasta')
 
-    path_to_candidate = os.path.join(pre_path,
-                                     str(conformation_like.candidate_id),
-                                     conformation_like.pdb_id_b +
-                                     '_ag_u.fasta')
+      if not os.path.exists(os.path.dirname(path_to_constraints_b)):
+          os.makedirs(os.path.dirname(path_to_constraints_b))
 
-    if not os.path.exists(os.path.dirname(path_to_candidate)):
-        os.makedirs(os.path.dirname(path_to_candidate))
+      write_constraints(path_to_constraints_b, chains_to_constraints_b)
 
-    write_constraints(path_to_candidate, chains_to_constraints_u)
+      path_to_candidate = os.path.join(pre_path, str(conformation_like.candidate_id), 
+                                      conformation_like.pdb_id_b + f'_ag_u_{cutoff}.fasta')
+
+      if not os.path.exists(os.path.dirname(path_to_candidate)):
+          os.makedirs(os.path.dirname(path_to_candidate))
+
+      write_constraints(path_to_candidate, chains_to_constraints_u)
 
 
 if __name__ == '__main__':
@@ -140,11 +142,11 @@ if __name__ == '__main__':
                       metavar='DB_INFO_PATH',
                       help='Path to database info csv file [default: {}]'.
                       format(DB_INFO_PATH))
-    parser.add_option('--prev-epoch', default=HETATMS_DELETED,
+    parser.add_option('--prev-epoch', default=PREPARED_SCHROD,
                       dest='prev_epoch', metavar='PREV_EPOCH',
                       help='Name of the epoch structures from which will be '
                            'checked for gaps. [default: {}]'.format(
-                          HETATMS_DELETED))
+                          PREPARED_SCHROD))
     parser.add_option('--name-of-constraints-folder', default=EPITOPE,
                       dest='constraints_folder_name',
                       metavar='CONSTRAINTS_FOLDER_NAME',
@@ -155,7 +157,7 @@ if __name__ == '__main__':
                       dest='only_uu', metavar='ONLY_UU',
                       help='Flag to process only candidates of type UU. '
                            '[default: False]')
-    parser.add_option('--number-of-processes', default=1,
+    parser.add_option('--number-of-processes', default=NUMBER_OF_PROCESSES,
                       dest='number_of_processes',
                       metavar='NUMBER_OF_PROCESSES',
                       help='Number of processes to use. '
@@ -178,16 +180,11 @@ if __name__ == '__main__':
                 continue
 
             try:
+                conformation_like = candidate_info.to_conformation_like(options.db, options.prev_epoch)
                 if int(options.number_of_processes) == 1:
-                    generate_constraints(
-                        candidate_info.to_conformation_like(options.db,
-                                                            options.prev_epoch),
-                        options.constraints_folder_name)
+                    generate_constraints(conformation_like, options.constraints_folder_name)
                 else:
-                    tasks.append(
-                        (candidate_info.to_conformation_like(options.db,
-                                                             options.prev_epoch),
-                         options.constraints_folder_name))
+                    tasks.append((conformation_like, options.constraints_folder_name))
             except Exception as e:
                 print(e)
 

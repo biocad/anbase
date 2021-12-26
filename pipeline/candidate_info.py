@@ -152,25 +152,20 @@ class CandidateInfo:
     def load_sequences(self, db_path):
         comp_path = os.path.join(db_path, self.comp_name)
 
-        ab_fasta_b = read_fasta(
-            os.path.join(os.path.join(comp_path, SEQS),
-                         self.pdb_id_b +
-                         '_ab_b' + DOT_FASTA))
-        ag_fasta_b = read_fasta(
-            os.path.join(os.path.join(comp_path, SEQS),
-                         self.pdb_id_b +
-                         '_ag_b' + DOT_FASTA))
+        ab_b_seqs_path = os.path.join(os.path.join(comp_path, SEQS), self.pdb_id_b + '_ab_b' + DOT_FASTA)
+        ag_b_seqs_path = os.path.join(os.path.join(comp_path, SEQS), self.pdb_id_b + '_ag_b' + DOT_FASTA)
+
+        ab_fasta_b = read_fasta(ab_b_seqs_path)
+        ag_fasta_b = read_fasta(ag_b_seqs_path)
 
         self.complex_fasta_b = {**ab_fasta_b, **ag_fasta_b}
 
-        self.ab_fasta_u = read_fasta(
-            os.path.join(os.path.join(comp_path, SEQS, str(self.candidate_id)),
-                         self.pdb_id_b +
-                         '_ab_u' + DOT_FASTA))
-        self.ag_fasta_u = read_fasta(
-            os.path.join(os.path.join(comp_path, SEQS, str(self.candidate_id)),
-                         self.pdb_id_b +
-                         '_ag_u' + DOT_FASTA))
+        unbound_basepath = os.path.join(comp_path, SEQS, str(self.candidate_id))
+        ab_u_seqs_path = os.path.join(unbound_basepath, self.pdb_id_b + '_ab_u' + DOT_FASTA)
+        ag_u_seqs_path = os.path.join(unbound_basepath, self.pdb_id_b + '_ag_u' + DOT_FASTA)
+        
+        self.ab_fasta_u = read_fasta(ab_u_seqs_path)
+        self.ag_fasta_u = read_fasta(ag_u_seqs_path)
 
         for x in self.ab_chain_ids_b:
             self.ab_seqs_b.append(ab_fasta_b[x])
@@ -196,26 +191,22 @@ class CandidateInfo:
 
         complex_name_b = self.pdb_id_b
         complex_path_b = os.path.join(epoch_path, complex_name_b + DOT_PDB)
-        self.complex_structure_b = pdb_parser.get_structure(self.comp_name,
-                                                            complex_path_b)
-        self.ab_chains_b = Conformation.extract_chains(
-            self.complex_structure_b, self.ab_chain_ids_b)
-        self.ag_chains_b = Conformation.extract_chains(
-            self.complex_structure_b, self.ag_chain_ids_b)
+        self.complex_structure_b = pdb_parser.get_structure(self.comp_name, complex_path_b)
+
+        self.ab_chains_b = Conformation.extract_chains(self.complex_structure_b, self.ab_chain_ids_b)
+        self.ag_chains_b = Conformation.extract_chains(self.complex_structure_b, self.ag_chain_ids_b)
 
         candidate_path = os.path.join(epoch_path, str(self.candidate_id))
 
         ab_name_u = self.pdb_id_b + '_ab_u'
         ab_path_u = os.path.join(candidate_path, ab_name_u + DOT_PDB)
         self.ab_structure_u = pdb_parser.get_structure('ab', ab_path_u)
-        self.ab_chains_u = Conformation.extract_chains(
-            self.ab_structure_u, self.ab_chain_ids_u)
+        self.ab_chains_u = Conformation.extract_chains(self.ab_structure_u, self.ab_chain_ids_u)
 
         ag_name_u = self.pdb_id_b + '_ag_u'
         ag_path_u = os.path.join(candidate_path, ag_name_u + DOT_PDB)
         self.ag_structure_u = pdb_parser.get_structure('ag', ag_path_u)
-        self.ag_chains_u = Conformation.extract_chains(
-            self.ag_structure_u, self.ag_chain_ids_u)
+        self.ag_chains_u = Conformation.extract_chains(self.ag_structure_u, self.ag_chain_ids_u)
 
         return self
 

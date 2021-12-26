@@ -1,4 +1,0 @@
-candidate_name,type,pdb_id_b,resolution_b,resolution_method_b,ab_chain_ids_b,ag_chain_ids_b,ab_pdb_id_u,ab_resolution_u,ab_resolution_method_u,ab_chain_ids_u,ag_pdb_id_u,ag_resolution_u,ag_resolution_method_u,ag_chain_ids_u,ab_mismatches_cnt,ag_mismatches_cnt,small_molecules_message,in_between_gaps_b,one_side_gaps_b,long_gaps_b,total_gaps_b,in_between_gaps_u,one_side_gaps_u,long_gaps_u,total_gaps_u,ca_rmsds,ncac_rmsds,all_atoms_rmsds
-6u36_H+L|B_3,B:U,6U36,2.7,xray,H:L,B,6u36,2.7,xray,H:L,6U26,1.53,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-6u38_H+L|B_1,B:U,6U38,2.73,xray,H:L,B,6u38,2.73,xray,H:L,6U26,1.53,xray,B,0,0,small molecules with n_atoms > 15 detected,0,0,0,0,0,0,0,0,NA,NA,NA
-6u38_H+L|B_3,B:U,6U38,2.73,xray,H:L,B,6u38,2.73,xray,H:L,2P4E,1.98,xray,A,0,0,NA,0,0,0,0,0,0,0,0,NA,NA,NA
