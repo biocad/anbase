@@ -4,7 +4,7 @@ anbase is a database of antibody-antigen complexes designed especially for
 validation of algorithms of prediction of mutual conformation of
 antibody and antigen.
 
-Database consists of a **456** antibody-antigen complexs: **114** of which are *unbound-antibody*:*unbound-antigen*, and **342** are *bound-antibody:unbound-antigen*.
+Database consists of a **570** antibody-antigen complexs: **75** of which are *unbound-antibody*:*unbound-antigen*, and **495** are *bound-antibody:unbound-antigen*.
 
 Information about complexes of the database and their unbound parts
 can be found in the `anbase_summary.csv`. Description of the summary 
@@ -94,23 +94,4 @@ form.
 antigen's epitope in the bound complex and the antigen's epitope 
 in its unbound form.
 
-Also, each **comp_name** folder contains file 
-`alternative_candidates.csv`, that lists all the potential
-candidates that can act as a pair of unbound antibody and 
-unbound antigen for the given complex. 
-This file has all the same fields
-as `anbase_summary.csv` with some changes:
-* Field **candidate_name** is replaced with field **comp_name**.
-* Field **is_perfect** is removed.
-* Added fields **ca_rmsds**, **ncac_rmsds** and **all_atoms_rmsds** 
-that contain corresponding rmsds from alternative candidate's 
-interface to the main candidate's interface.
-
-Subfolder of **comp_name** that is called `alternative_candidates`
-contains candidates described in the `alternative_candidates.csv`.
-Structure of the `alternative_candidates` folder is the same as
-the structure of `data` with the exception that all its subfolders
-are named after corresponding **candidate_name** fields. Also,
-these subfolders don't contain info about alternative candidates,
-because they represent these candidates themselves.
-
+Each **comp_name** may contain several alternative unbound versions. All versions are in folder named with numbers starting with 0.
